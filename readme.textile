@@ -1,0 +1,4 @@
+h1. Continuos integrations for the Elexis project using Jenkins
+
+This is the setup for srv.elexis.info where we run our Jenkins jobs.
+

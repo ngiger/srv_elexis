@@ -1,0 +1,17 @@
+#!/bin/bash
+# To be use on a vagrant machine
+# prepare environment for librarian-puppet
+if [ -d /vagrant ] ; then  PUPPET_DIR=/vagrant ; else PUPPET_DIR=/etc/puppet ; fi
+gem list --local librarian-puppet | grep librarian-puppet
+if [ $? -ne 0 ] ; then
+  gem install --no-ri --no-rdoc librarian-puppet
+else
+  echo "librarian-puppet seems to be installed"
+fi
+cd `dirname $0`
+pwd
+time librarian-puppet install
+if [ $? -ne 0 ] ; then
+  echo "Installation of librarian-puppet failed"
+fi
+exit 0
