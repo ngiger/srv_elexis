@@ -38,7 +38,11 @@
 
 class srv_elexis {
    
-  require srv_elexis::config
+  if ($fqdn == 'srv.elexis.info') {
+    class {'srv_elexis::config': jenkins_root => '/usr/local/jenkins', }
+  } else {
+    class {'srv_elexis::config': jenkins_root => '/var/lib/jenkins', }
+  }
   
   $managed_note = 'Managed by puppet via project repo https://github.com/ngiger/srv_elexis)'
   
@@ -206,7 +210,7 @@ server {
     unless  => "update-alternatives --display editor --quiet | grep currently | grep ${editor_default}"
   }
   
-  $jubulaInstaller = '/var/cache/installer-jubula_linux-gtk-x86_64.sh'
+  $jubulaInstaller = "${srv_elexis::config::jenkins_root}/cache/installer-jubula_linux-gtk-x86_64.sh"
   exec { "get_jubula":
     creates => $jubulaInstaller,
     command => '/usr/bin/curl --remote-name http://ftp.medelexis.ch/downloads_opensource/jubula/2.1/installer-jubula_linux-gtk-x86_64.sh',
