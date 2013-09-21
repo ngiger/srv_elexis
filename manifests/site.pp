@@ -1,4 +1,4 @@
 notify { "site.pp":}
 
-include 'elexis-jenkins'
-include 'elexis-jenkins::jobs'
+include 'srv_elexis'
+include 'srv_elexis::jobs'

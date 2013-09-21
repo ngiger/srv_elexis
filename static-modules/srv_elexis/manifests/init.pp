@@ -88,7 +88,7 @@ class srv_elexis {
   jenkins::plugin {'ssh-credentials':   version => "1.1"} 
   jenkins::plugin {'ssh-slaves':   version => "1.1"}
     
-  notify { "jenkins_root ist $srv_elexis::config::jenkins_root":}
+  # notify { "jenkins_root ist $srv_elexis::config::jenkins_root":}
   user{'jenkins':
     ensure => present,
     home   => "$srv_elexis::config::jenkins_root",

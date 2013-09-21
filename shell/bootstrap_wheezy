@@ -11,5 +11,6 @@ apt-get  build-dep puppet augeas-tools
 aptitude install libaugeas-ruby augeas-tools gcc build-essential zlib1g zlib1g-dev
 gem install puppet facter librarian-puppet  --no-ri --no-rdoc
 cd /etc/puppet
-puppet /etc/puppet/manifest/site.pp
+./runpuppet /etc/puppet/manifests/site.pp 
+
 
