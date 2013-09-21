@@ -3,7 +3,7 @@
 # Must be run as user root
 aptitude install git etckeeper
 echo puppet | tee --append /etc/.gitignore
-cd /etc && git commit -a
+cd /etc && git commit -a -m "Bootstrapping srv_elexis"
 git clone https://github.com/ngiger/srv_elexis.git /etc/puppet
 aptitude update
 aptitude remove puppet facter

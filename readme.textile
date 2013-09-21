@@ -8,20 +8,20 @@ h2. test using vagrant
 
 The following steps were done on an Debian Wheezy system
 
-# sudo aptitude install virtualbox
-# \curl -L https://get.rvm.io | bash
-# rvm use ruby-2.0.0
-# git clone https://github.com/ngiger/srv_elexis.git
-# cd srv_elexis
-# bundle install
-# vagrant up
-# vagrant ssh # and you are
+bq. sudo aptitude install virtualbox
+\curl -L https://get.rvm.io | bash
+rvm use ruby-2.0.0
+git clone https://github.com/ngiger/srv_elexis.git
+cd srv_elexis
+bundle install
+vagrant up
+vagrant ssh # and you are done!
 
 
 h2. deploy on the server, where we had a pre-install Debian Wheezy with Java7
 
-# wget https://raw.github.com/ngiger/srv_elexis/master/shell/bootstrap_wheezy
-# chmod +x bootstrap_wheezy && ./bootstrap_wheezy
+# @wget https://raw.github.com/ngiger/srv_elexis/master/shell/bootstrap_wheezy@
+# @chmod +x bootstrap_wheezy && ./bootstrap_wheezy@
 
 
 h2. post-installation steps
