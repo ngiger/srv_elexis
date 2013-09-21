@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.locksandlatches.LockWrapper_-DescriptorImpl plugin="locks-and-latches@0.6">
+  <locks>
+    <hudson.plugins.locksandlatches.LockWrapper_-LockConfig>
+      <name>(default)</name>
+    </hudson.plugins.locksandlatches.LockWrapper_-LockConfig>
+  </locks>
+</hudson.plugins.locksandlatches.LockWrapper_-DescriptorImpl>

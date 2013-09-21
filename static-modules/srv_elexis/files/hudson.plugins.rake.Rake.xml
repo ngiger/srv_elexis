@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.rake.Rake_-RakeDescriptor plugin="rake@1.7.8">
+  <installations>
+    <hudson.plugins.rake.RubyInstallation>
+      <name>ruby-1.9.3-p392</name>
+      <path>/var/lib/jenkins/.rvm/rubies/ruby-1.9.3-p392</path>
+      <gemHome>/var/lib/jenkins/.rvm/gems/ruby-1.9.3-p392</gemHome>
+      <gemPath>/var/lib/jenkins/.rvm/gems/ruby-1.9.3-p392:/var/lib/jenkins/.rvm/gems/ruby-1.9.3-p392@global</gemPath>
+      <binPath>/var/lib/jenkins/.rvm/gems/ruby-1.9.3-p392@global/bin:/var/lib/jenkins/.rvm/rubies/ruby-1.9.3-p392/bin:/var/lib/jenkins/.rvm/gems/ruby-1.9.3-p392/bin</binPath>
+    </hudson.plugins.rake.RubyInstallation>
+    <hudson.plugins.rake.RubyInstallation>
+      <name>ruby-1.9.3-p392@global</name>
+      <path>/var/lib/jenkins/.rvm/rubies/ruby-1.9.3-p392</path>
+      <gemHome>/var/lib/jenkins/.rvm/gems/ruby-1.9.3-p392@global</gemHome>
+      <gemPath>/var/lib/jenkins/.rvm/gems/ruby-1.9.3-p392@global</gemPath>
+      <binPath>/var/lib/jenkins/.rvm/rubies/ruby-1.9.3-p392/bin:/var/lib/jenkins/.rvm/gems/ruby-1.9.3-p392@global/bin</binPath>
+    </hudson.plugins.rake.RubyInstallation>
+  </installations>
+  <rvm>
+    <path></path>
+  </rvm>
+</hudson.plugins.rake.Rake_-RakeDescriptor>

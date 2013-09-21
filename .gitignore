@@ -1,1 +1,7 @@
 *~
+modules/
+vendor/
+.tmp/
+.librarian/
+.vagrant/
+static-modules/puppet-single_user_rvm

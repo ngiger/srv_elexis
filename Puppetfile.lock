@@ -29,14 +29,22 @@ GIT
   specs:
     stdlib (4.1.0)
 
-PATH
-  remote: ./static-modules/elexis-jenkins
+GIT
+  remote: https://github.com/ngiger/puppet-single_user_rvm.git
+  ref: master
+  sha: 22c1b6b1544dad860d0d72b4a455427838d7252e
   specs:
-    elexis-jenkins (0.0.1)
+    single_user_rvm (0.1.0)
+
+PATH
+  remote: ./static-modules/srv_elexis
+  specs:
+    srv_elexis (0.0.1)
 
 DEPENDENCIES
   apt (>= 0)
-  elexis-jenkins (>= 0)
   jenkins (>= 0)
+  single_user_rvm (>= 0)
+  srv_elexis (>= 0)
   stdlib (>= 0)
 

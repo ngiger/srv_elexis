@@ -51,7 +51,7 @@ Vagrant::Config.run do |config|
   end
 
   config.vm.define :srv do |srv|  
-    srv.vm.host_name = "v-srv.#{`hostname -d`.chomp}"
+    srv.vm.host_name = "srv.#{`hostname -d`.chomp}"
     srv.vm.network :bridged, { :mac => '000000250125', :bridge => bridgedNetworkAdapter, :ip => '172.25.1.25' } # dhcp from fest
     srv.vm.box     = boxId
     srv.vm.box_url = boxUrl

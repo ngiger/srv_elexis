@@ -9,7 +9,11 @@ mod "apt",
 mod "stdlib",
   :git => "git://github.com/puppetlabs/puppetlabs-stdlib.git"
 
-mod 'elexis-jenkins',     :path => './static-modules/elexis-jenkins'
+mod 'single_user_rvm',
+  :git => 'https://github.com/ngiger/puppet-single_user_rvm.git' # with a patch from me
+#  :path => './static-modules/puppet-single_user_rvm' # for testing the patch
+  
+mod 'srv_elexis',     :path => './static-modules/srv_elexis'
 
 # Lokale, nicht echte Module von mir, eventuell von elexis-vagrant holen
 # mod 'apache',     :path => './static-modules/apache'

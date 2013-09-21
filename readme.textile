@@ -1,4 +1,65 @@
 h1. Continuos integrations for the Elexis project using Jenkins
 
-This is the setup for srv.elexis.info where we run our Jenkins jobs.
+This is the setup for "srv.elexis.info":http://srv.elexis.info":http where we run our Jenkins jobs.
+
+Bootstrapping can happen in two ways.
+
+h2. test using vagrant
+
+The following steps were done on an Debian Wheezy system
+
+# sudo aptitude install virtualbox
+# \curl -L https://get.rvm.io | bash
+# rvm use ruby-2.0.0
+# git clone https://github.com/ngiger/srv_elexis.git
+# cd srv_elexis
+# bundle install
+# vagrant up
+# vagrant ssh # and you are
+
+
+h2. deploy on the server, where we had a pre-install Debian Wheezy with Java7
+
+# wget https://raw.github.com/ngiger/srv_elexis/master/shell/bootstrap_wheezy
+# chmod +x bootstrap_wheezy && ./bootstrap_wheezy
+
+
+h2. post-installation steps
+
+After installing
+* We verified that we could access the Jenkins via http://hostname:8080
+* we manually configured the security system of our Jenkins-CI using Jenkins Built-In
+** Users can loging
+GlobalMatrixAuthorization
+* Changed  Jenkins URL to srv.elexis.info/jenkins/
+* Maven < 3.1.0
+* JDK 1.7.u40 # With Oracle account
+* Manually compare old static-modules/srv_elexis/files/config.xml with generate
+* Update if necessary static-modules/srv_elexis/files/config.xml
+* Git Plugin 
+** Create new accounts base on author/committer's email enabled
+* Xvb
+** Nicht automatisch installieren
+** Stammverzeichnis /usr/bin
+* RVM
+* Installed into /var/lib/jenkins/.rvm/bin/rvm (Needed, only used for GUI-Jubula)
+** We should look at http://forge.puppetlabs.com/eirc/single_user_rvm
+* ruby-1.9.3
+** /var/lib/jenkins/.rvm/rubies/ruby-1.9.3-p327
+
+h2. Strategy for Jenkins build environment
+
+* Jubula GUI-Tests are always on separte slaves
+** The slave is responsible for connecting to the Jenkins server
+** Setup of slaves is much more varied as we must support various OS. Project only supports slave for Linux-x86 and Linux-x86_64
+* Jubula is a pain in the ass, as it obliges you to accept I license
+** Version 2.0 can be found under /srv/ftp/downloads_opensource/jubula/2.0
+** Version 7.1 must be fetched from  http://testing.bredex.de/sw-doku-downloads.html
+* Each slave for Jubula has a label identifying is os/ws/arch
+** linux.gtk.x86
+** linux.gtk.x86_64
+** win32.win32.x86
+** win32.win32.x86_64
+** macosx.cocoa.x86_64
+
 
