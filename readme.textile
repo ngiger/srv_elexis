@@ -49,6 +49,7 @@ GlobalMatrixAuthorization
 
 h2. Strategy for Jenkins build environment
 
+* The User config-data (name/password etc) are not stored in this repository!
 * Jubula GUI-Tests are always on separte slaves
 ** The slave is responsible for connecting to the Jenkins server
 ** Setup of slaves is much more varied as we must support various OS. Project only supports slave for Linux-x86 and Linux-x86_64
@@ -62,4 +63,9 @@ h2. Strategy for Jenkins build environment
 ** win32.win32.x86_64
 ** macosx.cocoa.x86_64
 
+
+h3. TODO:
+
+# Global maven options -Xmx512m -XX:MaxPermSize=128m
+# Jenkins URL https://srv.elexis.info:443/jenkins/ ?? Certificate?
 

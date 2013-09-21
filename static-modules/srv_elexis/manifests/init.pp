@@ -94,20 +94,6 @@ class srv_elexis {
     home   => "$srv_elexis::config::jenkins_root",
   }
   
-  $jenkins_rvm = "$srv_elexis::config::jenkins_root/.rvm"
-  $home_rvm    =  '/home/jenkins/.rvm'
-  if (1 == 0 and "$srv_elexis::config::jenkins_root/.rvm" != "$home_rvm") {
-    file {"$jenkins_rvm":
-      ensure => directory,
-      require => Package['jenkins'],
-    }
-    file {"$home_rvm":
-      ensure => link,
-      target => "$jenkins_rvm",
-      require => File["$jenkins_rvm"],
-    }
-  }
-
   single_user_rvm::install { 'jenkins':
     home => "$srv_elexis::config::jenkins_root",
     require => [
@@ -205,5 +191,13 @@ server {
     path    => "/usr/bin:/usr/sbin:/bin:/sbin",
     environment => 'LANG=C',
     unless  => "update-alternatives --display editor --quiet | grep currently | grep ${editor_default}"
-  }  
+  }
+  
+  $jubulaInstaller = '/var/cache/installer-jubula_linux-gtk-x86_64.sh'
+  exec { "get_jubula":
+    creates => $jubulaInstaller,
+    command => '/usr/bin/curl --remote-name http://ftp.medelexis.ch/downloads_opensource/jubula/2.1/installer-jubula_linux-gtk-x86_64.sh',
+    cwd     => '/var/cache',
+    require => Package['curl'],
+  }
 }

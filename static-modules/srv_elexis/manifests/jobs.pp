@@ -85,9 +85,6 @@ class srv_elexis::jobs(
     'Elexis-3-derivate',
     ]:  
   }
-# /usr/bin/vnc4server :$DISPLAY_NUMBER -geometry 1024x768  
-# min 10 max 99
-# Global maven options -Xmx512m -XX:MaxPermSize=128m
-# Jenkins URL https://jenkins.medelexis.ch:443/jenkins/
+
 
 }

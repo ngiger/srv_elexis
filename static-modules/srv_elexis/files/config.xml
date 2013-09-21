@@ -15,6 +15,7 @@
     <permission>hudson.model.Computer.Disconnect:niklaus</permission>
     <permission>hudson.model.Hudson.Administer:niklaus</permission>
     <permission>hudson.model.Hudson.ConfigureUpdateCenter:niklaus</permission>
+    <permission>hudson.model.Hudson.Read:anonymous</permission>
     <permission>hudson.model.Hudson.Read:niklaus</permission>
     <permission>hudson.model.Hudson.RunScripts:niklaus</permission>
     <permission>hudson.model.Hudson.UploadPlugins:niklaus</permission>
@@ -24,13 +25,16 @@
     <permission>hudson.model.Item.Create:niklaus</permission>
     <permission>hudson.model.Item.Delete:niklaus</permission>
     <permission>hudson.model.Item.Discover:niklaus</permission>
+    <permission>hudson.model.Item.Read:anonymous</permission>
     <permission>hudson.model.Item.Read:niklaus</permission>
+    <permission>hudson.model.Item.Workspace:anonymous</permission>
     <permission>hudson.model.Item.Workspace:niklaus</permission>
     <permission>hudson.model.Run.Delete:niklaus</permission>
     <permission>hudson.model.Run.Update:niklaus</permission>
     <permission>hudson.model.View.Configure:niklaus</permission>
     <permission>hudson.model.View.Create:niklaus</permission>
     <permission>hudson.model.View.Delete:niklaus</permission>
+    <permission>hudson.model.View.Read:anonymous</permission>
     <permission>hudson.model.View.Read:niklaus</permission>
     <permission>hudson.scm.SCM.Tag:niklaus</permission>
   </authorizationStrategy>
