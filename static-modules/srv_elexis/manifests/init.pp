@@ -55,7 +55,8 @@ class srv_elexis {
         'JENKINS_ARGS' => { 'value' => '--webroot=/var/cache/jenkins/war --httpPort=$HTTP_PORT --prefix=$PREFIX --ajp13Port=$AJP_PORT' },
       }  
     }
-    jenkins::plugin {[
+    
+    $jenkins_plugins = [
       'build-timeout',
       'compact-columns',
       'console-column-plugin',
@@ -81,9 +82,19 @@ class srv_elexis {
       'thinBackup',
       'timestamper',
       'xvnc',
-      ]: 
-    }
+      ]
+    jenkins::plugin {$jenkins_plugins:}
   } 
+  
+  define install_config() {
+    file { "${srv_elexis::config::jenkins_root}/${title}.xml":
+      source  => "puppet:///modules/srv_elexis/config.xml",
+      require => [ Package['jenkins'], ],
+      notify => Service['jenkins'],
+    }    
+  }
+  install_config{"config": }
+  
   # we have credentials 1.3.1
   jenkins::plugin {'ssh-credentials':   version => "1.1"} 
   jenkins::plugin {'ssh-slaves':   version => "1.1"}
@@ -133,6 +144,7 @@ class srv_elexis {
     ensure => directory,
     require => File["$jenkin_backup_root"],
   }
+  
   file { "$jenkins_root/thinBackup.xml":
     ensure => present,
     source => 'puppet:///modules/srv_elexis/thinBackup.xml',
