@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <hudson.plugins.disk__usage.DiskUsageProjectActionFactory_-DescriptorImpl plugin="disk-usage@0.21">
-  <showGraph>false</showGraph>
+  <showGraph>true</showGraph>
   <historyLength>183</historyLength>
   <timeoutWorkspace>5</timeoutWorkspace>
   <history class="hudson.plugins.disk_usage.DiskUsageProjectActionFactory$DescriptorImpl$1" serialization="custom">

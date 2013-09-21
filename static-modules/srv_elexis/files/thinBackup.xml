@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <org.jvnet.hudson.plugins.thinbackup.ThinBackupPluginImpl plugin="thinBackup@1.7.3">
-  <fullBackupSchedule></fullBackupSchedule>
+  <fullBackupSchedule>0 0 * * *</fullBackupSchedule>
   <diffBackupSchedule></diffBackupSchedule>
   <backupPath>/home/jenkins/backup</backupPath>
   <nrMaxStoredFull>-1</nrMaxStoredFull>
@@ -13,5 +13,5 @@
   <backupBuildArchive>false</backupBuildArchive>
   <backupUserContents>false</backupUserContents>
   <backupNextBuildNumber>true</backupNextBuildNumber>
-  <backupBuildsToKeepOnly>true</backupBuildsToKeepOnly>
+  <backupBuildsToKeepOnly>false</backupBuildsToKeepOnly>
 </org.jvnet.hudson.plugins.thinbackup.ThinBackupPluginImpl>

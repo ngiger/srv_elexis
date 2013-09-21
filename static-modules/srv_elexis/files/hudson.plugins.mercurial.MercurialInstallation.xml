@@ -1,4 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <hudson.plugins.mercurial.MercurialInstallation_-DescriptorImpl plugin="mercurial@1.47">
-  <installations/>
+  <installations>
+    <hudson.plugins.mercurial.MercurialInstallation>
+      <name></name>
+      <home></home>
+      <properties/>
+      <executable>INSTALLATION/bin/hg</executable>
+      <debug>false</debug>
+      <useCaches>false</useCaches>
+      <useSharing>false</useSharing>
+    </hudson.plugins.mercurial.MercurialInstallation>
+  </installations>
 </hudson.plugins.mercurial.MercurialInstallation_-DescriptorImpl>
