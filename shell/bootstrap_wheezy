@@ -1,9 +1,10 @@
 #!/bin/bash -v
 # Bootstrap all stuff needed for a Debian Wheezy base Jenkins-CI setup
+# Must be run as user root
 aptitude install git etckeeper
-echo puppet | sudo tee --append /etc/.gitignore
-cd /etc && sudo git commit -a
-git checkout https://github.com/ngiger/srv_elexis.git puppet
+echo puppet | tee --append /etc/.gitignore
+cd /etc && git commit -a
+git clone https://github.com/ngiger/srv_elexis.git /etc/puppet
 aptitude update
 aptitude remove puppet facter
 apt-get  build-dep puppet augeas-tools
