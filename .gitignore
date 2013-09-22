@@ -5,3 +5,4 @@ vendor/
 .librarian/
 .vagrant/
 static-modules/puppet-single_user_rvm
+static-modules/puppet-jenkins

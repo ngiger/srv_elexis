@@ -1,7 +1,9 @@
 # Configuration for librarian-puppet. For example:
 # 
 mod "jenkins",
-  :git => "git://github.com/jenkinsci/puppet-jenkins.git"
+#  :git => "git://github.com/jenkinsci/puppet-jenkins.git"
+  :git => 'https://github.com/ngiger/puppet-jenkins.git' # with a patch from me to support installation into JENKINS_HOME
+#  :path => './static-modules/puppet-jenkins' # for testing the patch
 
 mod "apt",
   :git => "git://github.com/puppetlabs/puppetlabs-apt.git"
