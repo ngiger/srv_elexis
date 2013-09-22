@@ -72,7 +72,22 @@ Danke an Medelexis für den Build-Server!&#xd;
   <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
   <clouds/>
-  <slaves/>
+  <slaves>
+    <slave>
+      <name>windows-7</name>
+      <description>A windows-7 slave which has jubula installed to run the GUI tests</description>
+      <remoteFS>e:\ci</remoteFS>
+      <numExecutors>1</numExecutors>
+      <mode>NORMAL</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.slaves.JNLPLauncher"/>
+      <label>win32.win32.x86</label>
+      <nodeProperties>
+        <hudson.plugins.xvnc.NodePropertyImpl plugin="xvnc@1.14"/>
+      </nodeProperties>
+      <userId>niklaus</userId>
+    </slave>
+  </slaves>
   <quietPeriod>5</quietPeriod>
   <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
   <views>

@@ -2,6 +2,12 @@
 <project>
   <actions/>
   <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>30</daysToKeep>
+    <numToKeep>10</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties/>
   <scm class="hudson.scm.NullSCM"/>
@@ -10,20 +16,17 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers/>
+  <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
   <customWorkspace>$JENKINS_HOME/jobs/Elexis-3.0-Core/workspace</customWorkspace>
   <builders>
     <hudson.tasks.Shell>
       <command>cd ch.elexis.core.releng/jubula
+# we assume that system ruby is 1.9 and that the gems xml-simple rubyzip are installed
 which java &amp;&amp; java -version
-JAVA_HOME=/opt/jdk1.7.0_25
-RUBY_TO_USE=ruby-1.9.3-p327
-export PATH=${JAVA_HOME}/bin:$PATH
-which java &amp;&amp; java -version
-rvm ${RUBY_TO_USE} do which ruby
-rvm ${RUBY_TO_USE} do ruby -v
-rvm ${RUBY_TO_USE} do ruby run_jenkins.rb</command>
+ruby -v
+ruby run_jenkins.rb
+</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
@@ -34,17 +37,16 @@ rvm ${RUBY_TO_USE} do ruby run_jenkins.rb</command>
     </hudson.tasks.ArtifactArchiver>
   </publishers>
   <buildWrappers>
-    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.11">
-      <timeoutMinutes>15</timeoutMinutes>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.12">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>15</timeoutMinutes>
+      </strategy>
       <failBuild>false</failBuild>
       <writingDescription>false</writingDescription>
-      <timeoutPercentage>0</timeoutPercentage>
-      <timeoutType>absolute</timeoutType>
-      <timeoutMinutesElasticDefault>3</timeoutMinutesElasticDefault>
     </hudson.plugins.build__timeout.BuildTimeoutWrapper>
-    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.4"/>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.7"/>
     <org.jenkinsci.plugins.xvfb.XvfbBuildWrapper plugin="xvfb@1.0.8">
-      <installationName>Xvfb</installationName>
+      <installationName>System</installationName>
       <screen>1024x768x24</screen>
       <debug>false</debug>
       <timeout>0</timeout>

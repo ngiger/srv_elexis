@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@1.522">
+<maven2-moduleset plugin="maven-plugin@1.509.3">
   <actions/>
   <description>&lt;h2&gt;Demonstrates how to build an Elexis derivate application and P2-update site&lt;/h2&gt;</description>
   <logRotator class="hudson.tasks.LogRotator">
     <daysToKeep>-1</daysToKeep>
-    <numToKeep>10</numToKeep>
+    <numToKeep>2</numToKeep>
     <artifactDaysToKeep>-1</artifactDaysToKeep>
     <artifactNumToKeep>-1</artifactNumToKeep>
   </logRotator>
@@ -51,8 +51,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>(Vorgabewert)</jdk>
-  <triggers>
+  <triggers class="vector">
     <hudson.triggers.SCMTrigger>
       <spec>@daily</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
@@ -64,7 +63,6 @@
     <artifactId>elexis-derivate-application</artifactId>
   </rootModule>
   <goals>clean install</goals>
-  <mavenName>maven 3.0.4</mavenName>
   <aggregatorStyleBuild>true</aggregatorStyleBuild>
   <incrementalBuild>false</incrementalBuild>
   <perModuleEmail>true</perModuleEmail>

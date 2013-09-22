@@ -6,7 +6,7 @@
       <username></username>
       <apiUrl></apiUrl>
       <oauthAccessToken></oauthAccessToken>
-      <password>rQBziDwq8NAf8Dz4N7lJMw==</password>
+      <password>1b4HX/JJvJzsI79RB9zFN53x+QQHQoZHQegFNvb9viYSjl8JByi28QEmp2Bq0gyw</password>
     </com.cloudbees.jenkins.Credential>
   </credentials>
 </com.cloudbees.jenkins.GitHubPushTrigger_-DescriptorImpl>
