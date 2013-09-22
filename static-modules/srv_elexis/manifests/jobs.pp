@@ -39,7 +39,6 @@ class srv_elexis::jobs(
 ) inherits srv_elexis {
   require srv_elexis::config
 
-  ensure_packages['vnc4server']
   File {
     owner => 'jenkins',
     group => 'jenkins',
