@@ -1,12 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <hudson.plugins.rake.Rake_-RakeDescriptor plugin="rake@1.7.8">
-  <installations>
-    <hudson.plugins.rake.RubyInstallation>
-      <name>ruby-1.9.3-p392</name>
-      <path>/usr/local/jenkins/.rvm/rubies/ruby-1.9.3-p392/</path>
-    </hudson.plugins.rake.RubyInstallation>
-  </installations>
+  <installations/>
   <rvm>
-    <path>/usr/local/jenkins/.rvm/bin/rvm</path>
+    <path></path>
   </rvm>
 </hudson.plugins.rake.Rake_-RakeDescriptor>

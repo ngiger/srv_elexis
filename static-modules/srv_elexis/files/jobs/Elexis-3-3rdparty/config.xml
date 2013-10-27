@@ -1,7 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@1.530">
+<maven2-moduleset plugin="maven-plugin@1.509.3">
   <actions/>
-  <description></description>
+  <description>&lt;p&gt;Builds for upcoming Elexis 3.0.&lt;/p&gt;&#xd;
+&lt;h2&gt;Creates p2-update site &#xd;
+&lt;a  href=&quot;http://download.elexis.info/elexis.3rdparty.libraries/&quot;&gt;http://download.elexis.info/elexis.3rdparty.libraries/&lt;/a&gt;&#xd;
+&lt;/h2&gt;&#xd;
+&lt;p&gt;Only for developpers!&lt;/p&gt;&#xd;
+</description>
   <keepDependencies>false</keepDependencies>
   <properties/>
   <scm class="hudson.plugins.git.GitSCM" plugin="git@1.5.0">
@@ -46,8 +51,8 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>JDK7-u25</jdk>
-  <triggers>
+  <jdk>(Vorgabewert)</jdk>
+  <triggers class="vector">
     <hudson.triggers.SCMTrigger>
       <spec>H * * * *
 
@@ -61,7 +66,6 @@
     <artifactId>elexis.3rdparty.libraries.p2.site</artifactId>
   </rootModule>
   <goals>clean install p2:site</goals>
-  <mavenName>maven 3.0.4</mavenName>
   <aggregatorStyleBuild>true</aggregatorStyleBuild>
   <incrementalBuild>false</incrementalBuild>
   <perModuleEmail>true</perModuleEmail>
@@ -87,18 +91,16 @@
         <name>SUCCESS</name>
         <ordinal>0</ordinal>
         <color>BLUE</color>
-        <completeBuild>true</completeBuild>
       </threshold>
     </hudson.tasks.BuildTrigger>
   </publishers>
   <buildWrappers>
-    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.11">
-      <timeoutMinutes>10</timeoutMinutes>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.12">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>10</timeoutMinutes>
+      </strategy>
       <failBuild>false</failBuild>
       <writingDescription>false</writingDescription>
-      <timeoutPercentage>0</timeoutPercentage>
-      <timeoutType>absolute</timeoutType>
-      <timeoutMinutesElasticDefault>3</timeoutMinutesElasticDefault>
     </hudson.plugins.build__timeout.BuildTimeoutWrapper>
     <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.7"/>
   </buildWrappers>
@@ -107,11 +109,18 @@
       <command>echo PATH ist $PATH</command>
     </hudson.tasks.Shell>
   </prebuilders>
-  <postbuilders/>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>DEST=/home/jenkins/downloads/elexis.3rdparty.libraries
+rm -rf ${DEST}
+mkdir -p ${DEST}
+cp -rpu target/repository/* ${DEST}
+cp -pu index.html ${DEST}</command>
+    </hudson.tasks.Shell>
+  </postbuilders>
   <runPostStepsIfResult>
     <name>SUCCESS</name>
     <ordinal>0</ordinal>
     <color>BLUE</color>
-    <completeBuild>true</completeBuild>
   </runPostStepsIfResult>
 </maven2-moduleset>

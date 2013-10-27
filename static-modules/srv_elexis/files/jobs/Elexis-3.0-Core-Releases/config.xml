@@ -1,18 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <maven2-moduleset plugin="maven-plugin@1.509.3">
   <actions/>
-  <description>Alpha!!</description>
-  <logRotator class="hudson.tasks.LogRotator">
-    <daysToKeep>60</daysToKeep>
-    <numToKeep>10</numToKeep>
-    <artifactDaysToKeep>-1</artifactDaysToKeep>
-    <artifactNumToKeep>-1</artifactNumToKeep>
-  </logRotator>
+  <description>&lt;h2&gt;Creates p2 update site &lt;a  href=&quot;http://download.elexis.info/elexis.3.core/release&quot;&gt;http://download.elexis.info/elexis.3.core/release&lt;/a&gt;&lt;/h2&gt;&#xd;
+Builds for upcoming Elexis 3.0. Only for earyl testers!&#xd;
+&lt;br&gt;Builds must be manually requested to avoid overwriting the release repository when a tag is made&#xd;
+&lt;br&gt;Building offline to avoid problems with equinox</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.8">
       <projectUrl>https://github.com/elexis/elexis-3-core/</projectUrl>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>TAG_2_BUILD</name>
+          <description>Tag of the release to be built. Alpha0 cannot be built again as its pom.xml was in ch.elexis.core.releng</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Alpha1</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
   <scm class="hudson.plugins.git.GitSCM" plugin="git@1.5.0">
     <configVersion>2</configVersion>
@@ -25,7 +35,7 @@
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>**</name>
+        <name>release/${TAG_2_BUILD}</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <disableSubmodules>false</disableSubmodules>
@@ -51,31 +61,23 @@
     <includedRegions></includedRegions>
     <scmName></scmName>
   </scm>
-  <assignedNode>macosx.cocoa.x86_64</assignedNode>
+  <assignedNode>master</assignedNode>
   <canRoam>false</canRoam>
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>System-MACOSX</jdk>
-  <triggers class="vector">
-    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.8">
-      <spec></spec>
-    </com.cloudbees.jenkins.GitHubPushTrigger>
-    <hudson.triggers.SCMTrigger>
-      <spec>H * * * *</spec>
-      <ignorePostCommitHooks>false</ignorePostCommitHooks>
-    </hudson.triggers.SCMTrigger>
-  </triggers>
+  <jdk>JDK7-u40</jdk>
+  <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
   <rootModule>
     <groupId>ch.elexis</groupId>
     <artifactId>ch.elexis.core.releng</artifactId>
   </rootModule>
-  <goals>clean install</goals>
+  <goals>clean install -DforceContextQualifier=${TAG_2_BUILD} -Drepo_variant=release</goals>
   <aggregatorStyleBuild>true</aggregatorStyleBuild>
   <incrementalBuild>false</incrementalBuild>
   <perModuleEmail>true</perModuleEmail>
-  <ignoreUpstremChanges>false</ignoreUpstremChanges>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
   <archivingDisabled>false</archivingDisabled>
   <resolveDependencies>true</resolveDependencies>
   <processPlugins>false</processPlugins>
@@ -84,34 +86,51 @@
   <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
   <settings class="jenkins.mvn.DefaultSettingsProvider"/>
   <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
-  <reporters/>
+  <reporters>
+    <hudson.maven.reporters.MavenMailer>
+      <recipients>niklaus.giger@member.fsf.org</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+      <perModuleEmail>true</perModuleEmail>
+    </hudson.maven.reporters.MavenMailer>
+  </reporters>
   <publishers>
-    <hudson.tasks.BuildTrigger>
-      <childProjects>Elexis-3.0-MacOSX-jubula</childProjects>
-      <threshold>
-        <name>SUCCESS</name>
-        <ordinal>0</ordinal>
-        <color>BLUE</color>
-      </threshold>
-    </hudson.tasks.BuildTrigger>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>ch.elexis.core.p2site/target/repository/**,ch.elexis.core.p2site/target/products/*.zip</artifacts>
+      <latestOnly>false</latestOnly>
+      <allowEmptyArchive>false</allowEmptyArchive>
+    </hudson.tasks.ArtifactArchiver>
   </publishers>
   <buildWrappers>
     <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.12">
-      <strategy class="hudson.plugins.build_timeout.impl.ElasticTimeOutStrategy">
-        <timeoutPercentage>150</timeoutPercentage>
-        <numberOfBuilds>3</numberOfBuilds>
-        <timeoutMinutesElasticDefault>20</timeoutMinutesElasticDefault>
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>30</timeoutMinutes>
       </strategy>
-      <failBuild>false</failBuild>
-      <writingDescription>false</writingDescription>
+      <failBuild>true</failBuild>
+      <writingDescription>true</writingDescription>
     </hudson.plugins.build__timeout.BuildTimeoutWrapper>
     <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.7"/>
   </buildWrappers>
-  <prebuilders/>
-  <postbuilders/>
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>echo TAG_2_BUILD ${TAG_2_BUILD}
+echo GIT_BRANCH  ${GIT_BRANCH}
+which mvn
+mvn -version
+java -version</command>
+    </hudson.tasks.Shell>
+  </prebuilders>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>cp -rpvu ch.elexis.core.releng/download /home/jenkins/downloads/
+export ROOT=/home/jenkins/downloads/elexis.3.core
+ch.elexis.core.p2site/install_build.rb
+</command>
+    </hudson.tasks.Shell>
+  </postbuilders>
   <runPostStepsIfResult>
-    <name>FAILURE</name>
-    <ordinal>2</ordinal>
-    <color>RED</color>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
   </runPostStepsIfResult>
 </maven2-moduleset>

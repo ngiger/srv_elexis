@@ -8,34 +8,70 @@
   <mode>NORMAL</mode>
   <useSecurity>true</useSecurity>
   <authorizationStrategy class="hudson.security.ProjectMatrixAuthorizationStrategy">
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:niklaus</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:niklaus</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:niklaus</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:niklaus</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:niklaus</permission>
+    <permission>hudson.model.Computer.Configure:mdescher</permission>
     <permission>hudson.model.Computer.Configure:niklaus</permission>
+    <permission>hudson.model.Computer.Connect:anonymous</permission>
+    <permission>hudson.model.Computer.Connect:mdescher</permission>
     <permission>hudson.model.Computer.Connect:niklaus</permission>
+    <permission>hudson.model.Computer.Connect:slaves</permission>
+    <permission>hudson.model.Computer.Create:mdescher</permission>
     <permission>hudson.model.Computer.Create:niklaus</permission>
+    <permission>hudson.model.Computer.Delete:mdescher</permission>
     <permission>hudson.model.Computer.Delete:niklaus</permission>
+    <permission>hudson.model.Computer.Disconnect:mdescher</permission>
     <permission>hudson.model.Computer.Disconnect:niklaus</permission>
+    <permission>hudson.model.Computer.Disconnect:slaves</permission>
+    <permission>hudson.model.Hudson.Administer:mdescher</permission>
     <permission>hudson.model.Hudson.Administer:niklaus</permission>
+    <permission>hudson.model.Hudson.ConfigureUpdateCenter:mdescher</permission>
     <permission>hudson.model.Hudson.ConfigureUpdateCenter:niklaus</permission>
     <permission>hudson.model.Hudson.Read:anonymous</permission>
+    <permission>hudson.model.Hudson.Read:mdescher</permission>
     <permission>hudson.model.Hudson.Read:niklaus</permission>
+    <permission>hudson.model.Hudson.Read:slaves</permission>
+    <permission>hudson.model.Hudson.RunScripts:mdescher</permission>
     <permission>hudson.model.Hudson.RunScripts:niklaus</permission>
+    <permission>hudson.model.Hudson.UploadPlugins:mdescher</permission>
     <permission>hudson.model.Hudson.UploadPlugins:niklaus</permission>
+    <permission>hudson.model.Item.Build:mdescher</permission>
     <permission>hudson.model.Item.Build:niklaus</permission>
+    <permission>hudson.model.Item.Cancel:mdescher</permission>
     <permission>hudson.model.Item.Cancel:niklaus</permission>
+    <permission>hudson.model.Item.Configure:mdescher</permission>
     <permission>hudson.model.Item.Configure:niklaus</permission>
+    <permission>hudson.model.Item.Create:mdescher</permission>
     <permission>hudson.model.Item.Create:niklaus</permission>
+    <permission>hudson.model.Item.Delete:mdescher</permission>
     <permission>hudson.model.Item.Delete:niklaus</permission>
+    <permission>hudson.model.Item.Discover:mdescher</permission>
     <permission>hudson.model.Item.Discover:niklaus</permission>
-    <permission>hudson.model.Item.Read:anonymous</permission>
+    <permission>hudson.model.Item.Read:mdescher</permission>
     <permission>hudson.model.Item.Read:niklaus</permission>
-    <permission>hudson.model.Item.Workspace:anonymous</permission>
+    <permission>hudson.model.Item.Workspace:mdescher</permission>
     <permission>hudson.model.Item.Workspace:niklaus</permission>
+    <permission>hudson.model.Run.Delete:mdescher</permission>
     <permission>hudson.model.Run.Delete:niklaus</permission>
+    <permission>hudson.model.Run.Update:mdescher</permission>
     <permission>hudson.model.Run.Update:niklaus</permission>
+    <permission>hudson.model.View.Configure:mdescher</permission>
     <permission>hudson.model.View.Configure:niklaus</permission>
+    <permission>hudson.model.View.Create:mdescher</permission>
     <permission>hudson.model.View.Create:niklaus</permission>
+    <permission>hudson.model.View.Delete:mdescher</permission>
     <permission>hudson.model.View.Delete:niklaus</permission>
-    <permission>hudson.model.View.Read:anonymous</permission>
+    <permission>hudson.model.View.Read:mdescher</permission>
     <permission>hudson.model.View.Read:niklaus</permission>
+    <permission>hudson.scm.SCM.Tag:mdescher</permission>
     <permission>hudson.scm.SCM.Tag:niklaus</permission>
   </authorizationStrategy>
   <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
@@ -68,6 +104,25 @@ Danke an Medelexis für den Build-Server!&#xd;
         </hudson.tools.InstallSourceProperty>
       </properties>
     </jdk>
+    <jdk>
+      <name>JDK6-u45</name>
+      <home></home>
+      <properties>
+        <hudson.tools.InstallSourceProperty>
+          <installers>
+            <hudson.tools.JDKInstaller>
+              <id>jdk-6u45-oth-JPR</id>
+              <acceptLicense>true</acceptLicense>
+            </hudson.tools.JDKInstaller>
+          </installers>
+        </hudson.tools.InstallSourceProperty>
+      </properties>
+    </jdk>
+    <jdk>
+      <name>System-MACOSX</name>
+      <home>/Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home</home>
+      <properties/>
+    </jdk>
   </jdks>
   <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
@@ -82,9 +137,31 @@ Danke an Medelexis für den Build-Server!&#xd;
       <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
       <launcher class="hudson.slaves.JNLPLauncher"/>
       <label>win32.win32.x86</label>
-      <nodeProperties>
-        <hudson.plugins.xvnc.NodePropertyImpl plugin="xvnc@1.14"/>
-      </nodeProperties>
+      <nodeProperties/>
+      <userId>niklaus</userId>
+    </slave>
+    <slave>
+      <name>Linux-64-bit</name>
+      <description></description>
+      <remoteFS>/opt/ci</remoteFS>
+      <numExecutors>1</numExecutors>
+      <mode>EXCLUSIVE</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.slaves.JNLPLauncher"/>
+      <label>linux.gtk.x86_64</label>
+      <nodeProperties/>
+      <userId>niklaus</userId>
+    </slave>
+    <slave>
+      <name>MacOSX-64-bit</name>
+      <description>Slave für Jubula GUI-Builds</description>
+      <remoteFS>/opt/ci</remoteFS>
+      <numExecutors>1</numExecutors>
+      <mode>EXCLUSIVE</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.slaves.JNLPLauncher"/>
+      <label>macosx.cocoa.x86_64</label>
+      <nodeProperties/>
       <userId>niklaus</userId>
     </slave>
   </slaves>
@@ -94,6 +171,11 @@ Danke an Medelexis für den Build-Server!&#xd;
     <hudson.model.AllView>
       <owner class="hudson" reference="../../.."/>
       <name>Alle</name>
+      <description>&lt;h1&gt;Continuos Integration für Elexis 3&lt;/h1&gt;&#xd;
+&#xd;
+Danke an Medelexis für den Build-Server!&#xd;
+&#xd;
+</description>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
@@ -122,7 +204,7 @@ Danke an Medelexis für den Build-Server!&#xd;
     </listView>
   </views>
   <primaryView>Alle</primaryView>
-  <slaveAgentPort>8753</slaveAgentPort>
+  <slaveAgentPort>8752</slaveAgentPort>
   <label></label>
   <nodeProperties/>
   <globalNodeProperties/>

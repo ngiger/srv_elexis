@@ -9,24 +9,73 @@
     <artifactNumToKeep>-1</artifactNumToKeep>
   </logRotator>
   <keepDependencies>false</keepDependencies>
-  <properties/>
-  <scm class="hudson.scm.NullSCM"/>
-  <assignedNode>master</assignedNode>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.8">
+      <projectUrl>https://github.com/elexis/elexis-3-core/</projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@1.5.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name></name>
+        <refspec></refspec>
+        <url>https://github.com/elexis/elexis-3-core/</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>**</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <disableSubmodules>false</disableSubmodules>
+    <recursiveSubmodules>false</recursiveSubmodules>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <authorOrCommitter>false</authorOrCommitter>
+    <clean>false</clean>
+    <wipeOutWorkspace>false</wipeOutWorkspace>
+    <pruneBranches>false</pruneBranches>
+    <remotePoll>false</remotePoll>
+    <ignoreNotifyCommit>false</ignoreNotifyCommit>
+    <useShallowClone>false</useShallowClone>
+    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
+    <gitTool>Default</gitTool>
+    <submoduleCfg class="list"/>
+    <relativeTargetDir></relativeTargetDir>
+    <reference></reference>
+    <excludedRegions></excludedRegions>
+    <excludedUsers></excludedUsers>
+    <gitConfigName></gitConfigName>
+    <gitConfigEmail></gitConfigEmail>
+    <skipTag>false</skipTag>
+    <includedRegions></includedRegions>
+    <scmName></scmName>
+  </scm>
+  <assignedNode>Linux-64-bit</assignedNode>
   <canRoam>false</canRoam>
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>JDK7-u40</jdk>
   <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
   <customWorkspace>$JENKINS_HOME/jobs/Elexis-3.0-Core/workspace</customWorkspace>
   <builders>
+    <hudson.tasks.Maven>
+      <targets>clean install</targets>
+      <mavenName>3.0.5</mavenName>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+    </hudson.tasks.Maven>
     <hudson.tasks.Shell>
-      <command>cd ch.elexis.core.releng/jubula
+      <command>echo PATH ist $PATH
+java -version
+cd ch.elexis.core.releng/jubula
 # we assume that system ruby is 1.9 and that the gems xml-simple rubyzip are installed
 which java &amp;&amp; java -version
 ruby -v
-ruby run_jenkins.rb
-</command>
+ruby run_jenkins.rb</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
@@ -48,7 +97,7 @@ ruby run_jenkins.rb
     <org.jenkinsci.plugins.xvfb.XvfbBuildWrapper plugin="xvfb@1.0.8">
       <installationName>System</installationName>
       <screen>1024x768x24</screen>
-      <debug>false</debug>
+      <debug>true</debug>
       <timeout>0</timeout>
       <displayNameOffset>1</displayNameOffset>
       <additionalOptions></additionalOptions>

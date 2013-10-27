@@ -42,6 +42,6 @@ class srv_elexis::vnc_client  inherits srv_elexis {
   # * an X-Server (vnc4server)
   # * some method to create a snapshot (imagemagick)
   # * a X-Window manager (fvwm)
-  package { ['imagemagick', 'fvwm', 'vnc4server']: ensure => installed, }
+  package { ['eclipse-rcp', 'imagemagick', 'fvwm', 'vnc4server']: ensure => installed, }
 
 }

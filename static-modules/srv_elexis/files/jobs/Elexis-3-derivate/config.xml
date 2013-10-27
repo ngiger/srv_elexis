@@ -51,6 +51,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Vorgabewert)</jdk>
   <triggers class="vector">
     <hudson.triggers.SCMTrigger>
       <spec>@daily</spec>
@@ -87,10 +88,11 @@
   <prebuilders/>
   <postbuilders>
     <hudson.tasks.Shell>
-      <command>export dest=${JENKINS_HOME}/userContent/elexis_derivate
-rm -rf ${dest}
-mkdir ${dest}
-cp -rpv org.elexis_derivate.application.product/target/repository/* ${dest}</command>
+      <command>export ROOT=/home/jenkins/downloads/elexis.3.derivate
+cd org.elexis_derivate.application.product
+rm -f install_build.rb
+wget https://raw.github.com/elexis/elexis-3-core/release/Alpha0/ch.elexis.core.p2site/install_build.rb
+ruby install_build.rb</command>
     </hudson.tasks.Shell>
   </postbuilders>
   <runPostStepsIfResult>
