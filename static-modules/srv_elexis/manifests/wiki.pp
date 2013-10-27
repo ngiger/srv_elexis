@@ -40,6 +40,8 @@ class srv_elexis::wiki(
   $elexis_wiki_server = "srv.ngiger.dyndns.org" 
 ) inherits srv_elexis {
   
+  $wiki_root = '/var/lib/mediawiki' # Debian default
+  
   # We did not use the puppet module 
   #  * from souza because it is old and created havoc (imported images not displayed correctly, extension not correctly
   #  * from martasd because it failed because it wanted apache2-mpm-worker installed and I was unable to configure the puppet apache to fullfill this requres
@@ -79,15 +81,15 @@ class srv_elexis::wiki(
     content => template("srv_elexis/LocalSettings.php.erb"),
   }
     
-  # http://www.mediawiki.org/wiki/Manual:Running_MediaWiki_on_Debian_GNU/Linux ln -s /var/lib/mediawiki /var/www
-  file { '/var/www/mediawiki':
+  # http://www.mediawiki.org/wiki/Manual:Running_MediaWiki_on_Debian_GNU/Linux
+  file { "$wiki_root":
     ensure  => link,
-    target  => '/var/lib/mediawiki',
+    target  => "$wiki_root",
     require => Package['mediawiki'],
   }  
   
   # Als Logo für Elexis
-  file { '/var/www/elexis_135.png':
+  file { "$wiki_root/elexis_135.png":
     ensure => present,
     content => 'puppet:///modules/srv_elexis/elexis_135.png',
     require => Package['mediawiki'],
@@ -105,12 +107,12 @@ class srv_elexis::wiki(
   }
 
   if (false) {
-    file { '/var/lib/mediawiki//extensioNewestPages/':
+    file { "$wiki_root/extensioNewestPages/":
       ensure  => link,
       target  => '/usr/share/mediawiki-extensions/base/NewestPages/',
       require => File['/etc/nginx/sites-available/elexis_wiki'],
     }
-    file { '/var/lib/mediawiki//LanguageSelector/':
+    file { "$wiki_root/LanguageSelector/":
       ensure  => link,
       target  => '/usr/share/mediawiki-extensions/base/LanguageSelector/',
       require => File['/etc/nginx/sites-available/elexis_wiki'],
