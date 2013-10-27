@@ -1,0 +1,53 @@
+h2. Setup MediaWiki for Elexis
+
+It was impossible (given the limited time budget) to setup up Mediwiki using only puppet.
+We describe here therefore why and what we could setup using puppet and what manual steps were needed.
+
+h2. Setup via puppet
+
+Puppet is reponsible for installing
+
+* Mediwiki with the following helpers and extensions
+** mediawiki-extensions
+** imagemagick
+** clamav (Anti-Virus)
+** php5
+** php5-fpm (Cache for PHP5)
+** php-apc (Cache for PHP5)
+** php5-gd (for uploading images)
+** nginx (Http-Server)
+** mysql (DB-Server)
+*** Database for MediaWiki: elexis_wiki
+
+I used http://www.howtoforge.com/installing-nginx-with-php5-and-php-fpm-and-mysql-support-lemp-on-debian-wheezy to resolve these issues.
+
+
+h2. Configuration of mediwiki
+
+Nginx: Needs /etc/nginx/sites-enabled/elexis_wiki. Based on http://wiki.nginx.org/MediaWiki
+Other example would be http://www.mediawiki.org/wiki/Manual:Short_URL/Page_title_-_nginx,_Root_Access,_PHP_as_a_CGI_module
+
+I found no way that MediaWiki works correctly if you just place a LocalSettings.php into /etc/mediawiki. Therefore one has to to it manually.
+Screenshots are found here.
+
+Compare your LocalSettings.php after installation to /etc/mediawiki/LocalSettings.php.soll!
+
+Following changes are important.
+* Use DE as language
+* enable upload of images 
+* enable ShortURL (Needs some changes in /etc/nginx/sites-enabled/elexis_wiki). See also http://www.mediawiki.org/wiki/Manual:Short_URL
+
+h2. Initial fill of Elexis_Wiki
+
+The initial content was loaded using https://raw.github.com/wiki/elexis/doc_de/create_mediawiki_import.rb
+
+h2. TODO
+
+* More languages
+* Various versions of elexis
+* Create books (siehe http://www.mediawiki.org/wiki/Extension:Collection)
+* Improve import script for categories!
+* Liber/OpenOffice Wiki Publisher  benutzen. http://www.libreoffice.org/features/extensions.
+** Siehe http://www.textheld.de/2011/10/21/libreoffice-oder-openoffice-fr-wiki-betrge-nutzen/
+* Use  https://github.com/kenpratt/wikipedia-client to verify tags, etc
+

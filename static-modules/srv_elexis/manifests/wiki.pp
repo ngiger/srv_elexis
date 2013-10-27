@@ -1,4 +1,4 @@
-# == Class: srv_elexis
+  # == Class: srv_elexis
 #
 # Full description of class srv_elexis here.
 #
@@ -36,47 +36,107 @@
 # Copyright 2013 Niklaus Giger <niklaus.giger@member.fsf.org>
 #
 class srv_elexis::wiki(
+#  $elexis_wiki_server = "wiki.elexis.info" 
+  $elexis_wiki_server = "srv.ngiger.dyndns.org" 
 ) inherits srv_elexis {
-# class { 'apache': mpm_module => 'prefork', }
-    class { 'apache':
-      default_vhost => false,
+  
+  # We did not use the puppet module 
+  #  * from souza because it is old and created havoc (imported images not displayed correctly, extension not correctly
+  #  * from martasd because it failed because it wanted apache2-mpm-worker installed and I was unable to configure the puppet apache to fullfill this requres
+  # Therefore going for our own.
+  
+  # missing sudo ln -s /usr/share/mediawiki/mw-config/ /var/lib/mediawiki//mw-configuration
+  # setup
+  # missing APC, XCache oder WinCache, e.g. sudo apt-get install php5-xcache
+  # MySQL-DB angelegt elexis_wiki, elexis/elexisTest Verbindung abgelehnt
+  #  ln -s /usr/share/mediawiki-extensions/base/NewestPages/ /var/lib/mediawiki//extensions
+  #  ln -s /usr/share/mediawiki-extensions/base/LanguageSelector/ /var/lib/mediawiki//extensions
+  # oder sudo mwenext NewestPages.php
+  # oder sudo mwenext LanguageSelector.php
+  # Added some content to mainpage
+  # To import see http://www.mediawiki.org/wiki/Manual:Importing_XML_dumps
+  # php /usr/share/mediawiki/maintenance/importDump.php  --conf LocalSettings.php dumpfile.xml.gz wikidb
+  # After running importDump.php, you may want to run rebuildrecentchanges.php in order to update the content of your Special:Recentchanges page.$
+  # php importImages.php ../path_to/images
+  # TODO: php5-fpm fix fastcgi_pass unix:/var/run/php5-fpm.sock; ??
+  # TODO: use php-apc instead of xcache
+  # http://www.howtoforge.com/installing-nginx-with-php5-and-php-fpm-and-mysql-support-lemp-on-debian-wheezy-p2
+  # https://github.com/kenpratt/wikipedia-client
+
+  class { 'mysql': } # client
+  class { 'mysql::server':
+    config_hash => {
+    'root_password' => 'foo',
+    'default_engine' => "innodb",
     }
-
-
-#    apache::mod { 'mpm_module': => false }
-# see http://puppetlabs.com/blog/module-of-the-week-martasd-mediawiki
-  class { 'mediawiki': 
-    server_name => "$fqdn", 
-    admin_email => 'niklaus.giger@member.fsf.org', 
-    db_root_password => 'really_really_long_password', 
-    tarball_url => 'http://download.wikimedia.org/mediawiki/1.17/mediawiki-1.17.0.tar.gz', 
-    doc_root => '/var/www/wiki',
-    max_memory => '1024',
+  }
+      
+  ensure_packages['php5-gd', 'mediawiki', 'mediawiki-extensions', 'mediawiki-extensions-collection', 'clamav', 'php-apc']
+  # package{'imagemagick': ensure => absent, } # I want to use php5-gd
+  # config http://www.myserver.org/mediawiki/mw-config/index.php
+  if ($memorysize_mb > 4000) {
+    class { 'memcached':
+      max_memory => 2048,
+    }
+  } else {
+    class { 'memcached':
+      max_memory => "25%",
+    } 
   }
   
-  mediawiki::instance { 'my_wiki1': 
-    server_name => "$fqdn", 
-    db_password => 'really_long_password', 
-    db_name => 'wiki1', 
-    db_user => 'wiki1_user', 
-    port => '81', 
-    ensure => 'present' 
-  } 
+  file { '/etc/mediawiki/LocalSettings.php.soll':
+    ensure => present,
+    content => template("srv_elexis/LocalSettings.php.erb"),
+  }
+    
+  # http://www.mediawiki.org/wiki/Manual:Running_MediaWiki_on_Debian_GNU/Linux ln -s /var/lib/mediawiki /var/www
+  file { '/var/www/mediawiki':
+    ensure  => link,
+    target  => '/var/lib/mediawiki',
+    require => Package['mediawiki'],
+  }  
   
-  file { '/var/www': 
-    ensure => 'directory', 
-    owner => 'root', 
-    group => 'root',
-    mode => '0755', 
+  # Als Logo für Elexis
+  file { '/var/www/elexis_135.png':
+    ensure => present,
+    content => 'puppet:///modules/srv_elexis/elexis_135.png',
+    require => Package['mediawiki'],
+  }
+  
+  file { '/etc/nginx/sites-available/elexis_wiki':
+    ensure => present,
+    content => template("srv_elexis/nginx_elexis_wiki.erb"),
+    require => Package['mediawiki'],
+  }
+  file { '/etc/nginx/sites-enabled/elexis_wiki':
+    ensure  => link,
+    target  => '/etc/nginx/sites-available/elexis_wiki',
+    require => File['/etc/nginx/sites-available/elexis_wiki'],
   }
 
-  file { '/var/www/wiki': 
-    ensure => 'directory', 
-    owner => 'root', 
-    group => 'root',
-    mode => '0755', 
+  if (false) {
+    file { '/var/lib/mediawiki//extensioNewestPages/':
+      ensure  => link,
+      target  => '/usr/share/mediawiki-extensions/base/NewestPages/',
+      require => File['/etc/nginx/sites-available/elexis_wiki'],
+    }
+    file { '/var/lib/mediawiki//LanguageSelector/':
+      ensure  => link,
+      target  => '/usr/share/mediawiki-extensions/base/LanguageSelector/',
+      require => File['/etc/nginx/sites-available/elexis_wiki'],
+    }
   }
-
-# - See more at: http://puppetlabs.com/blog/module-of-the-week-martasd-mediawiki#sthash.PNaM8Oya.dpuf}
-
+    
+  mysql::db { 'elexis_wiki':
+    user     => 'elexis',
+    password => 'elexisTest',
+    host     => 'localhost',
+    grant    => ['all'],
+    # default charset is 'utf8',
+  }
+  class { 'mysql::backup':
+    backupuser     => 'elexis',
+    backuppassword => 'elexisTest',
+    backupdir      => '/tmp/backups',
+  }  
 }
