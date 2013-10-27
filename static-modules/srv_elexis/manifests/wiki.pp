@@ -82,12 +82,6 @@ class srv_elexis::wiki(
   }
     
   # http://www.mediawiki.org/wiki/Manual:Running_MediaWiki_on_Debian_GNU/Linux
-  file { "$wiki_root":
-    ensure  => link,
-    target  => "$wiki_root",
-    require => Package['mediawiki'],
-  }  
-  
   # Als Logo für Elexis
   file { "$wiki_root/elexis_135.png":
     ensure => present,

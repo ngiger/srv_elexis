@@ -44,10 +44,10 @@ class srv_elexis {
     class {'srv_elexis::config': jenkins_root => '/var/lib/jenkins', }
   }
   
-  $managed_note = 'Managed by puppet via project repo https://github.com/ngiger/srv_elexis)'
+  $managed_note = 'Managed by puppet via project repo https://github.com/ngiger/srv_elexis'
   
   ensure_packages['git', 'unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh',
-                  'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo']
+                  'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'nginx']
   
   if ($hostname == 'srv') {
     class {'jenkins': 
@@ -57,11 +57,12 @@ class srv_elexis {
         'dummy' => { 'value' => "# $managed_note" }, 
         'AJP_PORT' => { 'value' => "-1" }, 
         'PREFIX'   => { 'value' => '/jenkins' },
-        'JAVA_ARGS' => { 'value' => '-Djava.awt.headless=true -Xrs -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=2048m  -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/jenkins/memory.dump ' },
+        'JAVA_ARGS' => { 'value' => '-Djava.io.tmpdir=$srv_elexis::config::jenkins_root/tmp -Djava.awt.headless=true -Xrs -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=2048m  -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/jenkins/memory.dump ' },
         'JENKINS_ARGS' => { 'value' => '--webroot=/var/cache/jenkins/war --httpPort=$HTTP_PORT --prefix=$PREFIX --ajp13Port=$AJP_PORT' },
       }  
     }
     
+    # The name of the plugin can be found here https://updates.jenkins-ci.org/download/plugins/
     $jenkins_plugins = [
       'build-timeout',
       'compact-columns',
@@ -84,6 +85,7 @@ class srv_elexis {
       'ruby',
       'rvm',
       'rake',
+      'role-stratey',
       'subversion',
       'thinBackup',
       'timestamper',
@@ -110,25 +112,6 @@ class srv_elexis {
   user{'jenkins':
     ensure => present,
     home   => "$srv_elexis::config::jenkins_root",
-  }
-  
-  if (false) { # We just instal the two gem needed for jubula into the system
-    single_user_rvm::install { 'jenkins':
-      home => "$srv_elexis::config::jenkins_root",
-      require => [
-                  # File["$home_rvm"],
-                  Package['jenkins'], 
-                  ],
-    }
-    single_user_rvm::install_ruby { 'ruby-1.9.3-p392': 
-      user => 'jenkins',
-      home => "$srv_elexis::config::jenkins_root",
-      require => Single_user_rvm::Install['jenkins'],
-    }
-  }
-  package { ['xml-simple', 'rubyzip']:
-    provider => gem,
-    ensure => present,
   }
   
   file {'/etc/gitconfig':
@@ -195,7 +178,28 @@ server {
     client_body_buffer_size 128k;
 
   }
-}",  require => Package['nginx'],
+}
+",  require => Package['nginx'],
+    owner => root,
+    group => root,
+    notify => Service['nginx'],
+  }
+  file {          "/etc/nginx/sites-enabled/download.elexis.info":
+    target => "/etc/nginx/sites-available/download.elexis.info",
+    ensure => link,
+    owner => root,
+    group => root,
+  }
+  file { "/etc/nginx/sites-available/download.elexis.info":
+  content => "# $managed_note
+server {
+  listen 80;
+  server_name  download.elexis.info;
+  root /home/jenkins/downloads;
+  autoindex on;
+  allow all;
+}
+",  require => Package['nginx'],
     owner => root,
     group => root,
     notify => Service['nginx'],
@@ -221,15 +225,4 @@ server {
     unless  => "update-alternatives --display editor --quiet | grep currently | grep ${editor_default}"
   }
   
-  $jubulaInstaller = "${srv_elexis::config::jenkins_root}/cache/installer-jubula_linux-gtk-x86_64.sh"
-  file { "${srv_elexis::config::jenkins_root}/cache":
-    ensure => directory,
-    require => Package[jenkins],
-  }
-  exec { "get_jubula":
-    creates => $jubulaInstaller,
-    command => '/usr/bin/curl --remote-name http://ftp.medelexis.ch/downloads_opensource/jubula/2.1/installer-jubula_linux-gtk-x86_64.sh',
-    cwd     => "${srv_elexis::config::jenkins_root}/cache",
-    require => Package['curl'],
-  }
 }

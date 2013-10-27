@@ -1,7 +1,6 @@
-# Managed by puppet
+# <%= scope.lookupvar('managed_note') %>;
 # NGINX configuration for Elexis-Wiki
 # Content based on content from http://wiki.nginx.org/MediaWiki
-# xxx
 server {
         server_name <%= scope.lookupvar('elexis_wiki_server') %>;
         root /var/lib/mediawiki;
