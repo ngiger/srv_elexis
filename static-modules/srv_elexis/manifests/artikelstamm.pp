@@ -46,16 +46,16 @@ class srv_elexis::artikelstamm(
   ensure_packages['php5', 'php5-fpm']
   
   # Geht noch nach /etc/html/artikelstamm anstelle von /var/www
-  file { '/etc/nginx/sites-available/artikelstamm':
+  file { '/etc/nginx/sites-available/artikelstamm.elexis.info':
     ensure => present,
     content => template("srv_elexis/nginx_artikelstamm.erb"),
     require => Package['nginx'],
   }
 
-  file { '/etc/nginx/sites-enabled/artikelstamm':
+  file { '/etc/nginx/sites-enabled/artikelstamm.elexis.info':
     ensure  => link,
-    target  => '/etc/nginx/sites-available/artikelstamm',
-    require => File['/etc/nginx/sites-available/artikelstamm'],
+    target  => '/etc/nginx/sites-available/artikelstamm.elexis.info',
+    require => File['/etc/nginx/sites-available/artikelstamm.elexis.info'],
   }
   
 }
