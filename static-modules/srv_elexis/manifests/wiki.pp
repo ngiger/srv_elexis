@@ -73,16 +73,6 @@ class srv_elexis::wiki(
       
   ensure_packages['php5-gd', 'mediawiki', 'mediawiki-extensions', 'mediawiki-extensions-collection', 'clamav', 'php-apc']
   # package{'imagemagick': ensure => absent, } # I want to use php5-gd
-  # config http://www.myserver.org/mediawiki/mw-config/index.php
-  if ($memorysize_mb > 4000) {
-    class { 'memcached':
-      max_memory => 2048,
-    }
-  } else {
-    class { 'memcached':
-      max_memory => "25%",
-    } 
-  }
   
   file { '/etc/mediawiki/LocalSettings.php.soll':
     ensure => present,
