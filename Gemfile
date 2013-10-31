@@ -4,4 +4,4 @@ gem "vagrant", github: "mitchellh/vagrant", :tag => 'v1.3.3'
 # gem 'librarian-puppet-maestrodev' # better than 
 gem 'librarian-puppet'
 gem 'puppet'
-
+# gem 'wikipedia-client'

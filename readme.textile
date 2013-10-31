@@ -69,3 +69,8 @@ h3. TODO:
 # Global maven options -Xmx512m -XX:MaxPermSize=128m
 # Jenkins URL https://srv.elexis.info:443/jenkins/ ?? Certificate?
 
+h2. Elexis-Wiki Setup
+
+See doc/wiki_readme.textile
+
+

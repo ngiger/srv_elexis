@@ -42,6 +42,11 @@ class srv_elexis::vnc_client  inherits srv_elexis {
   # * an X-Server (vnc4server)
   # * some method to create a snapshot (imagemagick)
   # * a X-Window manager (fvwm)
-  package { ['eclipse-rcp', 'imagemagick', 'fvwm', 'vnc4server']: ensure => installed, }
+  package { ['imagemagick', 'fvwm', 'vnc4server']: ensure => installed, }
 
+  # needed ia32-libs-gtk
+  # eclipse ??
+  # 
+# TODO: Jubula needs a 32-bit Java (and a 32-bit Elexis)
+# TODO: 32-bit java, eg. sudo apt-get install openjdk-6-jdk:i386 openjdk-6-jre-headless:i386
 }

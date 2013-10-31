@@ -6,7 +6,7 @@ mod "jenkins",
   :git => 'https://github.com/ngiger/puppet-jenkins.git' # with a patch from me to support installation into JENKINS_HOME
 #  :path => './static-modules/puppet-jenkins' # for testing the patch
 
-# mod 'martasd/mediawiki'
+#mod 'martasd/mediawiki'
   # :git => 'git://github.com/martasd/puppet-mediawiki.git'
 #   :path => './static-modules/puppet-mediawiki'
 # dependency 'puppetlabs/apache', '>= 0.4.0'
@@ -14,10 +14,12 @@ mod "jenkins",
 # dependency 'saz/memcached', '>= 2.0.0'
 # dependency 'puppetlabs/stdlib', '>= 3.0.0' 
 
-mod "puppetlabs/apache"
+mod 'carlasouza/mediawiki'
 mod "puppetlabs/mysql"
+
+# mod "puppetlabs/apache"
 mod "saz/memcached"
-mod "puppetlabs/stdlib"
+# mod "puppetlabs/stdlib"
 
 mod "apt",
   :git => "git://github.com/puppetlabs/puppetlabs-apt.git"
@@ -26,7 +28,8 @@ mod "apt",
 #  :git => "git://github.com/puppetlabs/puppetlabs-stdlib.git"
 
 mod 'single_user_rvm',
-  :git => 'https://github.com/ngiger/puppet-single_user_rvm.git' # with a patch from me
+  :git => 'https://github.com/eirc/puppet-single_user_rvm.git' # with a patch from me
+#  :git => 'https://github.com/ngiger/puppet-single_user_rvm.git' # with a patch from me
 #  :path => './static-modules/puppet-single_user_rvm' # for testing the patch
   
 mod 'srv_elexis',     :path => './static-modules/srv_elexis'

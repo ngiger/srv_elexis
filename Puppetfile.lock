@@ -1,12 +1,9 @@
 FORGE
   remote: http://forge.puppetlabs.com
   specs:
-    puppetlabs/apache (0.9.0)
-      puppetlabs/concat (>= 1.0.0)
-      puppetlabs/stdlib (>= 2.4.0)
+    carlasouza/mediawiki (1.0.0)
     puppetlabs/apt (1.3.0)
       puppetlabs/stdlib (>= 2.2.1)
-    puppetlabs/concat (1.0.0)
     puppetlabs/mysql (0.9.0)
       puppetlabs/stdlib (>= 2.2.1)
     puppetlabs/stdlib (4.1.0)
@@ -21,6 +18,13 @@ GIT
       puppetlabs/stdlib (>= 2.2.1)
 
 GIT
+  remote: https://github.com/eirc/puppet-single_user_rvm.git
+  ref: master
+  sha: 3087bc29394d2198d438d787fd7eb3e59bd30aa3
+  specs:
+    single_user_rvm (0.2.0)
+
+GIT
   remote: https://github.com/ngiger/puppet-jenkins.git
   ref: master
   sha: 80c036a10b455365c6bd2eb0e1ca929b55f44b8e
@@ -29,13 +33,6 @@ GIT
       puppetlabs/apt (>= 0.0.3)
       puppetlabs/stdlib (>= 2.0.0)
 
-GIT
-  remote: https://github.com/ngiger/puppet-single_user_rvm.git
-  ref: master
-  sha: 22c1b6b1544dad860d0d72b4a455427838d7252e
-  specs:
-    single_user_rvm (0.1.0)
-
 PATH
   remote: ./static-modules/srv_elexis
   specs:
@@ -43,10 +40,9 @@ PATH
 
 DEPENDENCIES
   apt (>= 0)
+  carlasouza/mediawiki (>= 0)
   jenkins (>= 0)
-  puppetlabs/apache (>= 0)
   puppetlabs/mysql (>= 0)
-  puppetlabs/stdlib (>= 0)
   saz/memcached (>= 0)
   single_user_rvm (>= 0)
   srv_elexis (>= 0)

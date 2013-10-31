@@ -28,9 +28,6 @@ $wgSitename      = "Elexis-Wiki";
 $wgScriptPath       = "";
 $wgScriptExtension  = ".php";
 
-$wgArticlePath = "/$1";
-$wgUsePathInfo = true;
-
 ## The protocol and server name to use in fully-qualified URLs
 $wgServer           = "http://<%= scope.lookupvar('elexis_wiki_server') %>";
 
@@ -39,7 +36,7 @@ $wgStylePath        = "$wgScriptPath/skins";
 
 ## The relative URL path to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
-$wgLogo             = "$wgStylePath/common/images/wiki.png";
+$wgLogo             = "/elexis_135.png";
 
 ## UPO means: this is also a user preference option
 
@@ -154,3 +151,7 @@ require_once( "$IP/extensions/WikiEditor/WikiEditor.php" );
 # Add more configuration options below.
 
 
+
+$wgScriptPath       = "";
+$wgArticlePath      = "/$1";
+$wgUsePathInfo      = true;

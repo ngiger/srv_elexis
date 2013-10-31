@@ -51,3 +51,5 @@ h2. TODO
 ** Siehe http://www.textheld.de/2011/10/21/libreoffice-oder-openoffice-fr-wiki-betrge-nutzen/
 * Use  https://github.com/kenpratt/wikipedia-client to verify tags, etc
 
+# F@d9J52azXn6
+admin@elexis.info  als admin email
