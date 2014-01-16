@@ -47,7 +47,7 @@ class srv_elexis {
   $managed_note = 'Managed by puppet via project repo https://github.com/ngiger/srv_elexis'
   
   ensure_packages['git', 'unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh',
-                  'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'nginx']
+                  'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'nginx', 'postgresql', 'wget']
   
   if ($hostname == 'srv') {
     class {'jenkins': 
@@ -112,6 +112,22 @@ class srv_elexis {
   user{'jenkins':
     ensure => present,
     home   => "$srv_elexis::config::jenkins_root",
+  }
+  
+  exec{'/usr/local/bin/cleanup_snapshots.rb':
+    command => "/usr/bin/wget https://raw2.github.com/elexis/elexis-3-core/f1a114847b8753ef5b179712be27d25783065e8c/ch.elexis.core.p2site/cleanup_snapshots.rb && /bin/chmod +x cleanup_snapshots.rb",
+    require => Package['wget'],
+    cwd => '/usr/local/bin/',
+    creates => '/usr/local/bin/cleanup_snapshots.rb',
+  }
+  
+  cron { 'cleanup_snapshots':
+    ensure  => $ensure,
+    command => 'P2_ROOT=/home/jenkins/downloads /usr/local/bin/cleanup_snapshots.rb &> /var/log/cleanup_snapshots.log',
+    user    => 'root',
+    hour    => 1,
+    minute  => 5,
+    require => Exec['/usr/local/bin/cleanup_snapshots.rb'],
   }
   
   file {'/etc/gitconfig':
