@@ -15,7 +15,8 @@ mod "jenkins",
 # dependency 'puppetlabs/stdlib', '>= 3.0.0' 
 
 mod 'carlasouza/mediawiki'
-mod "puppetlabs/mysql"
+mod "puppetlabs/mysql", :git => 'https://github.com/puppetlabs/puppetlabs-mysql.git'
+mod 'rodjek/logrotate'
 
 # mod "puppetlabs/apache"
 mod "saz/memcached"
