@@ -1,4 +1,6 @@
-  # == Class: srv_elexis
+# vi: set ft=ruby :
+# kate: replace-tabs on; indent-width 2; indent-mode cstyle; syntax ruby
+# == Class: srv_elexis
 #
 # Full description of class srv_elexis here.
 #
@@ -65,14 +67,14 @@ class srv_elexis::wiki(
   # http://www.howtoforge.com/installing-nginx-with-php5-and-php-fpm-and-mysql-support-lemp-on-debian-wheezy-p2
   # https://github.com/kenpratt/wikipedia-client
 
-  class { 'mysql': } # client
-  class { 'mysql::server':
-    config_hash => {
-    'root_password' => 'foo',
-    'default_engine' => "innodb",
+  class { '::mysql::server':
+    root_password    => 'foo',
+    override_options => { 'mysqld' => { 'max_connections' => '1024' },
+        'default_engine' => "innodb",
     }
   }
-      
+  class { 'mysql::client': }
+  
   ensure_packages['php5-gd', 'mediawiki', 'mediawiki-extensions', 'mediawiki-extensions-collection', 'clamav', 'php-apc']
   # package{'imagemagick': ensure => absent, } # I want to use php5-gd
   
@@ -120,9 +122,28 @@ class srv_elexis::wiki(
     grant    => ['all'],
     # default charset is 'utf8',
   }
-  class { 'mysql::backup':
-    backupuser     => 'elexis',
+  
+  class { 'mysql::server::backup':
+    backupuser     => 'backup',
     backuppassword => 'elexisTest',
-    backupdir      => '/tmp/backups',
-  }  
+    backupdir      => '/opt/backups',
+    backupdirgroup => 'backup',
+    backuprotate   => '15',
+  }
+
+  logrotate::rule { 'mysql_wiki_dump':
+    path         => '/opt/backups/mysql_wiki_dump.sql.bz2',
+    olddir      => '/opt/backups/old',
+    rotate_every => 'daily',
+  }
+
+  file { "/etc/cron.daily/wik_mysql_dump":
+      ensure  => present,
+      content => "#!/bin/bash
+mkdir -p /opt/backups/old
+mysqldump -u elexis -pelexisTest --opt --all-databases 2>/dev/null | bzcat -zc > /opt/backups/mysql_wiki_dump.sql.bz2
+chown backup /opt/backups/mysql_wiki_dump.sql.bz2
+",
+      mode => 0744,
+  }
 }

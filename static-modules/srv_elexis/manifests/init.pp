@@ -1,3 +1,5 @@
+# vi: set ft=ruby :
+# kate: replace-tabs on; indent-width 2; indent-mode cstyle; syntax ruby
 # == Class: srv_elexis
 #
 # Full description of class srv_elexis here.
@@ -43,10 +45,11 @@ class srv_elexis {
   } else {
     class {'srv_elexis::config': jenkins_root => '/var/lib/jenkins', }
   }
+  include srv_elexis::backup
   
   $managed_note = 'Managed by puppet via project repo https://github.com/ngiger/srv_elexis'
   
-  ensure_packages['git', 'unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh',
+  ensure_packages['git', 'unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'fish', 'mosh',
                   'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'nginx', 'postgresql', 'wget']
   
   if ($hostname == 'srv') {
@@ -85,7 +88,7 @@ class srv_elexis {
       'ruby',
       'rvm',
       'rake',
-      'role-stratey',
+#      'role-stratey', # Cannot be installed via puppet!
       'subversion',
       'thinBackup',
       'timestamper',
@@ -109,10 +112,10 @@ class srv_elexis {
   jenkins::plugin {'ssh-slaves':   version => "1.1"}
     
   # notify { "jenkins_root ist $srv_elexis::config::jenkins_root":}
-  user{'jenkins':
+  ensure_resource('user', 'jenkins', {
     ensure => present,
     home   => "$srv_elexis::config::jenkins_root",
-  }
+  })
   
   exec{'/usr/local/bin/cleanup_snapshots.rb':
     command => "/usr/bin/wget https://raw2.github.com/elexis/elexis-3-core/f1a114847b8753ef5b179712be27d25783065e8c/ch.elexis.core.p2site/cleanup_snapshots.rb && /bin/chmod +x cleanup_snapshots.rb",
