@@ -53,14 +53,19 @@ class srv_elexis {
                   'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'nginx', 'postgresql', 'wget']
   
   if ($hostname == 'srv') {
-    class {'jenkins': 
+    file{["$srv_elexis::config::jenkins_root/tmp", "$srv_elexis::config::jenkins_root/log"]:
+      ensure => directory, owner => 'jenkins'
+      
+    }
+    class {'jenkins':
       jenkins_home => "$srv_elexis::config::jenkins_root",
       lts => 1, #  we want the long term support version
       config_hash => { 'HTTP_PORT' => { 'value' => '8080' },  
         'dummy' => { 'value' => "# $managed_note" }, 
         'AJP_PORT' => { 'value' => "-1" }, 
         'PREFIX'   => { 'value' => '/jenkins' },
-        'JAVA_ARGS' => { 'value' => '-Djava.io.tmpdir=$srv_elexis::config::jenkins_root/tmp -Djava.awt.headless=true -Xrs -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=2048m  -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/jenkins/memory.dump ' },
+        # not necessary for the moment -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/jenkins/memory.dump 
+        'JAVA_ARGS' => { 'value' => "-Djava.io.tmpdir=$srv_elexis::config::jenkins_root/tmp -Djava.awt.headless=true -Xrs -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=2048m " },
         'JENKINS_ARGS' => { 'value' => '--webroot=/var/cache/jenkins/war --httpPort=$HTTP_PORT --prefix=$PREFIX --ajp13Port=$AJP_PORT' },
       }  
     }
