@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <jenkins.model.JenkinsLocationConfiguration>
   <adminAddress>niklaus.giger@hispeed.ch</adminAddress>
-  <jenkinsUrl>http://srv.elexis.info/jenkins/</jenkinsUrl>
+  <jenkinsUrl>https://srv.elexis.info/jenkins/</jenkinsUrl>
 </jenkins.model.JenkinsLocationConfiguration>

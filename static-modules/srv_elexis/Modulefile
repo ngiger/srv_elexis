@@ -1,6 +1,6 @@
 name    'ngiger/srv_elexis'
 version '0.0.1'
-source 'http://github.com/ngiger/srv_elexis'
+source 'https://github.com/ngiger/srv_elexis'
 author 'ngiger'
 license 'Apache License, Version 2.0'
 summary 'Puppet module for running the Jenkins-CI for Elexis'

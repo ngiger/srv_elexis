@@ -175,19 +175,38 @@ class srv_elexis {
   }
   
   # forward srv.elexis.info/jenkins/ to the real jenkins
-  ensure_packages['nginx']
+  ensure_packages['nginx', 'openssl']
   file {          "/etc/nginx/sites-enabled/$fqdn":
     target => "/etc/nginx/sites-available/$fqdn",
     ensure => link,
     owner => root,
     group => root,
   }
+
+  file {"/etc/nginx/ssl":
+    ensure => directory,
+    owner => root,
+    group => root,
+    require => Package['nginx'],
+  }
+
+  exec {'/etc/nginx/ssl/srv.elexis.info.cert':
+    creates => "/etc/nginx/ssl/srv.elexis.info.cert",
+    command => '/usr/bin/openssl req -days 1830 -subj "/C=CH/ST=Glarus/L=Mollis/O=Elexis Opensource community/CN=srv.elexis.info/EM=niklaus.giger@member.fsf.org" -nodes -new -x509  -keyout srv.elexis.info.key -out srv.elexis.info.cert',
+    cwd     => '/etc/nginx/ssl',
+    require => File['/etc/nginx/ssl'],
+    notify => Service['nginx'],
+  }
+  
   file { "/etc/nginx/sites-available/$fqdn":
   content => "# $managed_note
 server {
-  listen 80;
+  listen 443;
   server_name  $fqdn;
   allow all;
+  ssl on;
+  ssl_certificate_key /etc/nginx/ssl/srv.elexis.info.key;
+  ssl_certificate     /etc/nginx/ssl/srv.elexis.info.cert;
 
   location /jenkins/ {
     proxy_pass              http://localhost:8080;
@@ -200,10 +219,9 @@ server {
     proxy_buffers           4 32k;
     client_max_body_size    8m;
     client_body_buffer_size 128k;
-
   }
 }
-",  require => Package['nginx'],
+",  require => [ Package['nginx'], Exec['/etc/nginx/ssl/srv.elexis.info.cert'], ],
     owner => root,
     group => root,
     notify => Service['nginx'],
