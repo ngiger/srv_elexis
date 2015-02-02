@@ -32,17 +32,16 @@ FileUtils.makedirs('modules')
 
 Vagrant.configure("2") do |config|
   config.vm.box_url = boxUrl
-  config.vm.network :public_network
-end
-
-Vagrant::Config.run do |config|
-  puts "Using boxUrl #{boxUrl}"
-
-  config.vm.boot_mode = :gui # :gui or :headless (default)
+  config.vm.provider "virtualbox" do |v|
+    v.gui = true
+    v.memory = 2048
+    v.cpus = 2
+  end
   config.vm.provision :puppet, :options => "--debug"
-  config.vm.share_folder "hieradata", "/etc/puppet/hieradata", File.join(Dir.pwd, 'hieradata')
-  config.vm.customize  ["modifyvm", :id, "--memory", 1024, "--cpus", 1,  ]
-
+  # config.vm.share_folder "hieradata", "/etc/puppet/hieradata", File.join(Dir.pwd, 'hieradata')
+  # config.vm.synced_folder File.join(Dir.pwd, 'hieradata'), "/etc/puppet/hieradata", type: "nfs"
+  # config.vm.synced_folder ".", "/vagrant", type: "rsync",   rsync__exclude: ".git/"
+  # config.vm.synced_folder "./hieradata", "/etc/puppet/hiearadata", type: "rsync",   rsync__exclude: ".git/"
   config.vm.provision :shell, :path => "shell/main.sh"
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "manifests"
@@ -50,13 +49,13 @@ Vagrant::Config.run do |config|
     puppet.module_path = "modules"
   end
 
-  config.vm.define :srv do |srv|  
-    srv.vm.host_name = "srv.#{`hostname -d`.chomp}"
-    srv.vm.network :bridged, { :mac => '000000250125', :bridge => bridgedNetworkAdapter, :ip => '172.25.1.25' } # dhcp from fest
-    srv.vm.box     = boxId
-    srv.vm.box_url = boxUrl
-    srv.vm.forward_port   22, firstPort +  22    # ssh
-    srv.vm.forward_port   80, firstPort +  80    # Apache
-  end if systemsToBoot.index(:srv)
-    
+  config.vm.host_name = "srv.#{`hostname -d`.chomp}"
+  # config.vm.network :bridged, { :mac => '000000250125', :bridge => bridgedNetworkAdapter, :ip => '172.25.1.25' } # dhcp from fest
+  # config.vm.network :bridged, { :mac => '000000250125', :bridge => bridgedNetworkAdapter, :ip => '172.25.1.25' } # dhcp from fest
+  config.vm.network "public_network", bridge: 'br0'
+  # config.vm.network "public_network", bridge: = 'br0'
+  config.vm.box     = boxId
+  config.vm.box_url = boxUrl
+  config.vm.network "forwarded_port", guest: 80, host: firstPort + 80
+  config.vm.network "forwarded_port", guest: 22, host: firstPort + 22
 end

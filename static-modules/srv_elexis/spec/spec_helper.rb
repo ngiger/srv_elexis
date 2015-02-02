@@ -1,17 +1,17 @@
-dir = File.expand_path(File.dirname(__FILE__))
-$LOAD_PATH.unshift File.join(dir, 'lib')
+require 'rspec-puppet'
+require 'puppetlabs_spec_helper/module_spec_helper'
 
-require 'mocha'
-require 'puppet'
-require 'rspec'
-require 'spec/autorun'
-
-Spec::Runner.configure do |config|
-    config.mock_with :mocha
+RSpec.configure do |c|
+  c.default_facts = {
+    :operatingsystem        => 'Debian',
+    :osfamily               => 'Debian',
+    :operatingsystemrelease => 'wheezy',
+    :lsbdistcodename        => 'wheezy',
+    :lsbdistid              => 'debian',
+      # for concat/manifests/init.pp:193
+    :id                     => 'id',
+    :concat_basedir         => '/opt/concat',
+    :path                   => '/path',
+  }
 end
-
-# We need this because the RAL uses 'should' as a method.  This
-# allows us the same behaviour but with a different method name.
-class Object
-    alias :must :should
-end
+# at_exit { RSpec::Puppet::Coverage.report! }

@@ -53,3 +53,71 @@ h2. TODO
 
 # F@d9J52azXn6
 admin@elexis.info  als admin email
+
+Installation PDF writer
+#apt-get install g++ perl python python-dev python-setuptools python-imaging python-lxml libevent-dev
+# easy_install mwlib && rehash
+
+
+Had error Auf dem Render-Server ist ein Fehler aufgetreten: RuntimeError: RuntimeError: command failed with returncode 256: 
+['mw-zip', '-o', '/home/pp/cache/bb/bbf1e5e9141e2397/collection.zip', '-m', '/home/pp/cache/bb/bbf1e5e9141e2397/metabook.json', '--status', 'qserve://localhost:14311/bbf1e5e9141e2397:makezip]
+mw-zip -o /home/pp/cache/bb/bbf1e5e9141e2397/collection.zip -m /home/pp/cache/bb/bbf1e5e9141e2397/metabook.json --status qserve://localhost:14311/bbf1e5e9141e2397:makezip
+
+http://www.mediawiki.org/wiki/Setup_a_render_server_on_Ubuntu_12.04_LTS
+sudo apt-get install -y gcc g++ make python python-pip python-dev python-virtualenv libjpeg-dev libz-dev libfreetype6-dev liblcms-dev libxml2-dev libxslt-dev ocaml-nox git-core python-imaging python-lxml texlive-latex-recommended ploticus dvipng imagemagick pdftk
+Danach ging als www-data 
+mw-zip -c :en -o test.zip Formula NK-33 Jupiter
+mw-render -c test.zip -o test.pdf -w rl
+Aber es gab Fehler 
+/usr/local/lib/python2.7/dist-packages/mwlib.ext-0.13.2-py2.7-linux-x86_64.egg/mwlib/ext/reportlab/pdfbase/pdfmetrics.py:35: UserWarning: pyfribidi is not installed - RTL not supported
+  warnings.warn('pyfribidi is not installed - RTL not supported')
+MISSING FONTS: 'AR PL UMing HK','Nazli','UnBatang','Arundina Serif','Lohit Telugu','Sarai','Gujarati','Lohit Punjabi','Lohit Oriya','AnjaliOldLipi','Kedage','LikhanNormal','Lohit Tamil','Khmer'
+reading /tmp/tmp-mw-renderWgJ_72/tmpg9CTK3/revisions-1.txt
+set locale to 'en_US.UTF-8' based on the language 'en'
+2013-12-03T21:31:47 rlwriter.info >> rendering: 'http://en.wikipedia.org/w/index.php?title=Formula'
+2013-12-03T21:31:48 rlwriter.info >> rendering: 'http://en.wikipedia.org/w/index.php?title=NK-33'
+2013-12-03T21:31:48 rlwriter.warning >> image can not be opened by PIL: '/tmp/tmp-mw-renderWgJ_72/tmpg9CTK3/images/safe/5138cfe0393f8d406979477b0e5b3cc1.jpg'
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/mwlib.rl-0.14.4-py2.7.egg/mwlib/rl/rlwriter.py", line 1442, in writeImageLink
+    ret = self._fixBrokenImages(img_node, img_path)
+  File "/usr/local/lib/python2.7/dist-packages/mwlib.rl-0.14.4-py2.7.egg/mwlib/rl/rlwriter.py", line 1410, in _fixBrokenImages
+    d = img.load()
+  File "/usr/local/lib/python2.7/dist-packages/Pillow-2.2.1-py2.7-linux-x86_64.egg/PIL/ImageFile.py", line 190, in load
+    d = Image._getdecoder(self.mode, d, a, self.decoderconfig)
+  File "/usr/local/lib/python2.7/dist-packages/Pillow-2.2.1-py2.7-linux-x86_64.egg/PIL/Image.py", line 389, in _getdecoder
+    raise IOError("decoder %s not available" % decoder_name)
+IOError: decoder jpeg not available
+2013-12-03T21:31:48 rlwriter.warning >> image skipped
+2013-12-03T21:31:48 rlwriter.warning >> image can not be opened by PIL: '/tmp/tmp-mw-renderWgJ_72/tmpg9CTK3/images/safe/5e3ac0e8412310fb5038fbc4ebf9b813.jpg'
+Traceback (most recent call last):
+
+PDF auf wiki.elexis.info brach nach 1% ab
+
+Eventuell müsste man auf die aktuellste Version 1.21 upgraden.
+
+Lösung war gemäss
+
+http://jj.isgeek.net/2011/09/install-pil-with-jpeg-support-on-ubuntu-oneiric-64bits/
+ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
+ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
+ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
+pip install -I  PIL
+
+pip install --upgrade mwlib
+pip install --upgrade mwlib.rl
+
+Todo: Run as dameontools
+nserve & mw-qserve & nslave --cachedir /data/mwcache & postman --cachedir /data/mwcache
+stop via killall
+
+http://ubuntuguide.org/wiki/Collections_tips#Start_the_mw_server
+
+
+Eingebrochen ab 31.1.2014
+    Elexis‏‎ (Bürokrat, Administrator, translator) (Erstellt am 27. Oktober 2013 um 15:17 Uhr)
+    Niklaus‏‎ (translator) (Erstellt am 27. Oktober 2013 um 15:25 Uhr)
+    Marty (Erstellt am 27. Oktober 2013 um 23:57 Uhr)
+    Mdescher (Erstellt am 28. Oktober 2013 um 07:23 Uhr)
+    Fmarty‏‎ (Trusted, Bürokrat, Administrator, translator) (Erstellt am 29. Oktober 2013 um 20:53 Uhr)
+    Rtschumi (Erstellt am 26. November 2013 um 12:01 Uhr)
+    Iatrix-hilfe (Erstellt am 3. Dezember 2013 um 20:18 Uhr)

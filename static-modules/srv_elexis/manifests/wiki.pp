@@ -44,6 +44,10 @@ class srv_elexis::wiki(
   
   $wiki_root = '/var/lib/mediawiki' # Debian default
   
+  # http://www.mediawiki.org/wiki/Extension:DeleteHistory
+  # BlockAndNuke
+  # Ruby https://github.com/wikimedia/mediawiki-ruby-api (no longer in active development)
+  #      https://github.com/jpatokal/mediawiki-gateway
   # We did not use the puppet module 
   #  * from souza because it is old and created havoc (imported images not displayed correctly, extension not correctly
   #  * from martasd because it failed because it wanted apache2-mpm-worker installed and I was unable to configure the puppet apache to fullfill this requres
@@ -67,13 +71,7 @@ class srv_elexis::wiki(
   # http://www.howtoforge.com/installing-nginx-with-php5-and-php-fpm-and-mysql-support-lemp-on-debian-wheezy-p2
   # https://github.com/kenpratt/wikipedia-client
 
-  class { '::mysql::server':
-    root_password    => 'foo',
-    override_options => { 'mysqld' => { 'max_connections' => '1024' },
-        'default_engine' => "innodb",
-    }
-  }
-  class { 'mysql::client': }
+  include srv_elexis::mysql
   
   ensure_packages['php5-gd', 'mediawiki', 'mediawiki-extensions', 'mediawiki-extensions-collection', 'clamav', 'php-apc']
   # package{'imagemagick': ensure => absent, } # I want to use php5-gd
@@ -123,21 +121,13 @@ class srv_elexis::wiki(
     # default charset is 'utf8',
   }
   
-  class { 'mysql::server::backup':
-    backupuser     => 'backup',
-    backuppassword => 'elexisTest',
-    backupdir      => '/opt/backups',
-    backupdirgroup => 'backup',
-    backuprotate   => '15',
-  }
-
   logrotate::rule { 'mysql_wiki_dump':
     path         => '/opt/backups/mysql_wiki_dump.sql.bz2',
     olddir      => '/opt/backups/old',
     rotate_every => 'daily',
   }
 
-  file { "/etc/cron.daily/wik_mysql_dump":
+  file { "/etc/cron.daily/wiki_mysql_dump":
       ensure  => present,
       content => "#!/bin/bash
 mkdir -p /opt/backups/old

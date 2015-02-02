@@ -39,107 +39,13 @@
 #
 
 class srv_elexis {
-   
-  if ($fqdn == 'srv.elexis.info') {
-    class {'srv_elexis::config': jenkins_root => '/home/jenkins', }
-  } else {
-    class {'srv_elexis::config': jenkins_root => '/var/lib/jenkins', }
-  }
-  include srv_elexis::backup
-  
-  $managed_note = 'Managed by puppet via project repo https://github.com/ngiger/srv_elexis'
-  
+
+  include srv_elexis::config
   ensure_packages['git', 'unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'fish', 'mosh',
                   'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'nginx', 'postgresql', 'wget']
   
-  if ($hostname == 'srv') {
-    file{["$srv_elexis::config::jenkins_root/tmp", "$srv_elexis::config::jenkins_root/log"]:
-      ensure => directory, owner => 'jenkins'
-      
-    }
-    class {'jenkins':
-      jenkins_home => "$srv_elexis::config::jenkins_root",
-      lts => 1, #  we want the long term support version
-      config_hash => { 'HTTP_PORT' => { 'value' => '8080' },  
-        'dummy' => { 'value' => "# $managed_note" }, 
-        'AJP_PORT' => { 'value' => "-1" }, 
-        'PREFIX'   => { 'value' => '/jenkins' },
-        # not necessary for the moment -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/jenkins/memory.dump 
-        'JAVA_ARGS' => { 'value' => "-Djava.io.tmpdir=$srv_elexis::config::jenkins_root/tmp -Djava.awt.headless=true -Xrs -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=2048m " },
-        'JENKINS_ARGS' => { 'value' => '--webroot=/var/cache/jenkins/war --httpPort=$HTTP_PORT --prefix=$PREFIX --ajp13Port=$AJP_PORT' },
-      }  
-    }
-    
-    # The name of the plugin can be found here https://updates.jenkins-ci.org/download/plugins/
-    $jenkins_plugins = [
-      'build-timeout',
-      'compact-columns',
-      'console-column-plugin',
-      'copy-to-slave',
-      'credentials',
-      'disk-usage',
-      'extra-columns',
-      'git',
-      'git-client',
-      'git-parameter',
-      'github',
-      'github-api',
-      'javadoc',
-      'jobConfigHistory',
-      'locks-and-latches',
-      'maven-plugin',
-      'mercurial',
-      'redmine',
-      'ruby',
-      'rvm',
-      'rake',
-#      'role-stratey', # Cannot be installed via puppet!
-      'subversion',
-      'thinBackup',
-      'timestamper',
-      'xvnc',
-      ]
-    jenkins::plugin {$jenkins_plugins:,
-    }
-  } 
-  
-  define install_config() {
-    file { "${srv_elexis::config::jenkins_root}/${title}.xml":
-      source  => "puppet:///modules/srv_elexis/config.xml",
-      require => [ Package['jenkins'], ],
-      notify => Service['jenkins'],
-    }    
-  }
-  install_config{"config": }
-  
-  # we have credentials 1.3.1
-  jenkins::plugin {'ssh-credentials':   version => "1.1"} 
-  jenkins::plugin {'ssh-slaves':   version => "1.1"}
-    
-  # notify { "jenkins_root ist $srv_elexis::config::jenkins_root":}
-  ensure_resource('user', 'jenkins', {
-    ensure => present,
-    home   => "$srv_elexis::config::jenkins_root",
-  })
-  
-  exec{'/usr/local/bin/cleanup_snapshots.rb':
-    command => "/usr/bin/wget https://raw2.github.com/elexis/elexis-3-core/f1a114847b8753ef5b179712be27d25783065e8c/ch.elexis.core.p2site/cleanup_snapshots.rb && /bin/chmod +x cleanup_snapshots.rb",
-    require => Package['wget'],
-    cwd => '/usr/local/bin/',
-    creates => '/usr/local/bin/cleanup_snapshots.rb',
-  }
-  
-  cron { 'cleanup_snapshots':
-    ensure  => $ensure,
-    command => 'P2_ROOT=/home/jenkins/downloads /usr/local/bin/cleanup_snapshots.rb &> /var/log/cleanup_snapshots.log',
-    user    => 'root',
-    hour    => 1,
-    minute  => 5,
-    require => Exec['/usr/local/bin/cleanup_snapshots.rb'],
-  }
-  
   file {'/etc/gitconfig':
-  content => "# $managed_note
+  content => "# $::srv_elexis::config::managed_note
 [user]
         email = niklaus.giger@member.fsf.org
         user = Niklaus Giger
@@ -150,34 +56,16 @@ class srv_elexis {
     mode => 0644,
     }
   
-  File {
-    owner => 'jenkins',
-    group => 'jenkins',
-  }
-  $jenkin_backup_root = '/home/jenkins'
-  if ("$jenkin_backup_root" != "$srv_elexis::config::jenkins_root") {
-    file { "$jenkin_backup_root":
-      ensure => directory,
-      require => Package['jenkins'],
-    }
-  }
-
-  file { "$jenkin_backup_root/backup":
-    ensure => directory,
-    require => File["$jenkin_backup_root"],
-  }
-  
-  file { "$srv_elexis::config::jenkins_root/thinBackup.xml":
-    ensure => present,
-    source => 'puppet:///modules/srv_elexis/thinBackup.xml',
-    require => File["$jenkin_backup_root/backup"],
-    notify => Service['jenkins'],
-  }
-  
-  # forward srv.elexis.info/jenkins/ to the real jenkins
   ensure_packages['nginx', 'openssl']
   file {          "/etc/nginx/sites-enabled/$fqdn":
     target => "/etc/nginx/sites-available/$fqdn",
+    ensure => link,
+    owner => root,
+    group => root,
+    require => File["/etc/nginx/sites-available/$fqdn"],
+  }
+  file {          "/etc/nginx/sites-enabled/download.elexis.info":
+    target => "/etc/nginx/sites-available/download.elexis.info",
     ensure => link,
     owner => root,
     group => root,
@@ -199,7 +87,7 @@ class srv_elexis {
   }
   
   file { "/etc/nginx/sites-available/$fqdn":
-  content => "# $managed_note
+  content => "# $::srv_elexis::config::managed_note
 server {
   listen 443;
   server_name  $fqdn;
@@ -223,14 +111,8 @@ server {
     group => root,
     notify => Service['nginx'],
   }
-  file {          "/etc/nginx/sites-enabled/download.elexis.info":
-    target => "/etc/nginx/sites-available/download.elexis.info",
-    ensure => link,
-    owner => root,
-    group => root,
-  }
   file { "/etc/nginx/sites-available/download.elexis.info":
-  content => "# $managed_note
+  content => "# $::srv_elexis::config::managed_note
 server {
   listen 80;
   server_name  download.elexis.info;

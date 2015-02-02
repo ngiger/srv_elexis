@@ -1,0 +1,18 @@
+{
+  "name": "ngiger/srv_elexis",
+  "version": "0.1.0",
+  "author": "Niklaus Giger",
+  "summary": "Puppet module for running the Jenkins-CI for Elexis",
+  "license": "GPL",
+  "source": "https://github.com/ngiger/puppet-srv_elexis",
+  "project_page": "https://github.com/ngiger/puppet-srv_elexis",
+  "issues_url": null,
+  "description": "Puppet module for Elexis-CI",
+  "dependencies": [
+    { "name":"puppetlabs/mysql","version_requirement":">= 1.0.0"},
+    { "name":"rtyler/jenkins","version_requirement":">= 1.0.0"},
+    { "name":"carlasouza/mediawiki","version_requirement":">= 1.0.0"},
+    { "name":"jbeard/nfs","version_requirement":">= 0.1.7"},
+    { "name":"rodjek/logrotate","version_requirement":">= 1.0.0"}
+  ]
+}

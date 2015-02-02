@@ -34,8 +34,7 @@ class srv_elexis::backup(
   file { '/etc/.git':
     ensure => directory,
     owner  => root,
-    group  => backup,
-    mode   => 0444,
+    group  => root,
     recurse => true,
     require => Package['etckeeper'],
   }

@@ -46,7 +46,8 @@ GlobalMatrixAuthorization
 ** We should look at http://forge.puppetlabs.com/eirc/single_user_rvm
 * ruby-1.9.3
 ** /var/lib/jenkins/.rvm/rubies/ruby-1.9.3-p327
-
+* Gemäss https://www.digitalocean.com/community/articles/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04/. Password wie niklaus root
+# aber key und cert openssl req  -nodes -new -x509  -keyout srv.elexis.info.key -out srv.elexis.info.cert
 h2. Strategy for Jenkins build environment
 
 * The User config-data (name/password etc) are not stored in this repository!

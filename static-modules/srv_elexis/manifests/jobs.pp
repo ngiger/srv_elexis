@@ -51,7 +51,7 @@ class srv_elexis::jobs(
     
   file { "${srv_elexis::config::jenkins_root}/jobs":
     ensure => directory,
-    require => Package['jenkins'],
+   # require => Jenkins,
   }
   
   # we might maintain our jobs using Augeas XML-lenses, s.a. https://groups.google.com/forum/#!msg/puppet-users/ft04C3Szj8o/pC0e5tsZMX0J
@@ -61,7 +61,8 @@ class srv_elexis::jobs(
     $job_root = "${srv_elexis::config::jenkins_root}/jobs"
     file { "$job_root/$title":
       ensure => directory,
-      require => [ File["$job_root"], Package['jenkins'], ],
+      require => [ File["$job_root"], # Package['jenkins'],
+      ],
     }
     
     file { "$job_root/$title/config.xml":
@@ -69,7 +70,7 @@ class srv_elexis::jobs(
       ensure  => present,
       replace => false, # We don't want to override later local modifications!
       source  => "puppet:///modules/srv_elexis/jobs/$title/config.xml",
-      notify  => Service['jenkins'],
+#      notify  => Service['jenkins'],
       require => File[ "$job_root/$title"],
     }
   }
