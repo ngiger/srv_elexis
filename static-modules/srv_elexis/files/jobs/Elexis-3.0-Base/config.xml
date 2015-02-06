@@ -1,9 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@1.509.3">
+<maven2-moduleset plugin="maven-plugin@2.6">
   <actions/>
   <description>&lt;h2&gt;Creates p2 update site &lt;a  href=&quot;http://download.elexis.info/elexis.3.base/snapshot&quot;&gt;&#xd;
   http://download.elexis.info/elexis.3.base/snapshot&lt;/a&gt;&lt;/h2&gt;&#xd;
 Builds for upcoming Elexis 3.0. Only for developers!&#xd;
+&lt;br&gt;&#xd;
 </description>
   <logRotator class="hudson.tasks.LogRotator">
     <daysToKeep>60</daysToKeep>
@@ -13,49 +14,38 @@ Builds for upcoming Elexis 3.0. Only for developers!&#xd;
   </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.8">
-      <projectUrl>https://github.com/elexis/elexis-3-base/</projectUrl>
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.2">
+      <room></room>
+      <startNotification>false</startNotification>
+      <notifySuccess>true</notifySuccess>
+      <notifyAborted>true</notifyAborted>
+      <notifyNotBuilt>true</notifyNotBuilt>
+      <notifyUnstable>true</notifyUnstable>
+      <notifyFailure>true</notifyFailure>
+      <notifyBackToNormal>true</notifyBackToNormal>
+    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.24"/>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@1.5.0">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.5">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <name></name>
-        <refspec></refspec>
-        <url>https://github.com/elexis/elexis-3-base</url>
+        <name>elexis-3-base</name>
+        <url>git@github.com:elexis/elexis-3-base.git</url>
+        <credentialsId>ee016c56-b299-415f-b770-50b83569a471</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>release/${MY_BRANCH}</name>
-      </hudson.plugins.git.BranchSpec>
-      <hudson.plugins.git.BranchSpec>
-        <name>master</name>
+        <name>*/master</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
-    <disableSubmodules>false</disableSubmodules>
-    <recursiveSubmodules>false</recursiveSubmodules>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <authorOrCommitter>false</authorOrCommitter>
-    <clean>false</clean>
-    <wipeOutWorkspace>false</wipeOutWorkspace>
-    <pruneBranches>false</pruneBranches>
-    <remotePoll>false</remotePoll>
-    <ignoreNotifyCommit>false</ignoreNotifyCommit>
-    <useShallowClone>false</useShallowClone>
-    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
-    <gitTool>Default</gitTool>
+    <browser class="hudson.plugins.git.browser.GithubWeb">
+      <url>https://github.com/elexis/elexis-3-base</url>
+    </browser>
     <submoduleCfg class="list"/>
-    <relativeTargetDir></relativeTargetDir>
-    <reference></reference>
-    <excludedRegions></excludedRegions>
-    <excludedUsers></excludedUsers>
-    <gitConfigName></gitConfigName>
-    <gitConfigEmail></gitConfigEmail>
-    <skipTag>false</skipTag>
-    <includedRegions></includedRegions>
-    <scmName></scmName>
+    <extensions/>
   </scm>
   <assignedNode>master</assignedNode>
   <canRoam>false</canRoam>
@@ -63,18 +53,28 @@ Builds for upcoming Elexis 3.0. Only for developers!&#xd;
   <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <jdk>(Vorgabewert)</jdk>
-  <triggers class="vector"/>
+  <triggers>
+    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.9.1">
+      <spec></spec>
+    </com.cloudbees.jenkins.GitHubPushTrigger>
+    <hudson.triggers.SCMTrigger>
+      <spec>H/5 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
   <concurrentBuild>false</concurrentBuild>
   <rootModule>
     <groupId>ch.elexis.base</groupId>
     <artifactId>elexis-3-base</artifactId>
   </rootModule>
-  <goals>clean install</goals>
+  <goals>clean install -Dtycho.localArtifacts=ignore</goals>
+  <mavenName>3.0.5</mavenName>
   <aggregatorStyleBuild>true</aggregatorStyleBuild>
   <incrementalBuild>false</incrementalBuild>
-  <perModuleEmail>true</perModuleEmail>
   <ignoreUpstremChanges>true</ignoreUpstremChanges>
   <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
   <resolveDependencies>true</resolveDependencies>
   <processPlugins>false</processPlugins>
   <mavenValidationLevel>-1</mavenValidationLevel>
@@ -82,39 +82,82 @@ Builds for upcoming Elexis 3.0. Only for developers!&#xd;
   <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
   <settings class="jenkins.mvn.DefaultSettingsProvider"/>
   <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
-  <reporters/>
+  <reporters>
+    <hudson.maven.reporters.MavenMailer>
+      <recipients></recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+      <perModuleEmail>true</perModuleEmail>
+    </hudson.maven.reporters.MavenMailer>
+  </reporters>
   <publishers>
     <hudson.tasks.ArtifactArchiver>
       <artifacts>ch.elexis.base.p2site/target/repository/**</artifacts>
-      <latestOnly>false</latestOnly>
       <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
     </hudson.tasks.ArtifactArchiver>
+    <hudson.plugins.git.GitPublisher plugin="git@2.2.5">
+      <configVersion>2</configVersion>
+      <pushMerge>false</pushMerge>
+      <pushOnlyIfSuccess>true</pushOnlyIfSuccess>
+      <tagsToPush>
+        <hudson.plugins.git.GitPublisher_-TagToPush>
+          <targetRepoName>elexis-3-base</targetRepoName>
+          <tagName>J-E3B-${BUILD_NUMBER}</tagName>
+          <tagMessage></tagMessage>
+          <createTag>true</createTag>
+          <updateTag>false</updateTag>
+        </hudson.plugins.git.GitPublisher_-TagToPush>
+      </tagsToPush>
+      <branchesToPush/>
+      <notesToPush/>
+    </hudson.plugins.git.GitPublisher>
+    <jenkins.plugins.slack.SlackNotifier plugin="slack@1.2">
+      <teamDomain>elexisboat</teamDomain>
+      <authToken>fOZlawtCvPVie81VkCB1ZHRG</authToken>
+      <buildServerUrl>/</buildServerUrl>
+      <room></room>
+    </jenkins.plugins.slack.SlackNotifier>
   </publishers>
   <buildWrappers>
-    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.12">
+    <org.jenkinsci.plugins.xvfb.XvfbBuildWrapper plugin="xvfb@1.0.12">
+      <installationName>System</installationName>
+      <screen>1024x768x24</screen>
+      <debug>false</debug>
+      <timeout>0</timeout>
+      <displayNameOffset>1</displayNameOffset>
+      <additionalOptions></additionalOptions>
+      <shutdownWithBuild>false</shutdownWithBuild>
+      <autoDisplayName>false</autoDisplayName>
+    </org.jenkinsci.plugins.xvfb.XvfbBuildWrapper>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.14">
       <strategy class="hudson.plugins.build_timeout.impl.ElasticTimeOutStrategy">
         <timeoutPercentage>150</timeoutPercentage>
         <numberOfBuilds>3</numberOfBuilds>
         <timeoutMinutesElasticDefault>20</timeoutMinutesElasticDefault>
       </strategy>
-      <failBuild>false</failBuild>
-      <writingDescription>false</writingDescription>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.AbortOperation/>
+      </operationList>
     </hudson.plugins.build__timeout.BuildTimeoutWrapper>
-    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.7"/>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.14"/>
   </buildWrappers>
   <prebuilders/>
   <postbuilders>
     <hudson.tasks.Shell>
       <command>cd ch.elexis.base.p2site
 rm -f install_build.rb
-wget https://raw.github.com/elexis/elexis-3-core/release/Alpha0/ch.elexis.core.p2site/install_build.rb
+wget https://raw.github.com/elexis/elexis-3-core/release/3.0.0/ch.elexis.core.p2site/install_build.rb
 export ROOT=/home/jenkins/downloads/elexis.3.base
-ruby install_build.rb</command>
+/usr/bin/ruby install_build.rb</command>
     </hudson.tasks.Shell>
   </postbuilders>
   <runPostStepsIfResult>
     <name>SUCCESS</name>
     <ordinal>0</ordinal>
     <color>BLUE</color>
+    <completeBuild>true</completeBuild>
   </runPostStepsIfResult>
 </maven2-moduleset>

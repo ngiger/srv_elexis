@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.disk__usage.ProjectDiskUsage plugin="disk-usage@0.25">
+  <diskUsageWithoutBuilds>6197580</diskUsageWithoutBuilds>
+  <slaveWorkspacesUsage class="concurrent-hash-map"/>
+  <buildDiskUsage>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2011-03-31_12-21-14</id>
+      <timestamp>1301566874000</timestamp>
+      <number>1</number>
+      <size>15472</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+  </buildDiskUsage>
+</hudson.plugins.disk__usage.ProjectDiskUsage>

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.disk__usage.ProjectDiskUsage plugin="disk-usage@0.25">
+  <diskUsageWithoutBuilds>14759</diskUsageWithoutBuilds>
+  <slaveWorkspacesUsage class="concurrent-hash-map">
+    <entry>
+      <string>Linux-64-bit</string>
+      <concurrent-hash-map>
+        <entry>
+          <string>/opt/ci/workspace/Elexis-3.0-Jubula-docker</string>
+          <long>393183329</long>
+        </entry>
+      </concurrent-hash-map>
+    </entry>
+  </slaveWorkspacesUsage>
+  <buildDiskUsage>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2014-07-30_08-08-19</id>
+      <timestamp>1406700499000</timestamp>
+      <number>3</number>
+      <size>14610655</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2014-08-01_12-29-34</id>
+      <timestamp>1406888974000</timestamp>
+      <number>4</number>
+      <size>12715392</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2014-08-02_09-51-32</id>
+      <timestamp>1406965892000</timestamp>
+      <number>5</number>
+      <size>12712590</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2014-07-29_20-12-24</id>
+      <timestamp>1406657544000</timestamp>
+      <number>2</number>
+      <size>12074408</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2014-07-29_20-00-09</id>
+      <timestamp>1406656809000</timestamp>
+      <number>1</number>
+      <size>239184</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+  </buildDiskUsage>
+</hudson.plugins.disk__usage.ProjectDiskUsage>

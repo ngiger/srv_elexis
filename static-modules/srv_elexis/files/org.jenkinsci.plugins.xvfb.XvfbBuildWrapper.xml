@@ -1,9 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<org.jenkinsci.plugins.xvfb.XvfbBuildWrapper_-XvfbBuildWrapperDescriptor plugin="xvfb@1.0.8">
+<org.jenkinsci.plugins.xvfb.XvfbBuildWrapper_-XvfbBuildWrapperDescriptor plugin="xvfb@1.0.12">
   <installations>
     <org.jenkinsci.plugins.xvfb.XvfbInstallation>
       <name>System</name>
       <home>/usr/bin</home>
+      <properties/>
+    </org.jenkinsci.plugins.xvfb.XvfbInstallation>
+    <org.jenkinsci.plugins.xvfb.XvfbInstallation>
+      <name>System-MACOSX</name>
+      <home>/usr/X11/bin</home>
       <properties/>
     </org.jenkinsci.plugins.xvfb.XvfbInstallation>
   </installations>

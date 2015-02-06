@@ -1,16 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@1.509.3">
+<maven2-moduleset plugin="maven-plugin@2.6">
   <actions/>
   <description>&lt;h2&gt;Demonstrates how to build an Elexis derivate application and P2-update site&lt;/h2&gt;</description>
   <logRotator class="hudson.tasks.LogRotator">
     <daysToKeep>-1</daysToKeep>
     <numToKeep>2</numToKeep>
     <artifactDaysToKeep>-1</artifactDaysToKeep>
-    <artifactNumToKeep>-1</artifactNumToKeep>
+    <artifactNumToKeep>1</artifactNumToKeep>
   </logRotator>
   <keepDependencies>false</keepDependencies>
-  <properties/>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@1.5.0">
+  <properties>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.24"/>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.5">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
@@ -24,35 +26,19 @@
         <name>**</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
-    <disableSubmodules>false</disableSubmodules>
-    <recursiveSubmodules>false</recursiveSubmodules>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <authorOrCommitter>false</authorOrCommitter>
-    <clean>false</clean>
-    <wipeOutWorkspace>false</wipeOutWorkspace>
-    <pruneBranches>false</pruneBranches>
-    <remotePoll>false</remotePoll>
-    <ignoreNotifyCommit>false</ignoreNotifyCommit>
-    <useShallowClone>false</useShallowClone>
-    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
     <gitTool>Default</gitTool>
     <submoduleCfg class="list"/>
-    <relativeTargetDir></relativeTargetDir>
-    <reference></reference>
-    <excludedRegions></excludedRegions>
-    <excludedUsers></excludedUsers>
-    <gitConfigName></gitConfigName>
-    <gitConfigEmail></gitConfigEmail>
-    <skipTag>false</skipTag>
-    <includedRegions></includedRegions>
-    <scmName></scmName>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.PerBuildTag/>
+    </extensions>
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <jdk>(Vorgabewert)</jdk>
-  <triggers class="vector">
+  <triggers>
     <hudson.triggers.SCMTrigger>
       <spec>@daily</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
@@ -63,12 +49,13 @@
     <groupId>org.elexis_derivate.application</groupId>
     <artifactId>elexis-derivate-application</artifactId>
   </rootModule>
-  <goals>clean install</goals>
+  <goals>clean install -Dtycho.localArtifacts=default</goals>
   <aggregatorStyleBuild>true</aggregatorStyleBuild>
   <incrementalBuild>false</incrementalBuild>
-  <perModuleEmail>true</perModuleEmail>
   <ignoreUpstremChanges>false</ignoreUpstremChanges>
   <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
   <resolveDependencies>false</resolveDependencies>
   <processPlugins>false</processPlugins>
   <mavenValidationLevel>-1</mavenValidationLevel>
@@ -80,8 +67,10 @@
   <publishers>
     <hudson.tasks.ArtifactArchiver>
       <artifacts>org.elexis_derivate.application.product/target/products/*zip,org.elexis_derivate.application.product/target/repository/**</artifacts>
-      <latestOnly>true</latestOnly>
       <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
     </hudson.tasks.ArtifactArchiver>
   </publishers>
   <buildWrappers/>
@@ -91,13 +80,14 @@
       <command>export ROOT=/home/jenkins/downloads/elexis.3.derivate
 cd org.elexis_derivate.application.product
 rm -f install_build.rb
-wget https://raw.github.com/elexis/elexis-3-core/release/Alpha0/ch.elexis.core.p2site/install_build.rb
-ruby install_build.rb</command>
+wget https://raw.github.com/elexis/elexis-3-core/master/ch.elexis.core.p2site/install_build.rb
+/usr/bin/ruby install_build.rb</command>
     </hudson.tasks.Shell>
   </postbuilders>
   <runPostStepsIfResult>
     <name>SUCCESS</name>
     <ordinal>0</ordinal>
     <color>BLUE</color>
+    <completeBuild>true</completeBuild>
   </runPostStepsIfResult>
 </maven2-moduleset>

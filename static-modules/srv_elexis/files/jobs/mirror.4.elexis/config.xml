@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<maven2-moduleset plugin="maven-plugin@2.0.3">
+  <actions/>
+  <description>&lt;h2&gt;Creates p2 update site &lt;a  href=&quot;http://download.elexis.info/mirror.4.elexis/snapshot&quot;&gt;&#xd;
+  http://download.elexis.info/mirror.4.elexis/snapshot&lt;/a&gt;&lt;/h2&gt;&#xd;
+Builds for upcoming Elexis 3.0. Only for developers!&#xd;
+</description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>60</daysToKeep>
+    <numToKeep>10</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.8">
+      <projectUrl>https://github.com/elexis/mirror.4.elexis/</projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>VARIANT</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>snapshot</string>
+              <string>beta</string>
+              <string>release</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.23"/>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.1">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>mirror.4.elexis</name>
+        <url>https://github.com/elexis/mirror.4.elexis</url>
+        <credentialsId>ee016c56-b299-415f-b770-50b83569a471</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.PerBuildTag/>
+    </extensions>
+  </scm>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Vorgabewert)</jdk>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>*/5 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>ch.elexis.base</groupId>
+    <artifactId>mirror.4.elexis</artifactId>
+  </rootModule>
+  <goals>clean package  -Dtycho.localArtifacts=ignore</goals>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <archivingDisabled>false</archivingDisabled>
+  <resolveDependencies>true</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>true</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters/>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.13">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>30</timeoutMinutes>
+      </strategy>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.AbortOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.11"/>
+  </buildWrappers>
+  <prebuilders/>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>rm -f install_build.rb
+wget https://raw.github.com/elexis/elexis-3-core/master/ch.elexis.core.p2site/install_build.rb
+export ROOT=/home/jenkins/downloads/mirror.4.elexis/$VARIANT
+rm -rf $ROOT
+mkdir -p $ROOT
+cp -p index.html $ROOT
+cp -rpv target/repository/* $ROOT
+</command>
+    </hudson.tasks.Shell>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>

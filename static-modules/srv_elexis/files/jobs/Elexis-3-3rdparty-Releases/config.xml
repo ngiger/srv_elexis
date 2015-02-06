@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<maven2-moduleset plugin="maven-plugin@2.6">
+  <actions/>
+  <description>&lt;p&gt;Builds for Elexis 3.0.0&lt;/p&gt;&#xd;
+&lt;h2&gt;Creates a p2-update site&lt;/h2&gt; &#xd;
+&lt;li&gt;&#xd;
+*  elexis.3.3rdparty.libraries/prerelease&#xd;
+  &lt;a  href=&quot;http://download.elexis.info/elexis.3.3rdparty.libraries/release/&quot;&gt;http://download.elexis.info/elexis.3.3rdparty.libraries/release&lt;/a&gt;&#xd;
+&lt;/li&gt;&#xd;
+&lt;li&gt;&#xd;
+*  elexis.3.3rdparty.libraries/release&#xd;
+  &lt;a  href=&quot;http://download.elexis.info/elexis.3.3rdparty.libraries/release/&quot;&gt;http://download.elexis.info/elexis.3.3rdparty.libraries/release&lt;/a&gt;&#xd;
+&lt;/li&gt;&#xd;
+&#xd;
+</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.9.1">
+      <projectUrl>https://github.com/elexis/mirror.4.elexis/</projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>VARIANT</name>
+          <description>PreRelease erstellen oder einen echten RELEASE?</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>prerelease</string>
+              <string>release</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <net.uaznia.lukanus.hudson.plugins.gitparameter.GitParameterDefinition plugin="git-parameter@0.3.2">
+          <name>TAG_2_BUILD</name>
+          <description>Tag für den der Build erstellt werden soll. (Jenkins erstellt lokale Tags für jeden Build den er gemacht hat)</description>
+          <uuid>bf53f1a1-d1e6-4822-946e-606e58e8a9ee</uuid>
+          <type>PT_REVISION</type>
+          <branch>origin/release</branch>
+          <tagFilter>*</tagFilter>
+          <sortMode>DESCENDING_SMART</sortMode>
+          <defaultValue></defaultValue>
+        </net.uaznia.lukanus.hudson.plugins.gitparameter.GitParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.2">
+      <room></room>
+      <startNotification>false</startNotification>
+      <notifySuccess>false</notifySuccess>
+      <notifyAborted>false</notifyAborted>
+      <notifyNotBuilt>false</notifyNotBuilt>
+      <notifyUnstable>false</notifyUnstable>
+      <notifyFailure>false</notifyFailure>
+      <notifyBackToNormal>false</notifyBackToNormal>
+    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.24"/>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.5">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/elexis/elexis.3rdparty.libraries/</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>**</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.PerBuildTag/>
+    </extensions>
+  </scm>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Vorgabewert)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>org.reficio.rcp</groupId>
+    <artifactId>elexis.3rdparty.libraries.p2.site</artifactId>
+  </rootModule>
+  <goals>clean install p2:site</goals>
+  <mavenName>3.0.5</mavenName>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>true</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>true</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters>
+    <hudson.maven.reporters.MavenMailer>
+      <recipients>niklaus.giger@member.fsf.org</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+      <perModuleEmail>true</perModuleEmail>
+    </hudson.maven.reporters.MavenMailer>
+  </reporters>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>target/**.jar</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+    </hudson.tasks.ArtifactArchiver>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.14">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>30</timeoutMinutes>
+      </strategy>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.WriteDescriptionOperation>
+          <description>Build timed out (after {0} minutes). Marking the build as failed.</description>
+        </hudson.plugins.build__timeout.operations.WriteDescriptionOperation>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.14"/>
+  </buildWrappers>
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>echo GIT_BRANCH  ${GIT_BRANCH} TAG_2_BUILD ${TAG_2_BUILD} FAVORIT ${FAVORIT}
+if [ -n &quot;$FAVORIT&quot; ]; then export TAG_2_BUILD=$FAVORIT; fi
+echo Using TAG_2_BUILD ${TAG_2_BUILD}
+echo GIT_BRANCH  ${GIT_BRANCH}
+which mvn
+mvn -version
+java -version
+which ruby
+ruby --version
+git checkout ${TAG_2_BUILD}
+</command>
+    </hudson.tasks.Shell>
+  </prebuilders>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>DEST=/home/jenkins/downloads/elexis.3.3rdparty.libraries/${VARIANT}
+echo DEST ist ${DEST}
+rm -rf ${DEST}
+mkdir -p ${DEST}
+cp -rpu target/repository/* ${DEST}
+cp -pu index.html ${DEST}
+echo &quot;TAG_2_BUILD ${TAG_2_BUILD}&quot; &gt; ${DEST}/buildinfo.txt</command>
+    </hudson.tasks.Shell>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>

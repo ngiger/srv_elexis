@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<maven2-moduleset plugin="maven-plugin@2.6">
+  <actions/>
+  <description>&lt;h2&gt;Creates a p2 update site&lt;/h2&gt;&#xd;
+We create the following P2-update sites&#xd;
+&lt;ul&gt;&#xd;
+  &lt;li&gt;(master branch) &lt;a  href=&quot;http://download.elexis.info/elexis.3.core/beta&quot;&gt;http://download.elexis.info/elexis.3.core/beta&lt;/a&gt;&lt;/li&gt;&#xd;
+&lt;/ul&gt;&#xd;
+&lt;br&gt;Builds must be manually requested to avoid overwriting the release repository when a tag is made&#xd;
+&lt;br&gt;Building offline to avoid problems with equinox&#xd;
+</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.9.1">
+      <projectUrl>https://github.com/elexis/elexis-3-core/</projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <net.uaznia.lukanus.hudson.plugins.gitparameter.GitParameterDefinition plugin="git-parameter@0.3.2">
+          <name>TAG_2_BUILD</name>
+          <description>Tag of the release to be built. Alpha0 cannot be built again as its pom.xml was in ch.elexis.core</description>
+          <uuid>a7b28783-8726-4837-a143-fc11f83aed92</uuid>
+          <type>PT_TAG</type>
+          <branch>master</branch>
+          <tagFilter>J-E3C-1*</tagFilter>
+          <sortMode>DESCENDING</sortMode>
+          <defaultValue></defaultValue>
+        </net.uaznia.lukanus.hudson.plugins.gitparameter.GitParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>VARIANT</name>
+          <description>Only betas can be built</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>beta</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.2">
+      <room></room>
+      <startNotification>false</startNotification>
+      <notifySuccess>false</notifySuccess>
+      <notifyAborted>false</notifyAborted>
+      <notifyNotBuilt>false</notifyNotBuilt>
+      <notifyUnstable>false</notifyUnstable>
+      <notifyFailure>false</notifyFailure>
+      <notifyBackToNormal>false</notifyBackToNormal>
+    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.24"/>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.5">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/elexis/elexis-3-core/</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>${TAG_2_BUILD}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.PerBuildTag/>
+    </extensions>
+  </scm>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Vorgabewert)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>ch.elexis</groupId>
+    <artifactId>ch.elexis.core.releng</artifactId>
+  </rootModule>
+  <goals>clean install -Drepo_variant=${VARIANT} -Dtycho.localArtifacts=ignore -Dall-archs=true -DROOT=/home/jenkins/downloads/elexis.3.core/</goals>
+  <mavenName>system</mavenName>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>true</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>true</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters>
+    <hudson.maven.reporters.MavenMailer>
+      <recipients>niklaus.giger@member.fsf.org</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+      <perModuleEmail>true</perModuleEmail>
+    </hudson.maven.reporters.MavenMailer>
+  </reporters>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>ch.elexis.core.p2site/target/repository/**,ch.elexis.core.p2site/target/products/*.zip</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+    </hudson.tasks.ArtifactArchiver>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.xvfb.XvfbBuildWrapper plugin="xvfb@1.0.12">
+      <installationName>System</installationName>
+      <screen>1024x768x24</screen>
+      <debug>false</debug>
+      <timeout>0</timeout>
+      <displayNameOffset>1</displayNameOffset>
+      <additionalOptions></additionalOptions>
+      <shutdownWithBuild>false</shutdownWithBuild>
+      <autoDisplayName>false</autoDisplayName>
+    </org.jenkinsci.plugins.xvfb.XvfbBuildWrapper>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.14">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>30</timeoutMinutes>
+      </strategy>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.WriteDescriptionOperation>
+          <description>Build timed out (after {0} minutes). Marking the build as failed.</description>
+        </hudson.plugins.build__timeout.operations.WriteDescriptionOperation>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.14"/>
+  </buildWrappers>
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>echo GIT_BRANCH  ${GIT_BRANCH} TAG_2_BUILD ${TAG_2_BUILD} SHELL ist $SHELL
+echo Using TAG_2_BUILD ${TAG_2_BUILD}
+echo GIT_BRANCH  ${GIT_BRANCH}
+echo VARIANT ${VARIANT}
+which mvn
+mvn -version
+java -version
+ruby --version
+/usr/bin/ruby --version
+</command>
+    </hudson.tasks.Shell>
+  </prebuilders>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>export ROOT=/home/jenkins/downloads/elexis.3.core/
+cp -rpvu ch.elexis.core.releng/download ${ROOT}
+</command>
+    </hudson.tasks.Shell>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>

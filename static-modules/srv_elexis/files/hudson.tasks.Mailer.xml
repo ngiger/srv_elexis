@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@1.4">
+<hudson.tasks.Mailer_-DescriptorImpl plugin="mailer@1.11">
+  <hudsonUrl>http://srv.elexis.info/jenkins/</hudsonUrl>
   <smtpHost>localhost</smtpHost>
   <useSsl>false</useSsl>
   <charset>UTF-8</charset>

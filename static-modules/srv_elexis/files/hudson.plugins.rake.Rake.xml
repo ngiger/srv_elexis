@@ -1,6 +1,39 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<hudson.plugins.rake.Rake_-RakeDescriptor plugin="rake@1.7.8">
-  <installations/>
+<hudson.plugins.rake.Rake_-RakeDescriptor plugin="rake@1.8.0">
+  <installations>
+    <hudson.plugins.rake.RubyInstallation>
+      <name>jruby-1.6.7.2</name>
+      <path>/home/jenkins/.rvm/rubies/jruby-1.6.7.2</path>
+    </hudson.plugins.rake.RubyInstallation>
+    <hudson.plugins.rake.RubyInstallation>
+      <name>ruby-1.9.3-p448</name>
+      <path>/home/jenkins/.rvm/rubies/ruby-1.9.3-p448</path>
+      <gemHome>/home/jenkins/.rvm/gems/ruby-1.9.3-p448</gemHome>
+      <gemPath>/home/jenkins/.rvm/gems/ruby-1.9.3-p448:/home/jenkins/.rvm/rubies/ruby-1.9.3-p448/lib/ruby/gems/1.9.1</gemPath>
+      <binPath>/home/jenkins/.rvm/rubies/ruby-1.9.3-p448/bin:/home/jenkins/.rvm/gems/ruby-1.9.3-p448/bin</binPath>
+    </hudson.plugins.rake.RubyInstallation>
+    <hudson.plugins.rake.RubyInstallation>
+      <name>ruby-1.9.3-p448@global</name>
+      <path>/home/jenkins/.rvm/rubies/ruby-1.9.3-p448</path>
+      <gemHome>/home/jenkins/.rvm/rubies/ruby-1.9.3-p448/lib/ruby/gems/1.9.1</gemHome>
+      <gemPath>/home/jenkins/.rvm/rubies/ruby-1.9.3-p448/lib/ruby/gems/1.9.1</gemPath>
+      <binPath>/home/jenkins/.rvm/rubies/ruby-1.9.3-p448/bin:/home/jenkins/.rvm/rubies/ruby-1.9.3-p448/lib/ruby/gems/1.9.1/bin</binPath>
+    </hudson.plugins.rake.RubyInstallation>
+    <hudson.plugins.rake.RubyInstallation>
+      <name>jruby-1.6.7.2@global</name>
+      <path>/home/jenkins/.rvm/rubies/jruby-1.6.7.2</path>
+      <gemHome>/home/jenkins/.rvm/rubies/jruby-1.6.7.2/lib/ruby/gems/1.8</gemHome>
+      <gemPath>/home/jenkins/.rvm/rubies/jruby-1.6.7.2/lib/ruby/gems/1.8</gemPath>
+      <binPath>/home/jenkins/.rvm/rubies/jruby-1.6.7.2/bin:/home/jenkins/.rvm/rubies/jruby-1.6.7.2/lib/ruby/gems/1.8/bin</binPath>
+    </hudson.plugins.rake.RubyInstallation>
+    <hudson.plugins.rake.RubyInstallation>
+      <name>jruby-1.6.7.2</name>
+      <path>/home/jenkins/.rvm/rubies/jruby-1.6.7.2</path>
+      <gemHome>/home/jenkins/.rvm/gems/jruby-1.6.7.2</gemHome>
+      <gemPath>/home/jenkins/.rvm/gems/jruby-1.6.7.2:/home/jenkins/.rvm/rubies/jruby-1.6.7.2/lib/ruby/gems/1.8</gemPath>
+      <binPath>/home/jenkins/.rvm/gems/jruby-1.6.7.2@global/bin:/home/jenkins/.rvm/rubies/jruby-1.6.7.2/bin:/home/jenkins/.rvm/gems/jruby-1.6.7.2/bin</binPath>
+    </hudson.plugins.rake.RubyInstallation>
+  </installations>
   <rvm>
     <path></path>
   </rvm>

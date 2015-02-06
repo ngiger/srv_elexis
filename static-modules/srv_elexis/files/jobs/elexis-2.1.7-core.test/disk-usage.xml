@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.disk__usage.ProjectDiskUsage plugin="disk-usage@0.25">
+  <diskUsageWithoutBuilds>783952133</diskUsageWithoutBuilds>
+  <slaveWorkspacesUsage class="concurrent-hash-map">
+    <entry>
+      <string></string>
+      <concurrent-hash-map>
+        <entry>
+          <string>/home/jenkins/jobs/elexis-2.1.7-core.test/workspace</string>
+          <long>367838297</long>
+        </entry>
+      </concurrent-hash-map>
+    </entry>
+  </slaveWorkspacesUsage>
+  <buildDiskUsage>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2015-01-07_18-37-37</id>
+      <timestamp>1420652257000</timestamp>
+      <number>236</number>
+      <size>1095114</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2013-12-23_11-17-43</id>
+      <timestamp>1387793863000</timestamp>
+      <number>234</number>
+      <size>1088938</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2013-12-23_10-32-42</id>
+      <timestamp>1387791162000</timestamp>
+      <number>233</number>
+      <size>1088934</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2015-01-07_11-16-49</id>
+      <timestamp>1420625809000</timestamp>
+      <number>235</number>
+      <size>1095430</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+    <hudson.plugins.disk__usage.DiskUsageBuildInformation>
+      <id>2012-09-27_22-47-36</id>
+      <timestamp>1348778856000</timestamp>
+      <number>96</number>
+      <size>3731652</size>
+    </hudson.plugins.disk__usage.DiskUsageBuildInformation>
+  </buildDiskUsage>
+</hudson.plugins.disk__usage.ProjectDiskUsage>

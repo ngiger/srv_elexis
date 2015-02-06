@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project plugin="matrix-project@1.4">
+  <actions/>
+  <description>Diverse Jubula-GUI Tests für Linux</description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>30</daysToKeep>
+    <numToKeep>10</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.9.1">
+      <projectUrl>https://github.com/ngiger/elexis-3-core/</projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.2">
+      <room></room>
+      <startNotification>false</startNotification>
+      <notifySuccess>false</notifySuccess>
+      <notifyAborted>false</notifyAborted>
+      <notifyNotBuilt>false</notifyNotBuilt>
+      <notifyUnstable>false</notifyUnstable>
+      <notifyFailure>false</notifyFailure>
+      <notifyBackToNormal>false</notifyBackToNormal>
+    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.25"/>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.5">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/ngiger/elexis-3-core/</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/jubula-based-on-3.0.3</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <assignedNode>linux.gtk.x86_64</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>Elexis-3.0-Jubula-Matrix-Linux</customWorkspace>
+  <axes>
+    <hudson.matrix.TextAxis>
+      <name>TestSuite</name>
+      <values>
+        <string>TST_UPGRADE</string>
+        <string>FULLTEST</string>
+        <string>SMOKETEST</string>
+      </values>
+    </hudson.matrix.TextAxis>
+    <hudson.matrix.LabelAxis>
+      <name>SLAVE</name>
+      <values>
+        <string>Linux-64-bit</string>
+      </values>
+    </hudson.matrix.LabelAxis>
+  </axes>
+  <builders>
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.34">
+      <project>Elexis-3.0-Core</project>
+      <filter>**/ch.elexis.core.application.ElexisApp-linux.gtk.x86_64.zip</filter>
+      <target></target>
+      <excludes></excludes>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+        <stable>true</stable>
+      </selector>
+      <flatten>true</flatten>
+      <doNotFingerprintArtifacts>false</doNotFingerprintArtifacts>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <hudson.tasks.Shell>
+      <command>export LANG=de_CH.UTF-8
+export LANGUAGE=de_CH
+pwd
+hostname -f
+env
+# /etc/X11/Xsession &amp;
+which java &amp;&amp; java -version
+which ruby &amp;&amp; ruby --version
+bundle install --deployment
+# we assume that system ruby is &gt;= 1.9 and that the gems xml-simple rubyzip are installed
+bundle exec ruby ch.elexis.core.releng/jubula/run_jenkins.rb -i ch.elexis.core.application.ElexisApp-linux.gtk.x86_64.zip $TestSuite</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>test-results/**</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+    </hudson.tasks.ArtifactArchiver>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.14.1">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>60</timeoutMinutes>
+      </strategy>
+      <operationList/>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.15"/>
+  </buildWrappers>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>true</runSequentially>
+    <touchStoneCombinationFilter>TestSuite==&quot;TST_UPGRADE&quot;</touchStoneCombinationFilter>
+    <touchStoneResultCondition>
+      <name>SUCCESS</name>
+      <ordinal>0</ordinal>
+      <color>BLUE</color>
+      <completeBuild>true</completeBuild>
+    </touchStoneResultCondition>
+  </executionStrategy>
+  <childCustomWorkspace>.</childCustomWorkspace>
+</matrix-project>

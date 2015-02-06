@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>10</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.24"/>
+  </properties>
+  <scm class="hudson.plugins.mercurial.MercurialSCM" plugin="mercurial@1.50">
+    <source>http://hg.code.sf.net/p/elexis/elexis-base</source>
+    <modules></modules>
+    <revisionType>BRANCH</revisionType>
+    <revision>2.1.7</revision>
+    <clean>false</clean>
+    <browser class="hudson.plugins.mercurial.browser.HgWeb">
+      <url>http://hg.code.sf.net/p/elexis/elexis-base/</url>
+    </browser>
+    <credentialsId></credentialsId>
+    <disableChangeLog>false</disableChangeLog>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>JDK6-u45</jdk>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>*/15 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.buckminster.EclipseBuckminsterBuilder plugin="buckminster@1.1.1">
+      <installationName>Buckminster 4.3</installationName>
+      <commands>importtargetdefinition -A &apos;${WORKSPACE}/ch.elexis.releng/core.dev.target&apos;</commands>
+      <logLevel>info</logLevel>
+      <params></params>
+      <targetPlatformName>None</targetPlatformName>
+      <userTemp></userTemp>
+      <userOutput></userOutput>
+      <userCommand></userCommand>
+      <userWorkspace></userWorkspace>
+      <globalPropertiesFile></globalPropertiesFile>
+      <equinoxLauncherArgs></equinoxLauncherArgs>
+    </hudson.plugins.buckminster.EclipseBuckminsterBuilder>
+  </builders>
+  <publishers>
+    <hudson.plugins.buckminster.targetPlatform.TargetPlatformPublisher plugin="buckminster@1.1.1">
+      <artifacts>.metadata/.plugins/org.eclipse.pde.core/.bundle_pool</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <targetPlatformName>elexis.2.1.7.core.target</targetPlatformName>
+    </hudson.plugins.buckminster.targetPlatform.TargetPlatformPublisher>
+  </publishers>
+  <buildWrappers/>
+</project>

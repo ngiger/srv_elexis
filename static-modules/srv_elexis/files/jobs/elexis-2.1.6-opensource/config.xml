@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Builds elexis-2.1.6&lt;br&gt;&#xd;
+&lt;b&gt;Builds the opensource part (Only for Linux)&lt;/b&gt;&lt;br&gt;&#xd;
+</description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>20</daysToKeep>
+    <numToKeep>30</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>ChooseBranch</name>
+          <description>Dies erlaubt es, einen Tag zu bauen.
+</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>2.1.6</string>
+              <string>2.1.6.2</string>
+              <string>2.1.6.3</string>
+              <string>2.1.6.4</string>
+              <string>2.1.6.4.1</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.24"/>
+  </properties>
+  <scm class="hudson.plugins.mercurial.MercurialSCM" plugin="mercurial@1.50">
+    <source>https://bitbucket.org/ngiger/elexis-bootstrap</source>
+    <modules></modules>
+    <revisionType>BRANCH</revisionType>
+    <revision>2.1.6</revision>
+    <clean>false</clean>
+    <browser class="hudson.plugins.mercurial.browser.HgWeb">
+      <url>https://bitbucket.org/ngiger/elexis-bootstrap/</url>
+    </browser>
+    <credentialsId></credentialsId>
+    <disableChangeLog>false</disableChangeLog>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>JDK6-u45</jdk>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec># Immer 15 Minuten nach der vollen Stunde 
+15 * * * *
+</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command># Create downloads dir one up, to minimizes fetch
+which ruby
+ruby --version
+java -version
+env
+mkdir -p ../downloads
+# First a step to bootstrap our main repository
+./gen_repo.rb --clean --branch $ChooseBranch .
+# echo &quot;,ch.marlovits.addressSearch,ch.marlovits.vornamen,ch.marlovits.plz,at.medevit.elexis.gdt.customed,medshare-licence-generator&quot; &gt;skipPlugins.add
+echo &quot;,ch.marlovits.addressSearch,ch.marlovits.vornamen,ch.marlovits.plz,at.medevit.elexis.gdt.customed,medshare-licence-generator,de.ralfebert.rcputils,de.ralfebert.rcputils.feature&quot; &gt;skipPlugins.add
+/usr/bin/ruby prepareJenkins.rb --branch $ChooseBranch
+cd elexis-base/BuildElexis
+ant -Dos=linux.x86_64 clean linux.x86_64 doc doc-plugins javadoc
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>deploy/**</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.Mailer plugin="mailer@1.11">
+      <recipients>niklaus.giger@member.fsf.org</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.14"/>
+    <ruby-proxy-object>
+      <ruby-object ruby-class="Jenkins::Plugin::Proxies::BuildWrapper" pluginid="rvm">
+        <pluginid pluginid="rvm" ruby-class="String">rvm</pluginid>
+        <object ruby-class="RvmWrapper" pluginid="rvm">
+          <impl pluginid="rvm" ruby-class="String">jruby-1.6.7.2</impl>
+        </object>
+      </ruby-object>
+    </ruby-proxy-object>
+  </buildWrappers>
+</project>

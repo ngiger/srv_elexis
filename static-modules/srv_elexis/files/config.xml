@@ -3,101 +3,170 @@
   <disabledAdministrativeMonitors>
     <string>OldData</string>
   </disabledAdministrativeMonitors>
-  <version>1.509.3</version>
+  <version>1.565.3</version>
   <numExecutors>2</numExecutors>
   <mode>NORMAL</mode>
   <useSecurity>true</useSecurity>
   <authorizationStrategy class="hudson.security.ProjectMatrixAuthorizationStrategy">
-    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:ROLE_JENKINSADMIN</permission>
     <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:niklaus</permission>
-    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:ROLE_JENKINSADMIN</permission>
     <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:niklaus</permission>
-    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:ROLE_JENKINSADMIN</permission>
     <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:niklaus</permission>
-    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:ROLE_JENKINSADMIN</permission>
     <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:niklaus</permission>
-    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:mdescher</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:ROLE_JENKINSADMIN</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:anonymous</permission>
     <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:niklaus</permission>
-    <permission>hudson.model.Computer.Configure:mdescher</permission>
+    <permission>hudson.model.Computer.Build:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Computer.Build:jkappis</permission>
+    <permission>hudson.model.Computer.Build:niklaus</permission>
+    <permission>hudson.model.Computer.Configure:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Computer.Configure:niklaus</permission>
-    <permission>hudson.model.Computer.Connect:anonymous</permission>
-    <permission>hudson.model.Computer.Connect:mdescher</permission>
+    <permission>hudson.model.Computer.Connect:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Computer.Connect:jkappis</permission>
     <permission>hudson.model.Computer.Connect:niklaus</permission>
     <permission>hudson.model.Computer.Connect:slaves</permission>
-    <permission>hudson.model.Computer.Create:mdescher</permission>
+    <permission>hudson.model.Computer.Create:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Computer.Create:niklaus</permission>
-    <permission>hudson.model.Computer.Delete:mdescher</permission>
+    <permission>hudson.model.Computer.Delete:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Computer.Delete:niklaus</permission>
-    <permission>hudson.model.Computer.Disconnect:mdescher</permission>
+    <permission>hudson.model.Computer.Disconnect:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Computer.Disconnect:jkappis</permission>
     <permission>hudson.model.Computer.Disconnect:niklaus</permission>
     <permission>hudson.model.Computer.Disconnect:slaves</permission>
-    <permission>hudson.model.Hudson.Administer:mdescher</permission>
+    <permission>hudson.model.Hudson.Administer:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Hudson.Administer:niklaus</permission>
-    <permission>hudson.model.Hudson.ConfigureUpdateCenter:mdescher</permission>
+    <permission>hudson.model.Hudson.ConfigureUpdateCenter:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Hudson.ConfigureUpdateCenter:niklaus</permission>
+    <permission>hudson.model.Hudson.Read:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Hudson.Read:ROLE_JENKINSUSER</permission>
     <permission>hudson.model.Hudson.Read:anonymous</permission>
-    <permission>hudson.model.Hudson.Read:mdescher</permission>
+    <permission>hudson.model.Hudson.Read:jkappis</permission>
     <permission>hudson.model.Hudson.Read:niklaus</permission>
     <permission>hudson.model.Hudson.Read:slaves</permission>
-    <permission>hudson.model.Hudson.RunScripts:mdescher</permission>
+    <permission>hudson.model.Hudson.RunScripts:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Hudson.RunScripts:niklaus</permission>
-    <permission>hudson.model.Hudson.UploadPlugins:mdescher</permission>
+    <permission>hudson.model.Hudson.UploadPlugins:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Hudson.UploadPlugins:niklaus</permission>
-    <permission>hudson.model.Item.Build:mdescher</permission>
+    <permission>hudson.model.Item.Build:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Item.Build:ROLE_JENKINSUSER</permission>
+    <permission>hudson.model.Item.Build:jkappis</permission>
     <permission>hudson.model.Item.Build:niklaus</permission>
-    <permission>hudson.model.Item.Cancel:mdescher</permission>
+    <permission>hudson.model.Item.Cancel:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Item.Cancel:jkappis</permission>
     <permission>hudson.model.Item.Cancel:niklaus</permission>
-    <permission>hudson.model.Item.Configure:mdescher</permission>
+    <permission>hudson.model.Item.Configure:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Item.Configure:niklaus</permission>
-    <permission>hudson.model.Item.Create:mdescher</permission>
+    <permission>hudson.model.Item.Create:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Item.Create:niklaus</permission>
-    <permission>hudson.model.Item.Delete:mdescher</permission>
+    <permission>hudson.model.Item.Delete:ROLE_JENKINSADMIN</permission>
     <permission>hudson.model.Item.Delete:niklaus</permission>
-    <permission>hudson.model.Item.Discover:mdescher</permission>
+    <permission>hudson.model.Item.Discover:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Item.Discover:ROLE_JENKINSUSER</permission>
+    <permission>hudson.model.Item.Discover:anonymous</permission>
+    <permission>hudson.model.Item.Discover:jkappis</permission>
     <permission>hudson.model.Item.Discover:niklaus</permission>
-    <permission>hudson.model.Item.Read:mdescher</permission>
+    <permission>hudson.model.Item.Read:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Item.Read:ROLE_JENKINSUSER</permission>
+    <permission>hudson.model.Item.Read:anonymous</permission>
+    <permission>hudson.model.Item.Read:jkappis</permission>
     <permission>hudson.model.Item.Read:niklaus</permission>
-    <permission>hudson.model.Item.Workspace:mdescher</permission>
+    <permission>hudson.model.Item.Workspace:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Item.Workspace:ROLE_JENKINSUSER</permission>
+    <permission>hudson.model.Item.Workspace:jkappis</permission>
     <permission>hudson.model.Item.Workspace:niklaus</permission>
-    <permission>hudson.model.Run.Delete:mdescher</permission>
+    <permission>hudson.model.Run.Delete:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Run.Delete:jkappis</permission>
     <permission>hudson.model.Run.Delete:niklaus</permission>
-    <permission>hudson.model.Run.Update:mdescher</permission>
+    <permission>hudson.model.Run.Update:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.Run.Update:jkappis</permission>
     <permission>hudson.model.Run.Update:niklaus</permission>
-    <permission>hudson.model.View.Configure:mdescher</permission>
+    <permission>hudson.model.View.Configure:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.View.Configure:jkappis</permission>
     <permission>hudson.model.View.Configure:niklaus</permission>
-    <permission>hudson.model.View.Create:mdescher</permission>
+    <permission>hudson.model.View.Create:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.View.Create:ROLE_JENKINSUSER</permission>
+    <permission>hudson.model.View.Create:jkappis</permission>
     <permission>hudson.model.View.Create:niklaus</permission>
-    <permission>hudson.model.View.Delete:mdescher</permission>
+    <permission>hudson.model.View.Delete:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.View.Delete:jkappis</permission>
     <permission>hudson.model.View.Delete:niklaus</permission>
-    <permission>hudson.model.View.Read:mdescher</permission>
+    <permission>hudson.model.View.Read:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.model.View.Read:ROLE_JENKINSUSER</permission>
+    <permission>hudson.model.View.Read:anonymous</permission>
+    <permission>hudson.model.View.Read:jkappis</permission>
     <permission>hudson.model.View.Read:niklaus</permission>
-    <permission>hudson.scm.SCM.Tag:mdescher</permission>
+    <permission>hudson.scm.SCM.Tag:ROLE_JENKINSADMIN</permission>
+    <permission>hudson.scm.SCM.Tag:ROLE_JENKINSUSER</permission>
+    <permission>hudson.scm.SCM.Tag:jkappis</permission>
     <permission>hudson.scm.SCM.Tag:niklaus</permission>
   </authorizationStrategy>
-  <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
-    <disableSignup>false</disableSignup>
-    <enableCaptcha>false</enableCaptcha>
+  <securityRealm class="hudson.security.LDAPSecurityRealm" plugin="ldap@1.10.2">
+    <server>mis.medelexis.ch</server>
+    <rootDN>dc=medelexis,dc=ch</rootDN>
+    <inhibitInferRootDN>false</inhibitInferRootDN>
+    <userSearchBase>ou=People</userSearchBase>
+    <userSearch>uid={0}</userSearch>
+    <groupSearchBase>ou=Groups</groupSearchBase>
+    <groupMembershipStrategy class="jenkins.security.plugins.ldap.FromGroupSearchLDAPGroupMembershipStrategy">
+      <filter></filter>
+    </groupMembershipStrategy>
+    <managerPasswordSecret>KGMqO8hika8JJ2PFgP1Z4w==</managerPasswordSecret>
+    <disableMailAddressResolver>false</disableMailAddressResolver>
+    <displayNameAttributeName>displayname</displayNameAttributeName>
+    <mailAddressAttributeName>mail</mailAddressAttributeName>
   </securityRealm>
+  <disableRememberMe>false</disableRememberMe>
   <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
   <workspaceDir>${ITEM_ROOTDIR}/workspace</workspaceDir>
   <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
-  <systemMessage>&lt;h1&gt;Continuos Integration für Elexis 3&lt;/h1&gt;&#xd;
+  <systemMessage>&lt;table&gt;&#xd;
+  &lt;tr&gt;&#xd;
+    &lt;td&gt;&#xd;
+&lt;h1&gt;Continuos Integration für Elexis&amp;nbsp;3&lt;/h1&gt;&#xd;
 &#xd;
 Danke an Medelexis für den Build-Server!&#xd;
-&#xd;
-</systemMessage>
-  <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter">
+    &lt;/td&gt;&#xd;
+    &lt;td width=&quot;30pi&quot; &gt;&#xd;
+    &lt;/td&gt;&#xd;
+    &lt;td&gt;&#xd;
+      &#xd;
+&lt;h2&gt;Verfügbare Versionen&lt;/h2&gt;&#xd;
+&lt;p&gt;Link zu Zip-Dateien pro Betriebssystem der letzten freigegeben stabilen Version&lt;p&gt;&#xd;
+&lt;ul&gt;&#xd;
+  &lt;li&gt;&#xd;
+    &lt;a href=&quot;https://srv.elexis.info/jenkins/view/3.0/job/Elexis-3.0-Core-Releases/lastSuccessfulBuild/artifact/ch.elexis.core.p2site/target/products/&quot;&gt;3.0.0&lt;/A&gt;&#xd;
+      - 3. August 2014 - &lt;A HREF=&quot;https://github.com/elexis/elexis/wiki/Release-Notes-3.0.0&quot;&gt;Release Notes&lt;/A&gt;&#xd;
+&lt;/li&gt;&#xd;
+&lt;/ul&gt;&#xd;
+    &lt;/td&gt;&#xd;
+      &lt;td&gt;&#xd;
+&lt;h2&gt;For testers and early adopters&lt;/h2&gt;&#xd;
+&lt;ul&gt;&#xd;
+  &lt;li&gt;&#xd;
+&lt;a href=&quot;https://srv.elexis.info/jenkins/view/3.0/job/Elexis-3.0-Core-Releases/lastSuccessfulBuild/artifact/ch.elexis.core.p2site/target/products/&quot;&gt;Beta&lt;/A&gt;&#xd;
+&lt;/li&gt;&#xd;
+&lt;li&gt;&#xd;
+&lt;a href=&quot;https://srv.elexis.info/jenkins/view/3.0/job/Elexis-3.0-Core/lastSuccessfulBuild/artifact/ch.elexis.core.p2site/target/products/&quot;&gt;Snapshot&lt;/A&gt;&#xd;
+&lt;/li&gt;&#xd;
+&lt;/ul&gt;&#xd;
+&lt;/td&gt;    &#xd;
+&lt;/rd&gt;&#xd;
+&lt;/table&gt;</systemMessage>
+  <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter" plugin="antisamy-markup-formatter@1.2">
     <disableSyntaxHighlighting>false</disableSyntaxHighlighting>
   </markupFormatter>
   <jdks>
     <jdk>
-      <name>JDK7-u40</name>
+      <name>JDK7-u65</name>
       <home></home>
       <properties>
         <hudson.tools.InstallSourceProperty>
           <installers>
             <hudson.tools.JDKInstaller>
-              <id>jdk-7u40-oth-JPR</id>
+              <id>jdk-7u65-oth-JPR</id>
               <acceptLicense>true</acceptLicense>
             </hudson.tools.JDKInstaller>
           </installers>
@@ -118,11 +187,6 @@ Danke an Medelexis für den Build-Server!&#xd;
         </hudson.tools.InstallSourceProperty>
       </properties>
     </jdk>
-    <jdk>
-      <name>System-MACOSX</name>
-      <home>/Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home</home>
-      <properties/>
-    </jdk>
   </jdks>
   <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
   <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
@@ -137,7 +201,9 @@ Danke an Medelexis für den Build-Server!&#xd;
       <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
       <launcher class="hudson.slaves.JNLPLauncher"/>
       <label>win32.win32.x86</label>
-      <nodeProperties/>
+      <nodeProperties>
+        <hudson.plugins.xvnc.NodePropertyImpl plugin="xvnc@1.17"/>
+      </nodeProperties>
       <userId>niklaus</userId>
     </slave>
     <slave>
@@ -171,11 +237,7 @@ Danke an Medelexis für den Build-Server!&#xd;
     <hudson.model.AllView>
       <owner class="hudson" reference="../../.."/>
       <name>Alle</name>
-      <description>&lt;h1&gt;Continuos Integration für Elexis 3&lt;/h1&gt;&#xd;
-&#xd;
-Danke an Medelexis für den Build-Server!&#xd;
-&#xd;
-</description>
+      <description></description>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
@@ -188,6 +250,14 @@ Danke an Medelexis für den Build-Server!&#xd;
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>Elexis-3-3rdparty</string>
+        <string>Elexis-3-3rdparty-Releases</string>
+        <string>Elexis-3-Debian-Pakete</string>
+        <string>Elexis-3.0-Base-Formatter</string>
+        <string>Elexis-3.0-Jubula-docker</string>
+        <string>Elexis-3.0-Jubula-Matrix-Windows</string>
+        <string>mirror.4.elexis</string>
+        <string>mirror.4.elexis-Releases</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -200,12 +270,75 @@ Danke an Medelexis für den Build-Server!&#xd;
         <hudson.views.BuildButtonColumn/>
         <org.jenkins.ci.plugins.column.console.LastBuildColumn plugin="console-column-plugin@1.5"/>
       </columns>
-      <includeRegex>.*</includeRegex>
+      <includeRegex>.*3\.0.*</includeRegex>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Artikelstamm</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>Artikelstamm Full Build</string>
+        <string>Artikelstamm generate oddb2xml</string>
+        <string>Artikelstamm monthly build</string>
+        <string>Artikelstamm set new version</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+        <jenkins.plugins.extracolumns.LastBuildConsoleColumn plugin="extra-columns@1.14"/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>2.1.7</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView[2]/jobNames/comparator"/>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <includeRegex>.*2\.1\.7.*</includeRegex>
+      <recurse>false</recurse>
     </listView>
   </views>
   <primaryView>Alle</primaryView>
   <slaveAgentPort>8752</slaveAgentPort>
   <label></label>
   <nodeProperties/>
-  <globalNodeProperties/>
+  <globalNodeProperties>
+    <hudson.slaves.EnvironmentVariablesNodeProperty>
+      <envVars serialization="custom">
+        <unserializable-parents/>
+        <tree-map>
+          <default>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </default>
+          <int>1</int>
+          <string>PATH</string>
+          <string>/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games</string>
+        </tree-map>
+      </envVars>
+    </hudson.slaves.EnvironmentVariablesNodeProperty>
+  </globalNodeProperties>
 </hudson>

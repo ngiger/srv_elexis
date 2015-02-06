@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Polls elexis-addons branch 2.1.7</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.23"/>
+  </properties>
+  <scm class="hudson.plugins.mercurial.MercurialSCM" plugin="mercurial@1.49">
+    <source>http://hg.code.sf.net/p/elexis/elexis-addons</source>
+    <modules></modules>
+    <branch>2.1.7</branch>
+    <clean>false</clean>
+    <browser class="hudson.plugins.mercurial.browser.HgWeb">
+      <url>http://hg.code.sf.net/p/elexis/elexis-addons/</url>
+    </browser>
+    <credentialsId></credentialsId>
+  </scm>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Vorgabewert)</jdk>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec># Alle 10 Minuten
+*/10 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders/>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>elexis-2.1.7-Buildr-OpenSource</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>

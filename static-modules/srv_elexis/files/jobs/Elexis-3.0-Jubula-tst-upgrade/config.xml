@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Test whether the upgrades of several previous installations of Elexis 3 (like Beta2) to the latest build was successfull.&#xd;
+&lt;br&gt;Is run once a week or triggered manually when we are interested in its results.&#xd;
+&lt;br&gt;Here the links to the detail information as seen by the use when upgrading &#xd;
+&lt;ul&gt;&#xd;
+  &lt;li&gt;&lt;a href=&quot;ws/test-results/1/sw-inst-details.log&quot;&gt;Last successful Elexis-3-Core build&lt;/a&gt;&lt;/li&gt;&#xd;
+  &lt;li&gt;&lt;a href=&quot;ws/test-results/2/sw-inst-details.log&quot;&gt;Elexis-3-Core build May 16, 2014&lt;/a&gt;&lt;/li&gt;&#xd;
+  &lt;li&gt;&lt;a href=&quot;ws/test-results/3/sw-inst-details.log&quot;&gt;Beta2&lt;/a&gt;&lt;/li&gt;&#xd;
+&lt;/ul&gt;&#xd;
+&lt;br&gt;&#xd;
+If not present the build was failed. In this case consult the console log. A summary is at its end.&#xd;
+&#xd;
+  </description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>30</daysToKeep>
+    <numToKeep>10</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.9.1">
+      <projectUrl>https://github.com/elexis/elexis-3-core/</projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.2">
+      <room></room>
+      <startNotification>false</startNotification>
+      <notifySuccess>false</notifySuccess>
+      <notifyAborted>false</notifyAborted>
+      <notifyNotBuilt>false</notifyNotBuilt>
+      <notifyUnstable>false</notifyUnstable>
+      <notifyFailure>false</notifyFailure>
+      <notifyBackToNormal>false</notifyBackToNormal>
+    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.24"/>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.5">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/elexis/elexis-3-core/</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>**</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.PerBuildTag/>
+    </extensions>
+  </scm>
+  <assignedNode>Linux-64-bit</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Vorgabewert)</jdk>
+  <triggers>
+    <hudson.triggers.TimerTrigger>
+      <spec>31 13 * * 7</spec>
+    </hudson.triggers.TimerTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Maven>
+      <targets>-Dmaven.test.skip -Dtycho.localArtifacts=ignore clean install</targets>
+      <mavenName>3.0.5</mavenName>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+    </hudson.tasks.Maven>
+    <hudson.tasks.Shell>
+      <command>echo PATH ist $PATH
+pwd
+hostname -f
+echo WORKSPACE ist $WORKSPACE
+which java &amp;&amp; java -version
+which ruby &amp;&amp; ruby --version
+cd ch.elexis.core.releng/jubula
+bundle install --deployment
+# we assume that system ruby is &gt;= 1.9 and that the gems xml-simple rubyzip are installed
+bundle exec ruby tst_upgrade.rb</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command></command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>test-results/**</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+    </hudson.tasks.ArtifactArchiver>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.xvfb.XvfbBuildWrapper plugin="xvfb@1.0.12">
+      <installationName>System</installationName>
+      <screen>1280x1024x24</screen>
+      <debug>true</debug>
+      <timeout>0</timeout>
+      <displayNameOffset>100</displayNameOffset>
+      <additionalOptions></additionalOptions>
+      <shutdownWithBuild>true</shutdownWithBuild>
+      <autoDisplayName>true</autoDisplayName>
+    </org.jenkinsci.plugins.xvfb.XvfbBuildWrapper>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.14">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>60</timeoutMinutes>
+      </strategy>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.AbortOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.14"/>
+  </buildWrappers>
+</project>

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Build Elexis Core with test features (at.medevit.medelexis.core.test.feature) and run JUnit tests.</description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>4</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.redmine.RedmineProjectProperty plugin="redmine@0.15">
+      <projectName></projectName>
+    </hudson.plugins.redmine.RedmineProjectProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.23"/>
+  </properties>
+  <scm class="hudson.plugins.mercurial.MercurialSCM" plugin="mercurial@1.50">
+    <source>http://elexis.hg.sourceforge.net:8000/hgroot/elexis/elexis-base</source>
+    <modules></modules>
+    <revisionType>BRANCH</revisionType>
+    <revision>2.1.6</revision>
+    <clean>false</clean>
+    <browser class="hudson.plugins.mercurial.browser.HgWeb">
+      <url>http://elexis.hg.sourceforge.net:8000/hgroot/elexis/elexis-base/</url>
+    </browser>
+    <disableChangeLog>false</disableChangeLog>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>*/15 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.buckminster.EclipseBuckminsterBuilder plugin="buckminster@1.1.1">
+      <installationName>Fetch Buckminster-remote</installationName>
+      <commands>import &apos;${WORKSPACE}/ch.elexis.releng/buckminster/local.core.test.cquery&apos;
+build  -c
+emma -l &apos;ch.rgw.utility_test/UtilityAllTests.launch&apos; -o &apos;${WORKSPACE}/test-reports/UtilityAllTests.xml&apos; --flatXML --xml &apos;${WORKSPACE}/test-coverage-reports/UtilityAllTests.xml&apos;
+build  -c
+emma -l &apos;ch.elexis_test/CoreAllTests.launch&apos; -o &apos;${WORKSPACE}/test-reports/CoreAllTests.xml&apos;  --flatXML --xml &apos;${WORKSPACE}/test-coverage-reports/CoreAllTests.xml&apos;
+
+# build  -c
+# emma -l &apos;ch.elexis.importer.div_test/ImporterAllTests.launch&apos; --stderr &apos;${WORKSPACE}/test-reports/stderr.txt&apos; \
+#--stdout &apos;${WORKSPACE}/test-reports/stdout.txt&apos; -o &apos;${WORKSPACE}/test-reports/ImporterAllTests.xml&apos;  \
+#--flatXML --xml  &apos;${WORKSPACE}/test-coverage-reports/ImporterAllTests.xml&apos;
+</commands>
+      <logLevel>info</logLevel>
+      <params></params>
+      <targetPlatformName>elexis.2.1.6.core.target</targetPlatformName>
+      <userTemp></userTemp>
+      <userOutput></userOutput>
+      <userCommand></userCommand>
+      <userWorkspace></userWorkspace>
+      <globalPropertiesFile></globalPropertiesFile>
+      <equinoxLauncherArgs></equinoxLauncherArgs>
+    </hudson.plugins.buckminster.EclipseBuckminsterBuilder>
+  </builders>
+  <publishers>
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>test-reports/*.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <testDataPublishers/>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.tasks.Mailer plugin="mailer@1.8">
+      <recipients>niklaus.giger@member.fsf.org</recipients>
+      <dontNotifyEveryUnstableBuild>true</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.11"/>
+    <hudson.plugins.xvnc.Xvnc plugin="xvnc@1.17">
+      <takeScreenshot>false</takeScreenshot>
+      <useXauthority>true</useXauthority>
+    </hudson.plugins.xvnc.Xvnc>
+  </buildWrappers>
+</project>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<hudson.tasks.Ant_-DescriptorImpl plugin="ant@1.1">
+<hudson.tasks.Ant_-DescriptorImpl plugin="ant@1.2">
   <installations>
     <hudson.tasks.Ant_-AntInstallation>
       <name>1.9.2</name>

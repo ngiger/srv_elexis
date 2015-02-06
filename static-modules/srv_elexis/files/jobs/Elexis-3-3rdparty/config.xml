@@ -1,21 +1,35 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@1.509.3">
+<maven2-moduleset plugin="maven-plugin@2.6">
   <actions/>
   <description>&lt;p&gt;Builds for upcoming Elexis 3.0.&lt;/p&gt;&#xd;
 &lt;h2&gt;Creates p2-update site &#xd;
-&lt;a  href=&quot;http://download.elexis.info/elexis.3rdparty.libraries/&quot;&gt;http://download.elexis.info/elexis.3rdparty.libraries/&lt;/a&gt;&#xd;
+  elexis.3.3rdparty.libraries/snapshot&#xd;
+  &lt;a  href=&quot;http://download.elexis.info/elexis.3.3rdparty.libraries/snapshot/&quot;&gt;http://download.elexis.info/elexis.3.3rdparty.libraries/snapshot&lt;/a&gt;&#xd;
 &lt;/h2&gt;&#xd;
+&lt;p&gt;Before december 2013 things went into &lt;a  href=&quot;http://download.elexis.info/elexis.3rdparty.libraries/&quot;&gt;http://download.elexis.info/elexis.3rdparty.libraries/&lt;/a&gt;&#xd;
+&#xd;
 &lt;p&gt;Only for developpers!&lt;/p&gt;&#xd;
 </description>
   <keepDependencies>false</keepDependencies>
-  <properties/>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@1.5.0">
+  <properties>
+    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.2">
+      <room></room>
+      <startNotification>false</startNotification>
+      <notifySuccess>false</notifySuccess>
+      <notifyAborted>false</notifyAborted>
+      <notifyNotBuilt>false</notifyNotBuilt>
+      <notifyUnstable>false</notifyUnstable>
+      <notifyFailure>false</notifyFailure>
+      <notifyBackToNormal>false</notifyBackToNormal>
+    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.24"/>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.5">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <name></name>
-        <refspec></refspec>
-        <url>https://github.com/elexis/elexis.3rdparty.libraries/</url>
+        <url>git@github.com:elexis/elexis.3rdparty.libraries.git</url>
+        <credentialsId>59d1f70f-59d0-4ed7-ba2e-5052344e62d1</credentialsId>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -23,28 +37,14 @@
         <name>**</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
-    <disableSubmodules>false</disableSubmodules>
-    <recursiveSubmodules>false</recursiveSubmodules>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <authorOrCommitter>false</authorOrCommitter>
-    <clean>false</clean>
-    <wipeOutWorkspace>false</wipeOutWorkspace>
-    <pruneBranches>false</pruneBranches>
-    <remotePoll>false</remotePoll>
-    <ignoreNotifyCommit>false</ignoreNotifyCommit>
-    <useShallowClone>false</useShallowClone>
-    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
-    <gitTool>Default</gitTool>
+    <browser class="hudson.plugins.git.browser.GithubWeb">
+      <url>https://github.com/elexis/elexis.3rdparty.libraries</url>
+    </browser>
     <submoduleCfg class="list"/>
-    <relativeTargetDir></relativeTargetDir>
-    <reference></reference>
-    <excludedRegions></excludedRegions>
-    <excludedUsers></excludedUsers>
-    <gitConfigName></gitConfigName>
-    <gitConfigEmail></gitConfigEmail>
-    <skipTag>false</skipTag>
-    <includedRegions></includedRegions>
-    <scmName></scmName>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.PerBuildTag/>
+    </extensions>
   </scm>
   <assignedNode>master</assignedNode>
   <canRoam>false</canRoam>
@@ -52,9 +52,12 @@
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <jdk>(Vorgabewert)</jdk>
-  <triggers class="vector">
+  <triggers>
+    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.9.1">
+      <spec></spec>
+    </com.cloudbees.jenkins.GitHubPushTrigger>
     <hudson.triggers.SCMTrigger>
-      <spec>H * * * *
+      <spec>H/5 * * * *
 
 </spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
@@ -66,11 +69,13 @@
     <artifactId>elexis.3rdparty.libraries.p2.site</artifactId>
   </rootModule>
   <goals>clean install p2:site</goals>
+  <mavenName>3.0.5</mavenName>
   <aggregatorStyleBuild>true</aggregatorStyleBuild>
   <incrementalBuild>false</incrementalBuild>
-  <perModuleEmail>true</perModuleEmail>
-  <ignoreUpstremChanges>false</ignoreUpstremChanges>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
   <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
   <resolveDependencies>false</resolveDependencies>
   <processPlugins>false</processPlugins>
   <mavenValidationLevel>-1</mavenValidationLevel>
@@ -79,48 +84,40 @@
   <settings class="jenkins.mvn.DefaultSettingsProvider"/>
   <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
   <reporters/>
-  <publishers>
-    <hudson.tasks.ArtifactArchiver>
-      <artifacts>target/repository/**</artifacts>
-      <latestOnly>false</latestOnly>
-      <allowEmptyArchive>false</allowEmptyArchive>
-    </hudson.tasks.ArtifactArchiver>
-    <hudson.tasks.BuildTrigger>
-      <childProjects>Elexis-3.0-Core</childProjects>
-      <threshold>
-        <name>SUCCESS</name>
-        <ordinal>0</ordinal>
-        <color>BLUE</color>
-      </threshold>
-    </hudson.tasks.BuildTrigger>
-  </publishers>
+  <publishers/>
   <buildWrappers>
-    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.12">
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.14">
       <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
         <timeoutMinutes>10</timeoutMinutes>
       </strategy>
-      <failBuild>false</failBuild>
-      <writingDescription>false</writingDescription>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.AbortOperation/>
+      </operationList>
     </hudson.plugins.build__timeout.BuildTimeoutWrapper>
-    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.7"/>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.5.14"/>
   </buildWrappers>
   <prebuilders>
     <hudson.tasks.Shell>
-      <command>echo PATH ist $PATH</command>
+      <command>echo PATH ist $PATH
+echo ENV ist $ENV</command>
     </hudson.tasks.Shell>
   </prebuilders>
   <postbuilders>
     <hudson.tasks.Shell>
-      <command>DEST=/home/jenkins/downloads/elexis.3rdparty.libraries
+      <command>DEST=/home/jenkins/downloads/elexis.3.3rdparty.libraries/snapshot
 rm -rf ${DEST}
 mkdir -p ${DEST}
 cp -rpu target/repository/* ${DEST}
 cp -pu index.html ${DEST}</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>git push --tags</command>
     </hudson.tasks.Shell>
   </postbuilders>
   <runPostStepsIfResult>
     <name>SUCCESS</name>
     <ordinal>0</ordinal>
     <color>BLUE</color>
+    <completeBuild>true</completeBuild>
   </runPostStepsIfResult>
 </maven2-moduleset>
