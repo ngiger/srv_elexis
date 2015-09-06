@@ -15,9 +15,10 @@ class srv_elexis::vnc_client  inherits srv_elexis {
       source => 'puppet:///modules/srv_elexis/xstartup', # Copy from jubula-elexis project
     }
 
+    if (false) {
     $passwdScript = "${home}/set_vncpasswd.exp"
     file { $passwdScript:
-      ensure => present,
+      ensure => true,
       source => 'puppet:///modules/srv_elexis/set_vncpasswd.exp',
       mode => 0755,
     }
@@ -27,12 +28,13 @@ class srv_elexis::vnc_client  inherits srv_elexis {
       require => [
 #          User[$s_user], 
           File[$passwdScript],  
-          Package['vnc4server','expect']
+          Package['xvfb','expect']
                  ],
       command => "sudo -Hu $user $passwdScript",
       creates => "${home}/.vnc/passwd",
       path    => '/usr/bin:/bin',
     }
+}
   }
   enable_vnc_client{ 'jenkins': # ensure that the user jenkins can run Jubula as a vnc-client
     home => "$srv_elexis::config::jenkins_root"
@@ -42,7 +44,7 @@ class srv_elexis::vnc_client  inherits srv_elexis {
   # * an X-Server (vnc4server)
   # * some method to create a snapshot (imagemagick)
   # * a X-Window manager (fvwm)
-  package { ['imagemagick', 'fvwm', 'vnc4server']: ensure => installed, }
+  package { ['imagemagick', 'fvwm', 'xvfb']: ensure => installed, }
 
   # needed ia32-libs-gtk
   # eclipse ??

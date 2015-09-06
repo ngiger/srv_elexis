@@ -9,10 +9,12 @@
   "issues_url": null,
   "description": "Puppet module for Elexis-CI",
   "dependencies": [
+    { "name":"puppetlabs/postgresql","version_requirement":">= 1.0.0"},
     { "name":"puppetlabs/mysql","version_requirement":">= 1.0.0"},
     { "name":"rtyler/jenkins","version_requirement":">= 1.0.0"},
-    { "name":"carlasouza/mediawiki","version_requirement":">= 1.0.0"},
-    { "name":"jbeard/nfs","version_requirement":">= 0.1.7"},
-    { "name":"rodjek/logrotate","version_requirement":">= 1.0.0"}
+    { "name":"jbeard/nfs","version_requirement":">= 0.2-0"},
+    { "name":"rodjek/logrotate","version_requirement":">= 1.0.0"},
+    { "name":"garethr/docker","version_requirement":">= 4.1.0"},
+    { "name":"aimonb/nexusis_mediawiki","version_requirement":">=2.0.0"}
   ]
 }

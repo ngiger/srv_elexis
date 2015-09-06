@@ -42,7 +42,7 @@ class srv_elexis::wiki(
   $elexis_wiki_server = "srv.ngiger.dyndns.org" 
 ) inherits srv_elexis {
   
-  $wiki_root = '/var/lib/mediawiki' # Debian default
+  $wiki_root = '/home/www/mediawiki' # Debian default
   
   # http://www.mediawiki.org/wiki/Extension:DeleteHistory
   # BlockAndNuke
@@ -71,16 +71,45 @@ class srv_elexis::wiki(
   # http://www.howtoforge.com/installing-nginx-with-php5-and-php-fpm-and-mysql-support-lemp-on-debian-wheezy-p2
   # https://github.com/kenpratt/wikipedia-client
 
-  include srv_elexis::mysql
+  # include srv_elexis::mysql
   
+  if (true) {
+
+
+  } else {
   ensure_packages['php5-gd', 'mediawiki', 'mediawiki-extensions', 'mediawiki-extensions-collection', 'clamav', 'php-apc']
   # package{'imagemagick': ensure => absent, } # I want to use php5-gd
-  
+  file { '/etc/mediawiki':
+    ensure => directory,
+  }
   file { '/etc/mediawiki/LocalSettings.php.soll':
     ensure => present,
     content => template("srv_elexis/LocalSettings.php.erb"),
+    require => File['/etc/mediawiki'],
   }
-    
+
+  if ($wiki_root != '/var/www/mediawiki') # not debian standard
+  {
+    file {$wiki_root :
+      ensure => directory,
+      owner => 'www-data',
+      require => File['/home/www'],
+    }
+
+    file { '/var/www/mediawiki':
+      ensure  => link,
+      target  => $wiki_root,
+      owner => 'www-data',
+      require => File[$wiki_root],
+    }
+    file { '/home/www/mediawiki/images':
+      ensure => directory,
+      owner => 'www-data',
+      require => File['/home/www/mediawiki'],
+    }
+
+  }
+
   # http://www.mediawiki.org/wiki/Manual:Running_MediaWiki_on_Debian_GNU/Linux
   # Als Logo für Elexis
   file { "$wiki_root/elexis_135.png":
@@ -135,5 +164,6 @@ mysqldump -u elexis -pelexisTest --opt --all-databases 2>/dev/null | bzcat -zc >
 chown backup /opt/backups/mysql_wiki_dump.sql.bz2
 ",
       mode => 0744,
+  }
   }
 }

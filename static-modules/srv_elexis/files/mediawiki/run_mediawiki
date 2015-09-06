@@ -1,0 +1,12 @@
+#!/bin/bash -v
+# set -e
+docker build -t ngiger/wiki .
+docker kill wiki; docker rm wiki
+docker run --name wiki -d -p 50080:80 ngiger/wiki
+# docker run --name wiki -d -p 50080:80 -p 50443:443  ngiger/wiki
+# docker run --name wiki -d -p 50080:80 -p 50443:443 -v /opt/docker-data-containers/wiki/mysql:/var/lib/mysql -v /opt/docker-data-containers/wiki/extensions:/usr/share/mediawiki/extensions ngiger/wiki
+# -v /opt/docker-data-containers/wiki/extensions/
+sleep 2
+docker logs wiki
+# http://localhost:50080/mediawiki/mw-config/index.php
+

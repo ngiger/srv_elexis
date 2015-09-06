@@ -1,0 +1,22 @@
+[Unit]
+Description=Mediawiki
+After=docker.service mysql.service
+Requires=mysql.service
+
+[Service]
+Restart=always
+KillMode=control-group
+ExecStart=/usr/bin/docker run --name=wiki --detach=false --cpu-shares=512 \
+    --memory=128M --publish=127.0.0.1:58081:80 --rm=true \
+    --env=VIRTUAL_HOST=wiki.ngiger.dyndns.org \
+    --hostname=wiki \
+    --volume=/opt/wiki:/data \
+    --cap-drop=NET_RAW \
+    ngiger/wiki
+ExecStop=/usr/bin/docker pull ngiger/wiki:latest
+
+[Install]
+WantedBy=multi-user.target
+# docker run --name=wiki --cpu-shares=512 --memory=128M --publish=127.0.0.1:58081:80 --env=VIRTUAL_HOST=wiki.ngiger.dyndns.org --hostname=wiki --volume=/opt/wiki:/data --cap-drop=NET_RAW ngiger/wiki
+
+# docker run --volume=/opt/wiki:/data -i -t ngiger/wiki /bin/bash

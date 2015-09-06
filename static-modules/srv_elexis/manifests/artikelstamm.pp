@@ -43,6 +43,17 @@ class srv_elexis::artikelstamm(
     group => 'root',
   }
   
+  file { '/home/www':
+    ensure => directory,
+    owner => 'www-data'
+  }
+
+  file { '/home/www/artikelstamm.elexis.info':
+    ensure => directory,
+    owner => 'jenkins',
+    require => [User['jenkins'], File['/home/www']],
+  }
+
   ensure_packages['php5', 'php5-fpm']
   
   # Geht noch nach /etc/html/artikelstamm anstelle von /var/www

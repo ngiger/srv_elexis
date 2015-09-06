@@ -3,13 +3,13 @@
 # Content based on content from http://docs.joomla.org/Nginx
 server {
         listen 80;
-        server_name <%= scope.lookupvar('elexis_joomla_server') %>;
+        server_name srv_joomla.<%= @domain %> ;
         server_name_in_redirect off;
 
         access_log /var/log/nginx/localhost.access_log;
         error_log /var/log/nginx/localhost.error_log;
 
-        root /var/www/joomla;
+        root /home/www/joomla;
         index index.php index.html index.htm default.html default.htm;
         # Support Clean (aka Search Engine Friendly) URLs
         location / {

@@ -1,0 +1,43 @@
+# https://hub.docker.com/_/mysql/
+# docker run --name mysql -e MYSQL_ROOT_PASSWORD=elexisTest -d mysql:5.5
+# docker run --name mysql -e MYSQL_ROOT_PASSWORD=elexisTest -d -v /opt/docker-data-containers/wiki/mysql:/var/lib/mysql -v /opt/docker-data-containers/wiki/mysql_config:/etc/mysql/conf.d mysql:5.5
+# access via mysql client
+# docker run -it --link mysql2 --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+# docker run -it --link some-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+# docker run -it --link wikidb:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+# Warning: Using a password on the command line interface can be insecure.
+# GRANT ALL ON elexis_wiki.* TO elexis@'%';
+wikidb:
+  image: mysql:5.5
+  environment:
+    MYSQL_ROOT_PASSWORD: foo
+  volumes:
+    - /opt/docker-data-containers/wiki/mysql:/var/lib/mysql
+    - /opt/docker-data-containers/wiki/mysql_config:/etc/mysql/conf.d
+
+
+#docker run -d --name org -e MEDIAWIKI_DB_NAME=elexis_wiki -e MEDIAWIKI_DB_USER=elexis \
+#  -e MEDIAWIKI_DB_PASSWORD=elexis-wiki -v /opt/docker-data-containers/mediawiki/config:/srv/mediawiki/config \
+#  -v /opt/docker-data-containers/mediawiki/images:/srv/mediawiki/images --link=srvelexis_wikidb_1:mysql \
+#  -p 8080:80 fqxp/mediawiki
+wiki:
+  build: files/mediawiki # based on https://github.com/fqxp/dockerfiles/tree/master/mediawiki
+#  image: fqxp/mediawiki
+  environment:
+    MEDIAWIKI_DB_NAME:  elexis_wiki
+    MEDIAWIKI_DB_USER:  elexis
+    MEDIAWIKI_DB_PASSWORD: elexisTest
+  volumes:
+    - /opt/docker-data-containers/mediawiki/config:/srv/mediawiki/config
+    - /opt/docker-data-containers/mediawiki/images:/srv/mediawiki/images
+  links:
+    - wikidb:mysql
+  ports:
+    - "8080:80"
+#    - /opt/docker-data-containers/wiki:/var/wiki_home
+
+#      docker run -d -e MEDIAWIKI_DB_NAME=test_wiki -e MEDIAWIKI_DB_USER=test_wiki_user \
+#      -e MEDIAWIKI_DB_PASSWORD=very-secure -v /srv/test_wiki/config:/srv/mediawiki/config \
+#      -v /srv/test_wiki/images:/srv/mediawiki/images --link=hopeful_mclean:mysql
+#      -p 8080:80 fqxp/mediawiki
+

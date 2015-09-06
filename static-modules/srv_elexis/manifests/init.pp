@@ -40,9 +40,11 @@
 
 class srv_elexis {
 
+  include apt
+  include apt::backports
   include srv_elexis::config
-  ensure_packages['git', 'unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'fish', 'mosh',
-                  'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'nginx', 'postgresql', 'wget']
+  ensure_packages['git', 'unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh', 'fish',
+                  'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'postgresql', 'wget']
   
   file {'/etc/gitconfig':
   content => "# $::srv_elexis::config::managed_note
@@ -55,84 +57,7 @@ class srv_elexis {
 ",
     mode => 0644,
     }
-  
-  ensure_packages['nginx', 'openssl']
-  file {          "/etc/nginx/sites-enabled/$fqdn":
-    target => "/etc/nginx/sites-available/$fqdn",
-    ensure => link,
-    owner => root,
-    group => root,
-    require => File["/etc/nginx/sites-available/$fqdn"],
-  }
-  file {          "/etc/nginx/sites-enabled/download.elexis.info":
-    target => "/etc/nginx/sites-available/download.elexis.info",
-    ensure => link,
-    owner => root,
-    group => root,
-  }
 
-  file {"/etc/nginx/ssl":
-    ensure => directory,
-    owner => root,
-    group => root,
-    require => Package['nginx'],
-  }
-
-  exec {'/etc/nginx/ssl/srv.elexis.info.cert':
-    creates => "/etc/nginx/ssl/srv.elexis.info.cert",
-    command => '/usr/bin/openssl req -days 1830 -subj "/C=CH/ST=Glarus/L=Mollis/O=Elexis Opensource community/CN=srv.elexis.info/EM=niklaus.giger@member.fsf.org" -nodes -new -x509  -keyout srv.elexis.info.key -out srv.elexis.info.cert',
-    cwd     => '/etc/nginx/ssl',
-    require => File['/etc/nginx/ssl'],
-    notify => Service['nginx'],
-  }
-  
-  file { "/etc/nginx/sites-available/$fqdn":
-  content => "# $::srv_elexis::config::managed_note
-server {
-  listen 443;
-  server_name  $fqdn;
-  allow all;
-  ssl on;
-  ssl_certificate_key /etc/nginx/ssl/srv.elexis.info.key;
-  ssl_certificate     /etc/nginx/ssl/srv.elexis.info.cert;
-
-  location /jenkins/ {
-    proxy_pass              http://localhost:8080;
-    proxy_connect_timeout   150;
-    proxy_send_timeout      100;
-    proxy_read_timeout      100;
-    proxy_buffers           4 32k;
-    client_max_body_size    8m;
-    client_body_buffer_size 128k;
-  }
-}
-",  require => [ Package['nginx'], Exec['/etc/nginx/ssl/srv.elexis.info.cert'], ],
-    owner => root,
-    group => root,
-    notify => Service['nginx'],
-  }
-  file { "/etc/nginx/sites-available/download.elexis.info":
-  content => "# $::srv_elexis::config::managed_note
-server {
-  listen 80;
-  server_name  download.elexis.info;
-  root /home/jenkins/downloads;
-  autoindex on;
-  allow all;
-}
-",  require => Package['nginx'],
-    owner => root,
-    group => root,
-    notify => Service['nginx'],
-  }
-  service{'nginx':
-    ensure => running,
-    hasrestart => true,
-    hasstatus => true,
-    provider => 'debian',
-    require => Package['nginx'],
-  }
-  
   # The config writer personal choice
   $editor_default = hiera('editor::default', '/usr/bin/vim.nox')  
   $editor_package = hiera('editor::package', 'vim-nox')

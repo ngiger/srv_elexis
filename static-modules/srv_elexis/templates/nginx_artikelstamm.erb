@@ -1,9 +1,10 @@
 # <%= scope.lookupvar('managed_note') %>
 server {
   listen 80;
-  index index.html index.htm index.php;
+  index index.php index.html;
 
-  server_name  artikelstamm.elexis.info;
+  server_name srv_artikelstamm.<%= @domain %> ;
+
   root /home/www/artikelstamm.elexis.info;
   allow all;
   autoindex on;

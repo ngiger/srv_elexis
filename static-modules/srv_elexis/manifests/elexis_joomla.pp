@@ -39,16 +39,30 @@
 #
 # deb http://packages.dotdeb.org wheezy all
 class srv_elexis::elexis_joomla(
-  $elexis_joomla_server = "joomla.ngiger.dyndns.org"
+  $elexis_joomla_server = ""
 ) inherits srv_elexis {
   
-  $joomla_root = '/var/www/joomla'
+  $joomla_root = '/home/www/joomla'
   
   include srv_elexis::mysql
 
   $joomla_source = "http://joomlacode.org/gf/download/frsrelease/19239/158104/Joomla_3.2.3-Stable-Full_Package.zip"
   $joomla_dest   = '/opt/Joomla_3.2.3-Stable-Full_Package.zip'
-
+  if (false) {
+  include vsftpd
+  }
+  else {
+    class { 'vsftpd':
+      anonymous_enable  => 'YES',
+      write_enable      => 'no',
+      ftpd_banner       => 'Elexis Joomla access for migrations',
+      chroot_local_user => 'NO',
+    }
+    file { '/etc/vsftpd.user_list':
+      ensure => present,
+      content => "# empty",
+    }
+  }
   exec {"$joomla_dest":
     creates => "$joomla_dest",
     command => "/usr/bin/wget --output-document=$joomla_dest $joomla_source",
@@ -57,10 +71,11 @@ class srv_elexis::elexis_joomla(
 
   file{$joomla_root:
     ensure => directory,
+    require => [File['/home/www']],
     owner => 'www-data',
     group => 'www-data',
   }
-    
+
   exec {"$joomla_root/index.php":
     creates => "$joomla_root/index.php",
     command => "/usr/bin/unzip -q $joomla_dest",
@@ -80,12 +95,18 @@ class srv_elexis::elexis_joomla(
     content => template("srv_elexis/nginx_elexis_joomla.erb"),
     require => Package['nginx'],
   }
-  if (true) {
   file { '/etc/nginx/sites-enabled/elexis_joomla':
     ensure  => link,
     target  => '/etc/nginx/sites-available/elexis_joomla',
     require => File['/etc/nginx/sites-available/elexis_joomla'],
   }
+
+  mysql::db { 'elexis_joomla':
+    user     => 'elexis',
+    password => 'elexisTest',
+    host     => 'localhost',
+    grant    => ['all'],
+    # default charset is 'utf8',
   }
   mysql::db { 'elexis_joomla_3_2':
     user     => 'elexis',
@@ -94,7 +115,7 @@ class srv_elexis::elexis_joomla(
     grant    => ['all'],
     # default charset is 'utf8',
   }
-  
+
   logrotate::rule { 'mysql_joomla_dump':
     path         => '/opt/backups/mysql_joomla_dump.sql.bz2',
     olddir      => '/opt/backups/old',

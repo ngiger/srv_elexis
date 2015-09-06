@@ -12,6 +12,9 @@ Contact
 
 Niklaus Giger niklaus.giger@member.fsf.org
 
+Running a specific test
+bundle exec rake spec SPEC=spec/classes/docker_spec.rb:37:3
+
 Support
 -------
 

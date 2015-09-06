@@ -42,7 +42,8 @@ class srv_elexis::mysql(
   
   class { '::mysql::server':
     root_password    => 'foo',
-    override_options => { 'mysqld' => { 'max_connections' => '1024' },
+    override_options => { 'mysqld' =>
+      { 'max_connections' => '1024' },
         'default_engine' => "innodb",
     }
   }

@@ -1,0 +1,26 @@
+#! /bin/bash -x
+
+if [ -z "${MEDIAWIKI_DB_NAME}" -o -z "${MEDIAWIKI_DB_USER}" -o -z "${MEDIAWIKI_DB_PASSWORD}" ]; then
+  cat >&2 <<EOF
+NIKLAUS
+ERROR: missing MEDIAWIKI_DB_NAME or MEDIAWIKI_DB_USER or MEDIAWIKI_DB_PASSWORD environment variable
+You need to set these using the ‘-e‘ docker command line option.
+EOF
+#  exit 1
+else
+# Set environment
+MEDIAWIKI_DB_HOST=${MEDIAWIKI_DB_HOST:=$MYSQL_PORT_3306_TCP_ADDR}
+MEDIAWIKI_DB_PORT=${MEDIAWIKI_DB_PORT:=$MYSQL_PORT_3306_TCP_PORT}
+
+# Create database if needed and set permissions
+mysql -u root -p${MYSQL_ENV_MYSQL_ROOT_PASSWORD} -h ${MEDIAWIKI_DB_HOST} <<EOF
+  CREATE DATABASE IF NOT EXISTS ${MEDIAWIKI_DB_NAME};
+  GRANT INDEX, CREATE, SELECT, INSERT, UPDATE, DELETE, ALTER, LOCK TABLES
+    ON ${MEDIAWIKI_DB_NAME}.*
+    TO '${MEDIAWIKI_DB_USER}' IDENTIFIED BY '${MEDIAWIKI_DB_PASSWORD}';
+  FLUSH PRIVILEGES;
+EOF
+
+fi
+
+exec "$@"

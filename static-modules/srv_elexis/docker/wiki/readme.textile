@@ -1,0 +1,133 @@
+h1. motivation
+
+This docker image is inspired by https://github.com/raumzeitlabor/mediawiki-docker, but we changed the following items
+
+* Use debian-jessie as base
+* data-container for mysql under
+* data-container for mediawiki/images under /home/var/lib/mediawiki/images (e.g. LocalConfig.php, images)
+*                    extensions ????
+* mysql server is separate docker, data reside under
+*
+* /data is shared by host and container
+* images for mediawiki reside in a separate directory /data/images
+* daily backup go into /data/backup
+This is the image we're using for our wiki at https://w.rzl.so. It is based on
+[phusion/baseimage-docker](https://github.com/phusion/baseimage-docker).
+
+
+h1. Setup
+
+Datafiles for mysql are (srv.elexis.info) found under /home/var/lib/mysql
+(ng-tr: niklaus made ln -s /opt/srv /home/srv
+scp -rv srv.elexis.info:/home/var/lib/mysql /home/var/lib/
+scp -rv root@srv.elexis.info:/home/var/lib/mysql /home/var/lib
+# run mysql
+docker run --name elexis-mysql -v /home/var/lib/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:5.7.8
+
+bash: docker exec -it elexis-mysql bash
+dort drin> mysql -u elexis --password=elexisTest elexis_wiki
+
+
+docker build -t ngiger/wiki .
+docker run --name ngiger/wiki -v /home/var/lib/mediawiki/images:/usr/share/mediawiki/image
+
+docker run --name ngiger/wiki --link elexis-mysql:mysql --detach=false app-that-uses-mysql
+
+To set up this container, simply copy the `mediawiki.service` file to
+`/etc/systemd/system` and run `systemctl daemon-reload`, followed by `systemctl
+start mediawiki.service`.
+
+The service unit will then take care of creating two containers:
+
+* `mediawiki-data`: The data-only container that exposes a volume called
+`/data`. This container immediately exits. It's only purpose is to keep state.
+_Don't delete it._
+* `mediawiki-web`: The application container that houses the mysql server, nginx webserver,
+and php5-fpm.
+
+docker run -it --link some-elexis:mysql --rm mysql:5.7.8 sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+# we need a mysql database mysql --host=localhost --user root --password=topsecret_or_your_password
+# https://github.com/docker-library/docs/tree/master/mysql
+# Start a mysql server instance
+# docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+# Connect to MySQL from an application in another Docker container
+# Connect to MySQL from the MySQL command line client
+# $ docker run -it --link some-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+# Container shell access and viewing MySQL logs
+# The docker exec command allows you to run commands inside a Docker container. The following command line will give you a bash shell inside your mysql container:
+# docker exec -it some-mysql bash
+
+h2. installed version and extensions
+
+As per 30 August 2015 seen via http://wiki.elexis.info/Spezial:Version
+MediaWiki   1.19.20+dfsg-0+deb7u3
+PHP   5.4.44-0+deb7u1 (fpm-fcgi)
+MySQL   5.5.44-0+deb7u1
+
+BlockandNuke
+Collection (Version 1.5)
+Nuke (Version 1.1.3)
+ConfirmEdit (Version 1.1)
+Language Selector
+Vector (Version 0.3.0)
+Wikidiff2 (Version )
+WikiEditor (Version 0.3.1)
+
+Funktionsaufrufe
+confirmEditSetup und wfLanguageSelectorExtension
+Parsererweiterungen (Tags)
+<gallery>, <languageselector>, <nowiki> und <pre>
+Parsererweiterungen (Funktionen)
+anchorencode, basepagename, basepagenamee, canonicalurl, canonicalurle, defaultsort, displaytitle, filepath, formatdate, formatnum, fullpagename, fullpagenamee, fullurl, fullurle, gender, grammar, int, language, lc, lcfirst, localurl, localurle, namespace, namespacee, ns, nse, numberingroup, numberofactiveusers, numberofadmins, numberofarticles, numberofedits, numberoffiles, numberofpages, numberofusers, numberofviews, padleft, padright, pagename, pagenamee, pagesincategory, pagesize, plural, protectionlevel, special, subjectpagename, subjectpagenamee, subjectspace, subjectspacee, subpagename, subpagenamee, tag, talkpagename, talkpagenamee, talkspace, talkspacee, uc, ucfirst und urlencode
+
+https://www.mediawiki.org/wiki/Download_from_Git#Using_Git_to_download_MediaWiki
+https://git.wikimedia.org/git/mediawiki/extensions/BlockAndNuke.git
+https://git.wikimedia.org/git/mediawiki/extensions/Collection.git
+https://git.wikimedia.org/git/mediawiki/extensions/Nuke.git
+https://git.wikimedia.org/git/mediawiki/extensions/LanguageSelector.git
+https://git.wikimedia.org/git/mediawiki/extensions/Vector.git
+https://git.wikimedia.org/git/mediawiki/php/wikidiff2.git
+https://git.wikimedia.org/git/mediawiki/extensions/MsWikiEditor.git
+
+
+h2. using puppet module
+
+https://forge.puppetlabs.com/aimonb/nexusis_mediawiki
+
+class { 'mediawiki': server_name => 'www.example.com',
+  admin_email => 'admin@puppetlabs.com',
+  db_root_password => 'really_really_long_password',
+  doc_root => '/var/www/wikis',
+  max_memory => '1024' }
+
+mediawiki::instance { 'my_wiki1': db_password => 'super_long_password',
+  db_name => 'wiki1',
+  db_user => 'wiki1_user',
+  port => '80',
+  ensure => 'present' }
+
+mediawiki::manage_extension{'ConfirmAccount':
+  ensure => present,
+  instance => 'my_wiki1',
+  source => 'https://codeload.github.com/wikimedia/mediawiki-extensions-ConfirmAccount/legacy.tar.gz/REL1_22',
+  doc_root => '/var/www/wikis',
+  require => Mediawiki::Instance['my_wiki1'] }
+
+
+sudo gpasswd -a <username> vboxsf
+     sudo reboot
+
+https://github.com/nickstenning/dockerfiles/tree/master/mediawiki
+
+https://github.com/stephenliang/mediawiki-dockerfile (separate mysql db)
+
+
+h1. Backup
+
+A script called `/etc/cron.daily/backup-mysql` creates a daily dump of the
+database configured for this mediawiki installation. By default, the dump is
+placed into `/data/backup` and dumps older than 14 days are deleted.
+
+The idea is to mount the `/data` volume of `mediawiki-data` from another
+container and then create an offsite backup of the entire folder.
+
