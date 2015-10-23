@@ -119,15 +119,16 @@ server {
 ",
   }
 
-  file { "$wiki_root/LocalSettings.php.soll":
-    ensure => present,
-    content => template("srv_elexis/LocalSettings.php.erb"),
+  file { "$wiki_root":
+    ensure  => directory,
+    owner => 'www-data',
   }
 
-  file {$wiki_root :
-    ensure => directory,
+  file { "$wiki_root/config/LocalSettings.php.soll":
+    ensure => present,
     owner => 'www-data',
-    require => File['/home/www'],
+    content => template("srv_elexis/LocalSettings.php.erb"),
+    require => File["$wiki_root/config"],
   }
 
   file { '/var/www/mediawiki':
@@ -136,7 +137,14 @@ server {
     owner => 'www-data',
     require => File[$wiki_root],
   }
-  file { '/home/www/mediawiki/images':
+
+  file { "$wiki_root/images":
+    ensure => directory,
+    owner => 'www-data',
+    require => File[$wiki_root],
+  }
+
+  file { "$wiki_root/config":
     ensure => directory,
     owner => 'www-data',
     require => File[$wiki_root],
