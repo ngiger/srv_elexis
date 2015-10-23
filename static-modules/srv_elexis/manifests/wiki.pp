@@ -96,8 +96,12 @@ class srv_elexis::wiki(
   file { "/etc/nginx/sites-enabled/elexis_wiki":
     ensure => absent,
   }
+  file { "/etc/nginx/sites-enabledwiki.$::domain":
+    ensure => absent,
+  }
   file { "/etc/nginx/sites-enabled/wiki.$::domain":
     ensure => present,
+    require => File["/etc/nginx/sites-enabledwiki.$::domain"],
     content => # template("srv_elexis/nginx_elexis_wiki.erb"),
     "# $::srv_elexis::config::managed_note
 server {
