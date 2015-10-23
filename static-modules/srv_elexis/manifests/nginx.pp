@@ -38,7 +38,7 @@
 # Copyright 2013 Niklaus Giger <niklaus.giger@member.fsf.org>
 #
 
-class srv_elexis::nginx {
+class srv_elexis::nginx inherits srv_elexis {
 
   # /usr/share/nginx/html/index.html
   # /var/www/html
@@ -55,7 +55,7 @@ class srv_elexis::nginx {
 
   include docker
   docker::image { 'nginx':
-    docker_file => '${docker_files}/nginx/Dockerfile',
+    docker_file => "${docker_files}/nginx/Dockerfile",
 #    notify => Docker::Run['nginx'],
   }
   include srv_elexis::config
