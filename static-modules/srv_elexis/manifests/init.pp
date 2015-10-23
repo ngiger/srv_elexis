@@ -48,7 +48,11 @@ class srv_elexis (
   include srv_elexis::config
   ensure_packages['unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh', 'fish',
                   'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'postgresql', 'wget']
-  include docker
+  # Use docker.io from Debian
+  # as I have problems with docker-engine on srv.elexis.info (but not on my Virtual Box)
+  class{'docker':
+          package_name => 'docker.io',
+  }
   class { 'docker_compose':
     version => '1.3.1'
   }
