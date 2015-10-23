@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- <%= scope.lookupvar('managed_note') %>; -->
+<org.jvnet.hudson.plugins.thinbackup.ThinBackupPluginImpl plugin="thinBackup@1.7.3">
+  <fullBackupSchedule>H 0 * * *</fullBackupSchedule>
+  <diffBackupSchedule></diffBackupSchedule>
+  <backupPath>/var/jenkins_home/backup</backupPath>
+  <nrMaxStoredFull>30</nrMaxStoredFull>
+  <excludedFilesRegex></excludedFilesRegex>
+  <waitForIdle>true</waitForIdle>
+  <forceQuietModeTimeout>120</forceQuietModeTimeout>
+  <cleanupDiff>false</cleanupDiff>
+  <moveOldBackupsToZipFile>true</moveOldBackupsToZipFile>
+  <backupBuildResults>true</backupBuildResults>
+  <backupBuildArchive>false</backupBuildArchive>
+  <backupUserContents>false</backupUserContents>
+  <backupNextBuildNumber>true</backupNextBuildNumber>
+  <backupBuildsToKeepOnly>false</backupBuildsToKeepOnly>
+</org.jvnet.hudson.plugins.thinbackup.ThinBackupPluginImpl>
