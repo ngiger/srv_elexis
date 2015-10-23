@@ -55,7 +55,7 @@ class srv_elexis::nginx {
 
   include docker
   docker::image { 'nginx':
-    docker_file => '/vagrant/Dockerfile',
+    docker_file => '${docker_files}/nginx/Dockerfile',
 #    notify => Docker::Run['nginx'],
   }
   include srv_elexis::config
