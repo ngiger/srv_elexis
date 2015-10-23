@@ -1,8 +1,8 @@
-# <%= scope.lookupvar('managed_note') %>;
+# <%= scope.lookupvar('::srv_elexis::config::managed_note') %>;
 # NGINX configuration for Elexis-Wiki
 # Content based on content from http://wiki.nginx.org/MediaWiki
 server {
-        server_name srv_wiki.<%= @domain %> ;
+        server_name wiki.<%= @domain %> ;
 
         root /var/lib/mediawiki;
  

@@ -48,6 +48,22 @@ GlobalMatrixAuthorization
 ** /var/lib/jenkins/.rvm/rubies/ruby-1.9.3-p327
 * Gemäss https://www.digitalocean.com/community/articles/how-to-create-a-ssl-certificate-on-nginx-for-ubuntu-12-04/. Password wie niklaus root
 # aber key und cert openssl req  -nodes -new -x509  -keyout srv.elexis.info.key -out srv.elexis.info.cert
+
+h3. joomla setup
+
+Upgrade from old database from Gerry was done using http://cyend.com/extensions/extensions/components/5-upgrade-joomla-from-15-to-16
+
+Assumed old database dump loaded in database elexis_joomla. Create new database elexis_joomla_3_2
+
+* downloaded Joomla_3.2.3-Stable-Full_Package.zip to /opt
+* downloaded pkg_spupgrade_3.4.10_j3.2.zip to /opt
+* copied jp.zip from Gerry to /opt/jp.zip
+* copied mysql-dump from Gerry to /opt/mysql_elexis_joomla_dump.sql.zip
+* went to /home/www/joomla
+** unzip /vagrant/pkg_spupgrade_3.4.10_j3.2.zip
+* @cd /opt && sudo unzip /opt/mysql_elexis_joomla_dump.sql.zip && mysql -u elexis --password=elexisTest elexis_joomla < /opt/elexis.sql@
+* http://srv_joomla.ngiger.dyndns.org/
+
 h2. Strategy for Jenkins build environment
 
 * The User config-data (name/password etc) are not stored in this repository!

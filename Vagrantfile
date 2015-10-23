@@ -4,10 +4,8 @@
 #------------------------------------------------------------------------------------------------------------
 # Some simple customization below
 #------------------------------------------------------------------------------------------------------------
-boxId = 'Elexis-Wheezy-amd64-20130510' # Wheezy was released on May 4th, 2013
-# See http://www.debian.org/News/2013/20130504
-private = "/opt/src/veewee-elexis/#{boxId}.box"
-boxUrl = File.exists?(private) ? private : "http://ngiger.dyndns.org/downloads/#{boxId}.box"
+# boxUrl = "https://atlas.hashicorp.com/ARTACK/boxes/debian-jessie"
+boxUrl = "https://vagrantcloud.com/lazyfrosch/boxes/debian-8-jessie-amd64-puppet"
 puts "Using boxUrl #{boxUrl}"
 
 bridgedNetworkAdapter = "eth0" # adapt it to your liking, e.g. on MacOSX it might 
@@ -31,7 +29,8 @@ FileUtils.makedirs('manifests')
 FileUtils.makedirs('modules')
 
 Vagrant.configure("2") do |config|
-  config.vm.box_url = boxUrl
+  config.vm.box     = 'lazyfrosch/debian-8-jessie-amd64-puppet'
+  # config.vm.box_url = boxUrl
   config.vm.provider "virtualbox" do |v|
     v.gui = true
     v.memory = 2048
@@ -50,12 +49,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.host_name = "srv.#{`hostname -d`.chomp}"
-  # config.vm.network :bridged, { :mac => '000000250125', :bridge => bridgedNetworkAdapter, :ip => '172.25.1.25' } # dhcp from fest
-  # config.vm.network :bridged, { :mac => '000000250125', :bridge => bridgedNetworkAdapter, :ip => '172.25.1.25' } # dhcp from fest
-  config.vm.network "public_network", bridge: 'br0'
-  # config.vm.network "public_network", bridge: = 'br0'
-  config.vm.box     = boxId
-  config.vm.box_url = boxUrl
+  config.vm.network "public_network", bridge: 'br0', :mac => '000000250125'
   config.vm.network "forwarded_port", guest: 80, host: firstPort + 80
   config.vm.network "forwarded_port", guest: 22, host: firstPort + 22
 end

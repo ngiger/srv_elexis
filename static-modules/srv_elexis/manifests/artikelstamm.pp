@@ -42,31 +42,28 @@ class srv_elexis::artikelstamm(
     owner => 'root',
     group => 'root',
   }
-  
-  file { '/home/www':
-    ensure => directory,
-    owner => 'www-data'
-  }
 
   file { '/home/www/artikelstamm.elexis.info':
     ensure => directory,
     owner => 'jenkins',
-    require => [User['jenkins'], File['/home/www']],
+    require => [File['/home/www']],
   }
 
   ensure_packages['php5', 'php5-fpm']
   
-  # Geht noch nach /etc/html/artikelstamm anstelle von /var/www
-  file { '/etc/nginx/sites-available/artikelstamm.elexis.info':
-    ensure => present,
-    content => template("srv_elexis/nginx_artikelstamm.erb"),
-    require => Package['nginx'],
+  file { "/etc/nginx/sites-available/artikelstamm.elexis.info":
+  content => "# $::srv_elexis::config::managed_note
+server {
+  listen 80;
+  server_name  artikelstamm.$::domain
+    ;
+  root /home/www/artikelstamm.elexis.info;
+  autoindex on;
+  allow all;
+}
+",  owner => root,
+    backup => false, # we don't want to keep them, as nginx would read them, too
+    group => root,
+    notify => Docker::Image['nginx'],
   }
-
-  file { '/etc/nginx/sites-enabled/artikelstamm.elexis.info':
-    ensure  => link,
-    target  => '/etc/nginx/sites-available/artikelstamm.elexis.info',
-    require => File['/etc/nginx/sites-available/artikelstamm.elexis.info'],
-  }
-  
 }

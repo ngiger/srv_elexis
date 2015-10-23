@@ -1,2 +1,0 @@
-role-strategy:latest
-plain-credentials:latest

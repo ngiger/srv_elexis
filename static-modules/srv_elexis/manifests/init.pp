@@ -38,14 +38,21 @@
 # Copyright 2013 Niklaus Giger <niklaus.giger@member.fsf.org>
 #
 
-class srv_elexis {
+class srv_elexis (
+  $docker_files = '/opt/elexis-dockerfiles',
+  $jenkins_home = '/home/jenkins'
+) {
 
   include apt
   include apt::backports
   include srv_elexis::config
-  ensure_packages['git', 'unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh', 'fish',
+  ensure_packages['unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh', 'fish',
                   'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'postgresql', 'wget']
-  
+  include docker
+  class { 'docker_compose':
+    version => '1.3.1'
+  }
+
   file {'/etc/gitconfig':
   content => "# $::srv_elexis::config::managed_note
 [user]
@@ -70,5 +77,16 @@ class srv_elexis {
     environment => 'LANG=C',
     unless  => "update-alternatives --display editor --quiet | grep currently | grep ${editor_default}"
   }
-  
+
+  vcsrepo {$docker_files:
+    ensure   => present,
+    provider => git,
+    source   => 'https://github.com/ngiger/elexis-dockerfiles.git',
+  }
+
+  file {'/home/www' :
+    ensure => directory,
+    owner => 'www-data',
+  }
+
 }

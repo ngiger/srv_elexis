@@ -15,20 +15,6 @@ if [ $? -ne 0  ] ; then
   echo puppet/ >> /etc/.gitignore
 fi
 
-apt-get update 
-apt-get remove    --quiet --assume-yes    puppet
-apt-get upgrade   --quiet --assume-yes
-apt-get install   --quiet --assume-yes    ruby ruby-dev libaugeas-ruby ruby-shadow linux-headers-amd64
-
-# we don't want to be in a directory where a .rvmrc lays aout
-
-pwd
-# we must have puppet install or we cannot call vagrant up
-if [ "$(gem search -i puppet)" = "false" ]; then
-  gem install --no-ri --no-rdoc puppet
-  cd $PUPPET_DIR && puppet install --clean
-fi
-
 # Initialize /etc/puppet/hiera.yaml
 df -h | grep hieradata
 if [ $? -eq 0  ] ; then

@@ -41,9 +41,31 @@ class srv_elexis::wiki(
 #  $elexis_wiki_server = "wiki.elexis.info" 
   $elexis_wiki_server = "srv.ngiger.dyndns.org" 
 ) inherits srv_elexis {
-  
-  $wiki_root = '/home/www/mediawiki' # Debian default
-  
+
+  $wiki_root = '/home/docker-data-containers'
+  exec { 'docker-compose-wiki':
+    cwd => "$srv_elexis::docker_files/srv.elexis.info",
+    command => "/usr/local/bin/docker-compose up -d",
+    require => [ Vcsrepo[$srv_elexis::docker_files],
+      Class['docker_compose']
+      ],
+    unless => "/usr/bin/docker ps | /bin/grep srvelexisinfo_wikidb_1",
+  }
+
+  docker::run { 'wiki':
+    image => 'wiki',
+    use_name        => true,
+    restart_service => true,
+    privileged      => false,
+    pull_on_start   => false,
+    before_stop     => 'echo "So Long, and Thanks for All the Fish"',
+    # username => 'wiki',
+    ports  => ['8080:8080', '50000:50000'],
+    volumes => [
+      "$srv_elexis::wiki_home:/var/wiki_home",
+    ],
+  }
+
   # http://www.mediawiki.org/wiki/Extension:DeleteHistory
   # BlockAndNuke
   # Ruby https://github.com/wikimedia/mediawiki-ruby-api (no longer in active development)
@@ -71,43 +93,49 @@ class srv_elexis::wiki(
   # http://www.howtoforge.com/installing-nginx-with-php5-and-php-fpm-and-mysql-support-lemp-on-debian-wheezy-p2
   # https://github.com/kenpratt/wikipedia-client
 
-  # include srv_elexis::mysql
-  
-  if (true) {
-
-
-  } else {
-  ensure_packages['php5-gd', 'mediawiki', 'mediawiki-extensions', 'mediawiki-extensions-collection', 'clamav', 'php-apc']
-  # package{'imagemagick': ensure => absent, } # I want to use php5-gd
-  file { '/etc/mediawiki':
-    ensure => directory,
+  file { "/etc/nginx/sites-enabled/elexis_wiki":
+    ensure => absent,
   }
-  file { '/etc/mediawiki/LocalSettings.php.soll':
+  file { "/etc/nginx/sites-enabled/wiki.$::domain":
+    ensure => present,
+    content => # template("srv_elexis/nginx_elexis_wiki.erb"),
+    "# $::srv_elexis::config::managed_note
+server {
+  listen 80;
+  server_name  wiki.elexis.info;
+  index index.html index.htm index.php;
+  root /srv/mediawiki;
+
+  allow all;
+  location / {
+    proxy_pass              http://localhost:8888;
+
+  }
+}
+",
+  }
+
+  file { "$wiki_root/LocalSettings.php.soll":
     ensure => present,
     content => template("srv_elexis/LocalSettings.php.erb"),
-    require => File['/etc/mediawiki'],
   }
 
-  if ($wiki_root != '/var/www/mediawiki') # not debian standard
-  {
-    file {$wiki_root :
-      ensure => directory,
-      owner => 'www-data',
-      require => File['/home/www'],
-    }
+  file {$wiki_root :
+    ensure => directory,
+    owner => 'www-data',
+    require => File['/home/www'],
+  }
 
-    file { '/var/www/mediawiki':
-      ensure  => link,
-      target  => $wiki_root,
-      owner => 'www-data',
-      require => File[$wiki_root],
-    }
-    file { '/home/www/mediawiki/images':
-      ensure => directory,
-      owner => 'www-data',
-      require => File['/home/www/mediawiki'],
-    }
-
+  file { '/var/www/mediawiki':
+    ensure  => link,
+    target  => $wiki_root,
+    owner => 'www-data',
+    require => File[$wiki_root],
+  }
+  file { '/home/www/mediawiki/images':
+    ensure => directory,
+    owner => 'www-data',
+    require => File[$wiki_root],
   }
 
   # http://www.mediawiki.org/wiki/Manual:Running_MediaWiki_on_Debian_GNU/Linux
@@ -115,55 +143,6 @@ class srv_elexis::wiki(
   file { "$wiki_root/elexis_135.png":
     ensure => present,
     content => 'puppet:///modules/srv_elexis/elexis_135.png',
-    require => Package['mediawiki'],
-  }
-  
-  file { '/etc/nginx/sites-available/elexis_wiki':
-    ensure => present,
-    content => template("srv_elexis/nginx_elexis_wiki.erb"),
-    require => Package['mediawiki'],
-  }
-  file { '/etc/nginx/sites-enabled/elexis_wiki':
-    ensure  => link,
-    target  => '/etc/nginx/sites-available/elexis_wiki',
-    require => File['/etc/nginx/sites-available/elexis_wiki'],
   }
 
-  if (false) {
-    file { "$wiki_root/extensioNewestPages/":
-      ensure  => link,
-      target  => '/usr/share/mediawiki-extensions/base/NewestPages/',
-      require => File['/etc/nginx/sites-available/elexis_wiki'],
-    }
-    file { "$wiki_root/LanguageSelector/":
-      ensure  => link,
-      target  => '/usr/share/mediawiki-extensions/base/LanguageSelector/',
-      require => File['/etc/nginx/sites-available/elexis_wiki'],
-    }
-  }
-    
-  mysql::db { 'elexis_wiki':
-    user     => 'elexis',
-    password => 'elexisTest',
-    host     => 'localhost',
-    grant    => ['all'],
-    # default charset is 'utf8',
-  }
-  
-  logrotate::rule { 'mysql_wiki_dump':
-    path         => '/opt/backups/mysql_wiki_dump.sql.bz2',
-    olddir      => '/opt/backups/old',
-    rotate_every => 'daily',
-  }
-
-  file { "/etc/cron.daily/wiki_mysql_dump":
-      ensure  => present,
-      content => "#!/bin/bash
-mkdir -p /opt/backups/old
-mysqldump -u elexis -pelexisTest --opt --all-databases 2>/dev/null | bzcat -zc > /opt/backups/mysql_wiki_dump.sql.bz2
-chown backup /opt/backups/mysql_wiki_dump.sql.bz2
-",
-      mode => 0744,
-  }
-  }
 }
