@@ -42,6 +42,7 @@ class srv_elexis::backup(
   ensure_resource('user', ['marco', 'niklaus', 'artikelstamm',], {'ensure' => 'present' })
 
   user{ 'backup':
-    groups => ['marco', 'niklaus', 'www-data', 'jenkins', 'artikelstamm']
+    groups => ['marco', 'niklaus', 'www-data', 'jenkins', 'artikelstamm'],
+    shell  => '/bin/bash', # We must change nologin -> sh or bash to allow rsnapshot access via rsync
   }
 }
