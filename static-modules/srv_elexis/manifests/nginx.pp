@@ -203,16 +203,9 @@ server {
   ssl_certificate_key     /etc/letsencrypt/live/download.$::domain/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/download.$::domain/fullchain.pem;
 
-  location /jenkins/ {
-    proxy_pass              http://localhost:8080;
-    proxy_connect_timeout   150;
-    proxy_send_timeout      100;
-    proxy_read_timeout      100;
-    proxy_buffers           4 32k;
-    client_max_body_size    8m;l
-    client_body_buffer_size 128k;
+  autoindex on;
+  root /home/jenkins/downloads;
 
-  }
 }
 ",  owner => root,
     backup => false, # we don't want to keep them, as nginx would read them, too
