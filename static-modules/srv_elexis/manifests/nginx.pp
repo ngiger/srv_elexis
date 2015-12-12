@@ -88,8 +88,9 @@ server {
     listen 443;
     server_name  jenkins.$::domain;
 
-    ssl_certificate_key /etc/nginx/ssl/srv.elexis.info.key;
-    ssl_certificate     /etc/nginx/ssl/srv.elexis.info.cert;
+    ssl_certificate         /etc/letsencrypt/live/srv.elexis.info/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/srv.elexis.info/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/srv.elexis.info/fullchain.pem;
 
     ssl on;
     ssl_session_cache  builtin:1000  shared:SSL:10m;
@@ -122,6 +123,54 @@ server {
     notify => Docker::Image['nginx'],
   }
 
+  $renew_file = '/usr/local/bin/letsencrypt_renew'
+  file {$renew_file:
+   content => "#!/bin/bash
+# $::srv_elexis::config::managed_note
+cd /home/niklaus/letsencrypt
+git pull
+/etc/init.d/nginx stop
+./letsencrypt-auto -d srv.elexis.info certonly --standalone  --renew-by-default
+/etc/init.d/nginx start
+",  owner => root,
+    mode => 0755,
+    group => root,
+  }
+
+cron { $renew_file:
+  command => "$renew_file",
+  user    => root,
+  month   => [3,6,9,12],
+  monthday => 1,
+  hour    => 2,
+  minute  => 0
+}
+
+file { '/etc/nginx/sites-enabled/srv.elexis.info':
+   content => "# $::srv_elexis::config::managed_note
+server {
+  listen 443;
+  server_name  srv.elexis.info;
+  allow all;
+        ssl on;
+        ssl_certificate         /etc/letsencrypt/live/srv.elexis.info/fullchain.pem;
+        ssl_certificate_key     /etc/letsencrypt/live/srv.elexis.info/privkey.pem;
+        ssl_trusted_certificate /etc/letsencrypt/live/srv.elexis.info/fullchain.pem;
+
+  location /jenkins/ {
+    proxy_pass              http://localhost:8080;
+    proxy_connect_timeout   150;
+    proxy_send_timeout      100;
+    proxy_read_timeout      100;
+    proxy_buffers           4 32k;
+    client_max_body_size    8m;
+    client_body_buffer_size 128k;
+
+  }
+}
+"
+}
+
   file { '/etc/nginx/sites-available/default':
    content => "server {
         listen 80 default_server;
@@ -150,8 +199,12 @@ server {
                 try_files $uri $uri/ =404;
         }
   }
-"
+",  owner => root,
+    backup => false, # we don't want to keep them, as nginx would read them, too
+    group => root,
+    notify => Docker::Image['nginx'],
   }
+
   file {          "/etc/nginx/sites-enabled/download.elexis.info":
     target => "/etc/nginx/sites-available/download.elexis.info",
     backup => false, # we don't want to keep them, as nginx would read them, too
