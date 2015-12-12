@@ -38,7 +38,6 @@
 # Copyright 2013 Niklaus Giger <niklaus.giger@member.fsf.org>
 #
 class srv_elexis::wiki(
-  $elexis_wiki_server = "wiki.elexis.info"
 ) inherits srv_elexis {
 
   $wiki_root = '/home/docker-data-containers'
@@ -92,31 +91,25 @@ class srv_elexis::wiki(
   # http://www.howtoforge.com/installing-nginx-with-php5-and-php-fpm-and-mysql-support-lemp-on-debian-wheezy-p2
   # https://github.com/kenpratt/wikipedia-client
 
-  file { "/etc/nginx/sites-enabled/elexis_wiki":
-    ensure => absent,
-  }
-  file { "/etc/nginx/sites-enabledwiki.$::domain":
-    ensure => absent,
-  }
   file { "/etc/nginx/sites-enabled/wiki.$::domain":
     ensure => present,
-    require => File["/etc/nginx/sites-enabledwiki.$::domain"],
     content => # template("srv_elexis/nginx_elexis_wiki.erb"),
     "# $::srv_elexis::config::managed_note
 server {
   listen 80;
-  server_name _;
-  rewrite ^ https://$host$request_uri? permanent;
+  server_name wiki.$::domain;
+  return 301 https://wiki.$::domain\$request_uri;
 }
+
 server {
   listen 443;
-  server_name  wiki.elexis.info;
+  server_name  wiki.$::domain;
   index index.html index.htm index.php;
   root /srv/mediawiki;
 
-    ssl_certificate         /etc/letsencrypt/live/wiki.elexis.info/fullchain.pem;
-    ssl_certificate_key     /etc/letsencrypt/live/wiki.elexis.info/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/wiki.elexis.info/fullchain.pem;
+    ssl_certificate         /etc/letsencrypt/live/wiki.$::domain/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/wiki.$::domain/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/wiki.$::domain/fullchain.pem;
 
     ssl on;
     ssl_session_cache  builtin:1000  shared:SSL:10m;

@@ -50,12 +50,16 @@ class srv_elexis::artikelstamm(
   }
 
   ensure_packages['php5', 'php5-fpm']
-  
+  file { "/etc/nginx/sites-available/artikelstamm.$::domain":
+    ensure => absent,
+  }
+
   file { "/etc/nginx/sites-available/artikelstamm.elexis.info":
   content => "# $::srv_elexis::config::managed_note
 server {
-  server_name _;
-  rewrite ^ https://$host$request_uri? permanent;
+  listen 80;
+  server_name  artikelstamm.$::domain;
+  return 301 https://artikelstamm.$::domain\$request_uri;
 }
 
 server {
