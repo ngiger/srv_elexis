@@ -130,7 +130,7 @@ server {
 cd /home/niklaus/letsencrypt
 git pull
 /etc/init.d/nginx stop
-./letsencrypt-auto -d srv.elexis.info certonly --standalone  --renew-by-default
+./letsencrypt-auto --standalone certonly --renew-by-default  -d artikelstamm.elexis.info -d srv.elexis.info -d wiki.elexis.info
 /etc/init.d/nginx start
 ",  owner => root,
     mode => 0755,
