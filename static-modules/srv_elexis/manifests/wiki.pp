@@ -38,8 +38,7 @@
 # Copyright 2013 Niklaus Giger <niklaus.giger@member.fsf.org>
 #
 class srv_elexis::wiki(
-#  $elexis_wiki_server = "wiki.elexis.info" 
-  $elexis_wiki_server = "srv.ngiger.dyndns.org" 
+  $elexis_wiki_server = "wiki.elexis.info"
 ) inherits srv_elexis {
 
   $wiki_root = '/home/docker-data-containers'
