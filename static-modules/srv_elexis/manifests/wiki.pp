@@ -62,7 +62,7 @@ class srv_elexis::wiki(
     # username => 'wiki',
     ports  => ['8080:8080', '50000:50000'],
     volumes => [
-      "$srv_elexis::wiki_home:/var/wiki_home",
+      "$wiki_root:/var/wiki_home",
     ],
   }
 
