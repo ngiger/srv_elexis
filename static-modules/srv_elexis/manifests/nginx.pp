@@ -131,6 +131,11 @@ server {
   file {$renew_file:
    content => "#!/bin/bash
 # $::srv_elexis::config::managed_note
+# We want to get one certificate valid for all our sub-domains. Therefore we must put
+# several -d directives in 1 line.
+# To renew a certificate, simply run letsencrypt again providing the same values when prompted.
+# There is a limit of 5 certificates for 7 days!
+# Logfile is /var/log/letsencrypt/letsencrypt.log
 cd $letsencrypt_vcs
 git pull
 /etc/init.d/nginx stop
@@ -155,7 +160,7 @@ cron { $renew_file:
   minute  => 0
 }
 
-file { '/etc/nginx/sites-enabled/srv.$::domain':
+file { "/etc/nginx/sites-enabled/srv.$::domain":
    content => "# $::srv_elexis::config::managed_note
 server {
   listen 443;
