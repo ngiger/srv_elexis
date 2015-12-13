@@ -29,7 +29,7 @@
 class srv_elexis::backup(
 ) inherits srv_elexis {
 
-  ensure_packages['etckeeper']
+  ensure_packages(['etckeeper'])
   
   file { '/etc/.git':
     ensure => directory,

@@ -43,18 +43,24 @@ class srv_elexis::artikelstamm(
     group => 'root',
   }
 
-  file { '/home/www/artikelstamm.elexis.info':
+  file { "/home/www/artikelstamm.$::domain":
     ensure => directory,
     owner => 'jenkins',
-    require => [File['/home/www']],
+    require => [File['/home/www'],
+      User['jenkins'],
+      Group['jenkins'],
+    ],
   }
 
-  ensure_packages['php5', 'php5-fpm']
+  ensure_packages(['php5', 'php5-fpm'])
+  ensure_resource('group', 'jenkins', { 'ensure' => 'present'} )
+  ensure_resource('user', 'jenkins', { 'ensure' => 'present'} )
+
   file { "/etc/nginx/sites-available/artikelstamm.$::domain":
     ensure => absent,
   }
 
-  file { "/etc/nginx/sites-available/artikelstamm.elexis.info":
+  file { "/etc/nginx/sites-enabled/artikelstamm.$::domain":
   content => "# $::srv_elexis::config::managed_note
 server {
   listen 80;
@@ -65,29 +71,28 @@ server {
 server {
   listen 443;
   server_name  artikelstamm.$::domain;
-  root /home/www/artikelstamm.elexis.info;
+  root /home/www/artikelstamm.$::domain;
   autoindex on;
   allow all;
-  ssl_certificate         /etc/letsencrypt/live/artikelstamm.elexis.info/fullchain.pem;
-  ssl_certificate_key     /etc/letsencrypt/live/artikelstamm.elexis.info/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/artikelstamm.elexis.info/fullchain.pem;
+  ssl_certificate         /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
+  ssl_certificate_key     /etc/letsencrypt/live/artikelstamm.$::domain/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
 
   ssl on;
   ssl_session_cache  builtin:1000  shared:SSL:10m;
   ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
   ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
   ssl_prefer_server_ciphers on;
-  location ~ \.php$ {
-    try_files $uri =404;
-    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+  location ~ \\.php\$ {
+    try_files \$uri =404;
+    fastcgi_split_path_info ^(.+\\.php)(/.+)\$;
     fastcgi_index index.php;
     fastcgi_pass unix:/var/run/php5-fpm.sock;
-    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
     include /etc/nginx/fastcgi_params;
   }
 
 }
-
 ",  owner => root,
     backup => false, # we don't want to keep them, as nginx would read them, too
     group => root,

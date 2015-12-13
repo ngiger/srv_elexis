@@ -46,8 +46,8 @@ class srv_elexis (
   include apt
   include apt::backports
   include srv_elexis::config
-  ensure_packages['unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh', 'fish',
-                  'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'postgresql', 'wget']
+  ensure_packages(['unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh', 'fish',
+                  'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'postgresql', 'wget'])
   # Use docker.io from Debian
   # as I have problems with docker-engine on srv.elexis.info (but not on my Virtual Box)
   class{'docker':

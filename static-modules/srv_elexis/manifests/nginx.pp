@@ -78,7 +78,7 @@ class srv_elexis::nginx inherits srv_elexis {
     ensure => absent,
   }
 
-  file { "/etc/nginx/sites-enabled/jenkins.$::domain":
+  file { "/etc/nginx/sites-available/missin_certificate_jenkins.$::domain":
   content => "# $::srv_elexis::config::managed_note
 # from https://www.digitalocean.com/community/tutorials/how-to-configure-nginx-with-ssl-as-a-reverse-proxy-for-jenkins
 # anderung zwei
@@ -196,7 +196,12 @@ server {
 server {
   listen 80;
   server_name  download.$::domain;
-  return 301 https://download.$::domain\$request_uri ;
+  # return 301 https://download.$::domain\$request_uri ;
+  # here we cannot use a 301 as it breaks the jenkins-CI builds. Don't know why Niklaus Giger, 13.12.2015
+  index index.html index.htm index.php;
+  root /home/jenkins/downloads;
+  allow all;
+  autoindex on;
 }
 
 server {

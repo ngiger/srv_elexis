@@ -88,7 +88,7 @@ class srv_elexis::elexis_joomla(
   # now mysql -u elexis --password=elexisTest elexis_joomla_3_2 </vagrant/elexis.sql
   # works and show configuration
 # You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TYPE=MyISAM CHARACTER SET `utf8`' at line 29 SQL=CREATE TABLE `jos_banner` ( `bid` int(11) NOT NULL auto_increment, `cid` int(11) NOT NULL default '0', `type` varchar(30) NOT NULL default 'banner', `name` varchar(255) NOT NULL default '', `alias` varchar(255) NOT NULL default '', `imptotal` int(11) NOT NULL default '0', `impmade` int(11) NOT NULL default '0', `clicks` int(11) NOT NULL default '0', `imageurl` varchar(100) NOT NULL default '', `clickurl` varchar(200) NOT NULL default '', `date` datetime default NULL, `showBanner` tinyint(1) NOT NULL default '0', `checked_out` tinyint(1) NOT NULL default '0', `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00', `editor` varchar(50) default NULL, `custombannercode` text, `catid` INTEGER UNSIGNED NOT NULL DEFAULT 0, `description` TEXT NOT NULL DEFAULT '', `sticky` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0, `ordering` INTEGER NOT NULL DEFAULT 0, `publish_up` datetime NOT NULL default '0000-00-00 00:00:00', `publish_down` datetime NOT NULL default '0000-00-00 00:00:00', `tags` TEXT NOT NULL DEFAULT '', `params` TEXT NOT NULL DEFAULT '', PRIMARY KEY (`bid`), KEY `viewbanner` (`showBanner`), INDEX `idx_banner_catid`(`catid`) ) TYPE=MyISAM CHARACTER SET `utf8`
-  ensure_packages['php5-gd', 'nginx', 'wget','tar', 'php5-fpm']
+  ensure_packages(['php5-gd', 'nginx', 'wget','tar', 'php5-fpm'])
   
   file { '/etc/nginx/sites-available/elexis_joomla':
     ensure => present,
