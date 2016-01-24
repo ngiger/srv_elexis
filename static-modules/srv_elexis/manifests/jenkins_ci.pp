@@ -56,6 +56,7 @@ class srv_elexis::jenkins_ci inherits srv_elexis {
     configure_firewall => false,
     manage_user        => false,
   }
+  ensure_resource('user', 'jenkins', { 'ensure' => 'present'} )
    exec { "enforce /home/jenkins permissions":
     command => "/bin/chown -R 1000:1000 /home/jenkins",
     subscribe => File["/home/jenkins"],
@@ -90,6 +91,7 @@ class srv_elexis::jenkins_ci inherits srv_elexis {
     'subversion',
     'thinBackup',
     'timestamper',
+    'workflow',
     'xvfb',
     ]
 
@@ -157,6 +159,7 @@ class srv_elexis::jenkins_ci inherits srv_elexis {
 
   File {
     owner => 'jenkins',
+    require => User['jenkins'],
   }
   $jenkin_backup_root = '/home/jenkins'
 

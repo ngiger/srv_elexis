@@ -20,7 +20,7 @@ class srv_elexis::vnc_client  inherits srv_elexis {
     file { $passwdScript:
       ensure => true,
       source => 'puppet:///modules/srv_elexis/set_vncpasswd.exp',
-      mode => 0755,
+      mode => '0755',
     }
     
     if !defined(Package['expect']) { package{ 'expect': ensure => present, } }

@@ -53,8 +53,6 @@ class srv_elexis::artikelstamm(
   }
 
   ensure_packages(['php5', 'php5-fpm'])
-  ensure_resource('group', 'jenkins', { 'ensure' => 'present'} )
-  ensure_resource('user', 'jenkins', { 'ensure' => 'present'} )
 
   file { "/etc/nginx/sites-available/artikelstamm.$::domain":
     ensure => absent,
@@ -72,6 +70,7 @@ server {
   listen 443;
   server_name  artikelstamm.$::domain;
   root /home/www/artikelstamm.$::domain;
+  index index.html index.htm index.php;
   autoindex on;
   allow all;
   ssl_certificate         /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;

@@ -66,7 +66,7 @@ class srv_elexis::jobs(
     }
     
     file { "$job_root/$title/config.xml":
-      mode    => 0644,
+      mode    => '0644',
       ensure  => present,
       replace => false, # We don't want to override later local modifications!
       source  => "puppet:///modules/srv_elexis/jobs/$title/config.xml",

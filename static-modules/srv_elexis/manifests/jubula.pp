@@ -1,4 +1,4 @@
-  if (true) { # We just instal the two gem needed for jubula into the system
+  if (false) { # We just instal the two gem needed for jubula into the system
     notify{"rvm single user home is $srv_elexis::config::jenkins_root": }
     single_user_rvm::install { 'jenkins':
       home => "$srv_elexis::config::jenkins_root",

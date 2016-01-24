@@ -49,6 +49,8 @@ class srv_elexis::nginx inherits srv_elexis {
     value => 'Niklaus Giger',
   }
 
+  ensure_packages(['nginx'])
+
   $letsencrypt_vcs = '/home/letsencrypt'
   $renew_file = '/usr/local/bin/letsencrypt_renew'
 
@@ -73,9 +75,11 @@ class srv_elexis::nginx inherits srv_elexis {
     ensure => directory,
     owner => root,
     group => root,
+    require => [ Package['nginx']],
   }
   file { "/etc/nginx/sites-available/jenkins.$::domain":
     ensure => absent,
+    require => [ Package['nginx']],
   }
 
   file { "/etc/nginx/sites-available/missin_certificate_jenkins.$::domain":
@@ -125,7 +129,7 @@ server {
     group => root,
     backup => false, # we don't want to keep them, as nginx would read them, too
     notify => Docker::Image['nginx'],
-    require =>  Exec[$renew_file],
+    require => [ Package['nginx'], Exec[$renew_file] ],
   }
 
   file {$renew_file:
@@ -142,14 +146,14 @@ git pull
 ./letsencrypt-auto --standalone certonly --renew-by-default  -d artikelstamm.$::domain -d srv.$::domain -d wiki.$::domain -d jenkins.$::domain
 /etc/init.d/nginx start
 ",  owner => root,
-    require =>  [Vcsrepo[$letsencrypt_vcs]],
-    mode => 0755,
+    require =>  [  Package['nginx'], Vcsrepo[$letsencrypt_vcs]],
+    mode => '0755',
     group => root,
   }
 
 exec { $renew_file:
   creates => '/etc/letsencrypt/live/jenkins.elexis.info/fullchain.pem',
-  require => [File[$renew_file]],
+  require => [File[$renew_file], Vcsrepo[$letsencrypt_vcs]],
 }
 cron { $renew_file:
   command => "$renew_file",
@@ -157,7 +161,8 @@ cron { $renew_file:
   month   => [3,6,9,12],
   monthday => 1,
   hour    => 2,
-  minute  => 0
+  minute  => 0,
+  require => [  Exec[$renew_file] ]
 }
 
 file { "/etc/nginx/sites-enabled/srv.$::domain":
@@ -182,13 +187,15 @@ server {
 
   }
 }
-"
+",
+  require => [ Package['nginx']],
 }
 
   file {          "/etc/nginx/sites-enabled/default":
     ensure => absent,
     owner => root,
     group => root,
+    require => [ Package['nginx']],
   }
 
   file { "/etc/nginx/sites-enabled/download.$::domain":
@@ -221,6 +228,7 @@ server {
     backup => false, # we don't want to keep them, as nginx would read them, too
     group => root,
     notify => Docker::Image['nginx'],
+    require => [ Package['nginx']],
   }
 
 }

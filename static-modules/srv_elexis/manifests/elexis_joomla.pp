@@ -129,6 +129,6 @@ mkdir -p /opt/backups/old
 mysqldump -u elexis -pelexisTest --opt --all-databases 2>/dev/null | bzcat -zc > /opt/backups/mysql_joomla_dump.sql.bz2
 chown backup /opt/backups/mysql_joomla_dump.sql.bz2
 ",
-      mode => 0744,
+      mode => '0744',
   }
 }

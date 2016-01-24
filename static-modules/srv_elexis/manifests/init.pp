@@ -46,15 +46,29 @@ class srv_elexis (
   include apt
   include apt::backports
   include srv_elexis::config
-  ensure_packages(['unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh', 'fish',
+  ensure_packages(['unzip', 'dlocate', 'mlocate', 'htop', 'curl', 'etckeeper', 'unattended-upgrades', 'mosh',
                   'ntpdate', 'anacron', 'maven', 'ant', 'ant-contrib', 'sudo', 'screen', 'postgresql', 'wget'])
+
+  ensure_resource('user', 'jenkins', { 'ensure' => 'present'} )
+
+  apt::pin { 'backports_fish':
+    packages => 'fish',
+    priority => 200,
+#    release  => 'main',
+  }
+  package{'fish':
+    require => Apt::Pin['backports_fish'],
+  }
   # Use docker.io from Debian
   # as I have problems with docker-engine on srv.elexis.info (but not on my Virtual Box)
-  class{'docker':
-          package_name => 'docker.io',
-  }
-  class { 'docker_compose':
-    version => '1.3.1'
+ # file {'/usr/bin/docker.io':   ensure => link,    target => '/usr/bin/docker',  }
+ class { 'docker':
+      docker_users => ['niklaus', 'www-data'],
+      tcp_bind    => 'tcp://127.0.0.1:4243',
+      socket_bind => 'unix:///var/run/docker.sock',
+    }
+  package{ ['docker.io', 'docker-compose']:
+    ensure => absent
   }
 
   file {'/etc/gitconfig':
@@ -66,7 +80,7 @@ class srv_elexis (
         helper = cache --timeout=3600
 # Set the cache to timeout after 1 hour (setting is in seconds)
 ",
-    mode => 0644,
+    mode => '0644',
     }
 
   # The config writer personal choice
@@ -86,6 +100,7 @@ class srv_elexis (
     ensure   => present,
     provider => git,
     source   => 'https://github.com/ngiger/elexis-dockerfiles.git',
+    require => User['jenkins'],
   }
 
   file {'/home/www' :

@@ -5,8 +5,10 @@
 # Some simple customization below
 #------------------------------------------------------------------------------------------------------------
 # boxUrl = "https://atlas.hashicorp.com/ARTACK/boxes/debian-jessie"
-boxUrl = "https://vagrantcloud.com/lazyfrosch/boxes/debian-8-jessie-amd64-puppet"
-puts "Using boxUrl #{boxUrl}"
+#boxUrl = "https://vagrantcloud.com/lazyfrosch/boxes/debian-8-jessie-amd64-puppet"
+# boxUrl = 'hoppe/debian-8.2.0-amd64'
+#boxUrl = 'https://atlas.hashicorp.com/markusperl/boxes/debian-8.0-jessie-64-shrinked-puppet'
+#puts "Using boxUrl #{boxUrl}"
 
 bridgedNetworkAdapter = "eth0" # adapt it to your liking, e.g. on MacOSX it might 
 
@@ -16,7 +18,6 @@ systemsToBoot = [ :srv]
 
 # Patch the next lines if you have more than one elexis-vagrant running in your network
 firstPort       = 52000   
-
 #------------------------------------------------------------------------------------------------------------
 # End of simple customization
 #------------------------------------------------------------------------------------------------------------
@@ -29,23 +30,30 @@ FileUtils.makedirs('manifests')
 FileUtils.makedirs('modules')
 
 Vagrant.configure("2") do |config|
-  config.vm.box     = 'lazyfrosch/debian-8-jessie-amd64-puppet'
-  # config.vm.box_url = boxUrl
+  config.vm.box   =  'deb/jessie-amd64'
   config.vm.provider "virtualbox" do |v|
     v.gui = true
     v.memory = 2048
     v.cpus = 2
   end
-  config.vm.provision :puppet, :options => "--debug"
-  # config.vm.share_folder "hieradata", "/etc/puppet/hieradata", File.join(Dir.pwd, 'hieradata')
-  # config.vm.synced_folder File.join(Dir.pwd, 'hieradata'), "/etc/puppet/hieradata", type: "nfs"
-  # config.vm.synced_folder ".", "/vagrant", type: "rsync",   rsync__exclude: ".git/"
-  # config.vm.synced_folder "./hieradata", "/etc/puppet/hiearadata", type: "rsync",   rsync__exclude: ".git/"
+
+  #  config.vm.box     = 'lazyfrosch/debian-8-jessie-amd64-puppet'
+  # config.vm.box     =  'puppetlabs/debian-8.2-64-puppet'
+  # config.vm.box_version = "1.0.1
+
+  # config.vm.provision :puppet, :options => "--debug"
+  # config.vm.provision "shell", inline: "apt-get update && apt-get upgrade --yes"
+  # config.vm.provision "shell", inline: "apt-get install --yes puppet"
   config.vm.provision :shell, :path => "shell/main.sh"
-  config.vm.provision :puppet do |puppet|
-    puppet.manifests_path = "manifests"
-    puppet.manifest_file = "site.pp"
-    puppet.module_path = "modules"
+  # apply on the server using vagrant@srv /vagrant> sudo -iHu root puppet apply --confdir /vagrant --noop --debug --modulepath=/vagrant/modules/ /vagrant/modules/srv_elexis/tests/init.pp
+  if true # puppet > 4.0
+    config.vm.provision "shell", inline: "/opt/puppetlabs/bin/puppet apply --modulepath=/vagrant/modules /vagrant/manifests/site.pp"
+  else
+    config.vm.provision :puppet do |puppet|
+      # puppet.manifests_path = "manifests"
+      puppet.manifest_file = "site.pp"
+      puppet.module_path = "modules"
+    end
   end
 
   config.vm.host_name = "srv.#{`hostname -d`.chomp}"
