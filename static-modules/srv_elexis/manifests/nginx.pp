@@ -51,37 +51,41 @@ class srv_elexis::nginx inherits srv_elexis {
 
   ensure_packages(['nginx'])
 
-  $letsencrypt_vcs = '/home/letsencrypt'
-  $renew_file = '/usr/local/bin/letsencrypt_renew'
+  if $hostname =~ /elexis.info/ {
+    $renew_file = '/usr/local/bin/letsencrypt_renew'
+    notify{"rebuilding $renew_file on $hostname":}
+      file {$renew_file:
+    content => "#!/bin/bash
+# $::srv_elexis::config::managed_note
+# We want to get one certificate valid for all our sub-domains. Therefore we must put
+# several -d directives in 1 line.
+# To renew a certificate, simply run letsencrypt again providing the same values when prompted.
+# There is a limit of 5 certificates for 7 days!
+# Logfile is /var/log/letsencrypt/letsencrypt.log
+cd $letsencrypt_vcs
+git pull
+/etc/init.d/nginx stop
+./letsencrypt-auto --standalone certonly --renew-by-default  -d artikelstamm.$::domain -d srv.$::domain -d wiki.$::domain -d jenkins.$::domain
+/etc/init.d/nginx start
+    ",  owner => root,
+        require =>  [  Package['nginx'], Vcsrepo[$letsencrypt_vcs]],
+        mode => '0755',
+        group => root,
+      }
+      exec { $renew_file:
+        creates => '/etc/letsencrypt/live/jenkins.elexis.info/fullchain.pem',
+        require => [File[$renew_file], Vcsrepo[$letsencrypt_vcs]],
+      }
 
-  vcsrepo {$letsencrypt_vcs:
-    ensure   => present,
-    provider => git,
-    source   => 'https://github.com/letsencrypt/letsencrypt',
-  }
-
-  git::config { 'user.email':
-    value => 'niklaus.giger@member.fsf.org',
-  }
-
-  include docker
-  docker::image { 'nginx':
-    docker_file => "${docker_files}/nginx/Dockerfile",
-#    notify => Docker::Run['nginx'],
-  }
-  include srv_elexis::config
-
-  file {"/etc/nginx/ssl":
-    ensure => directory,
-    owner => root,
-    group => root,
-    require => [ Package['nginx']],
-  }
-  file { "/etc/nginx/sites-available/jenkins.$::domain":
-    ensure => absent,
-    require => [ Package['nginx']],
-  }
-
+      cron { $renew_file:
+        command => "$renew_file",
+        user    => root,
+        month   => [3,6,9,12],
+        monthday => 1,
+        hour    => 2,
+        minute  => 0,
+        require => [  Exec[$renew_file] ]
+      }
   file { "/etc/nginx/sites-available/missin_certificate_jenkins.$::domain":
   content => "# $::srv_elexis::config::managed_note
 # from https://www.digitalocean.com/community/tutorials/how-to-configure-nginx-with-ssl-as-a-reverse-proxy-for-jenkins
@@ -132,38 +136,40 @@ server {
     require => [ Package['nginx'], Exec[$renew_file] ],
   }
 
-  file {$renew_file:
-   content => "#!/bin/bash
-# $::srv_elexis::config::managed_note
-# We want to get one certificate valid for all our sub-domains. Therefore we must put
-# several -d directives in 1 line.
-# To renew a certificate, simply run letsencrypt again providing the same values when prompted.
-# There is a limit of 5 certificates for 7 days!
-# Logfile is /var/log/letsencrypt/letsencrypt.log
-cd $letsencrypt_vcs
-git pull
-/etc/init.d/nginx stop
-./letsencrypt-auto --standalone certonly --renew-by-default  -d artikelstamm.$::domain -d srv.$::domain -d wiki.$::domain -d jenkins.$::domain
-/etc/init.d/nginx start
-",  owner => root,
-    require =>  [  Package['nginx'], Vcsrepo[$letsencrypt_vcs]],
-    mode => '0755',
-    group => root,
+   } else {
+     notify{"Skip adding $renew_file on $hostname to crontab":}
+   }
+
+  $letsencrypt_vcs = '/home/letsencrypt'
+
+  vcsrepo {$letsencrypt_vcs:
+    ensure   => present,
+    provider => git,
+    source   => 'https://github.com/letsencrypt/letsencrypt',
   }
 
-exec { $renew_file:
-  creates => '/etc/letsencrypt/live/jenkins.elexis.info/fullchain.pem',
-  require => [File[$renew_file], Vcsrepo[$letsencrypt_vcs]],
-}
-cron { $renew_file:
-  command => "$renew_file",
-  user    => root,
-  month   => [3,6,9,12],
-  monthday => 1,
-  hour    => 2,
-  minute  => 0,
-  require => [  Exec[$renew_file] ]
-}
+  git::config { 'user.email':
+    value => 'niklaus.giger@member.fsf.org',
+  }
+
+  include docker
+  docker::image { 'nginx':
+    docker_file => "${docker_files}/nginx/Dockerfile",
+#    notify => Docker::Run['nginx'],
+  }
+  include srv_elexis::config
+
+  file {"/etc/nginx/ssl":
+    ensure => directory,
+    owner => root,
+    group => root,
+    require => [ Package['nginx']],
+  }
+  file { "/etc/nginx/sites-available/jenkins.$::domain":
+    ensure => absent,
+    require => [ Package['nginx']],
+  }
+
 
 file { "/etc/nginx/sites-enabled/srv.$::domain":
    content => "# $::srv_elexis::config::managed_note

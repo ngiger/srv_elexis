@@ -103,27 +103,23 @@ class srv_elexis::jenkins_ci inherits srv_elexis {
   file{"/home/jenkins/remove_security.rb":
     ensure => present,
     source  => "puppet:///modules/srv_elexis/jenkins/remove_security.rb",
-    notify =>  Docker::Image['jenkins'],
+    notify =>  Docker::Image['jenkins-old'],
     require => [File[$srv_elexis::docker_files], Vcsrepo[$srv_elexis::docker_files],
       ],
   }
 
-  docker::image { 'jenkins':
-    docker_dir => $srv_elexis::docker_files,
+  docker::image { 'jenkins-old':
+    docker_dir => "$srv_elexis::docker_files/jenkins",
     require => Vcsrepo[$srv_elexis::docker_files],
-    notify =>  Docker::Run['jenkins'],
+    notify =>  Docker::Run['jenkins-old'],
   }
 
-  Vcsrepo[$srv_elexis::docker_files] ~> Docker::Image['jenkins']
-
-  docker::run { 'jenkins':
-    image => 'jenkins',
-    use_name        => true,
+  docker::run { 'jenkins-old':
+    image => 'jenkins-old',
     restart_service => true,
     privileged      => false,
     pull_on_start   => false,
     before_stop     => 'echo "So Long, and Thanks for All the Fish"',
-    # username => 'jenkins',
     ports  => ['8080:8080', '50000:50000'],
     volumes => [
       "$srv_elexis::jenkins_home:/var/jenkins_home",
@@ -221,7 +217,7 @@ logger "$0 finished" `df -h /tmp`
       command => "/bin/tar -xvf ${docker_files}/jenkin_config_dump.tar.gz && /bin/chown -R 1000:1000 /home/jenkins && /usr/bin/ruby remove_security.rb && /usr/bin/sha512sum ${docker_files}/jenkin_config_dump.tar.gz > /home/jenkins/jenkin_config_dump.sha",
       creates => $dump_sha,
       require => File["/home/jenkins/remove_security.rb"],
-      notify =>  Docker::Image['jenkins'],
+      notify =>  Docker::Image['jenkins-old'],
     }
     file{"${docker_files}/Dockerfile":
       ensure => present,

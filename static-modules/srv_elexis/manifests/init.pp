@@ -64,7 +64,7 @@ class srv_elexis (
  # file {'/usr/bin/docker.io':   ensure => link,    target => '/usr/bin/docker',  }
  class { 'docker':
       docker_users => ['niklaus', 'www-data'],
-      tcp_bind    => 'tcp://127.0.0.1:4243',
+      tcp_bind    => 'tcp://0.0.0.0:4243',
       socket_bind => 'unix:///var/run/docker.sock',
     }
   package{ ['docker.io', 'docker-compose']:

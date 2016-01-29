@@ -1,2 +1,14 @@
-#!/bin/bash
-sudo -iu root DEBIAN_FRONTEND=noninteractive /opt/puppetlabs/bin/puppet apply --modulepath=/vagrant/modules /vagrant/manifests/site.pp 2>&1 | tee runpuppet.log
+#!/bin/bash -v
+export params=$*
+if [ -z "$*" ]
+then
+  export params=/vagrant/manifests/site.pp
+fi
+echo params are $* as var are $params
+if [ `which librarian-puppet` ]
+then
+  librarian-puppet install --verbose
+else
+  echo librarian-puppet not found
+fi
+sudo /opt/puppetlabs/bin/puppet apply --modulepath=/vagrant/modules ${params}

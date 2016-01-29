@@ -52,7 +52,6 @@ class srv_elexis::wiki(
 
   docker::run { 'wiki':
     image => 'wiki',
-    use_name        => true,
     restart_service => true,
     privileged      => false,
     pull_on_start   => false,
