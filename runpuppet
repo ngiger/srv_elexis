@@ -1,8 +1,10 @@
 #!/bin/bash -v
 export params=$*
+export abs_file=`readlink -f $0`
+export abs_dir=`dirname  $abs_file`
 if [ -z "$*" ]
 then
-  export params=/vagrant/manifests/site.pp
+  export params=${abs_dir}/manifests/site.pp
 fi
 echo params are $* as var are $params
 if [ `which librarian-puppet` ]
@@ -11,4 +13,4 @@ then
 else
   echo librarian-puppet not found
 fi
-sudo /opt/puppetlabs/bin/puppet apply --modulepath=/vagrant/modules ${params}
+sudo /opt/puppetlabs/bin/puppet apply --modulepath=${abs_dir}/modules ${params}
