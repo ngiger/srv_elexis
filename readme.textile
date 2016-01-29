@@ -6,7 +6,7 @@ Bootstrapping can happen in two ways.
 
 h2. test using vagrant
 
-The following steps were done on an Debian Wheezy system
+The following steps were done on an Debian Wheezy system. Vagrant 1.8.1, Virtualbox 4.3.36-dfsg-1+deb8u1
 
 bq. sudo aptitude install virtualbox
 \curl -L https://get.rvm.io | bash
@@ -17,6 +17,10 @@ bundle install
 vagrant up
 vagrant ssh # and you are done!
 
+Inside the Virtualbox the following versions were used:
+* Jessie 8.3
+* Docker version 1.9.1, build a34a1d5
+* puppet 4.3.1
 
 h2. deploy on the server, where we had a pre-install Debian Wheezy with Java7
 
