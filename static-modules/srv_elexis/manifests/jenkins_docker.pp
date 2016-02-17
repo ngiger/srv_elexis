@@ -43,15 +43,13 @@ class srv_elexis::jenkins_docker(
                   ) inherits srv_elexis {
 
   ssh_keygen { 'jenkins': }
-  include 'docker_compose'
   # runs then under http://srv.ngiger.dyndns.org:8081/
   vcsrepo {"$elexis_releng_dir":
-    ensure   => present,
+    ensure   => latest,
     source   => 'https://github.com/ngiger/elexis-releng.git',
     provider => 'git',
     require => File['/home/jenkins/.ssh'],
   }
-  Vcsrepo[$elexis_releng_dir] ~>  Exec['build_elexis_releng']
   file{'/home/jenkins/.ssh':
     ensure => directory,
     owner => 'jenkins',
@@ -68,21 +66,15 @@ class srv_elexis::jenkins_docker(
     source => '/home/jenkins/.ssh/id_rsa',
     require => [Ssh_keygen['jenkins']],
   }
-  exec{'build_elexis_releng':
-    command => "/usr/local/bin/docker-compose build",
-    require => [ Vcsrepo[$elexis_releng_dir],
-      Class['docker',  'docker_compose'],
-      File["$elexis_releng_dir/jenkins/jenkins", "$elexis_releng_dir/jenkins/jenkins.pub"],
-    ],
-    cwd => "$elexis_releng_dir/jenkins",
-    timeout     => 1800,
-#    creates => '/usr/local/bin/cleanup_snapshots.rb',
+
+  require docker::compose
+  $compose_file = "$elexis_releng_dir/jenkins-test/docker-compose.yml"
+  Vcsrepo[$elexis_releng_dir] ~>  Docker_compose[$compose_file]
+  docker_compose {$compose_file:
+    ensure  => present,
   }
-  exec{'start_elexis_releng':
-    command => "/usr/local/bin/docker-compose up -d jenkinstest",
-    require => Exec['build_elexis_releng'],
-    cwd => "$elexis_releng_dir/jenkins",
-#    creates => '/usr/local/bin/cleanup_snapshots.rb',
+  docker::run { 'jenkinstest_jenkinstest_1':
+    image => $compose_file,
   }
 
 }

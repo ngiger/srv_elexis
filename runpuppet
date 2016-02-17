@@ -9,7 +9,7 @@ fi
 echo params are $* as var are $params
 if [ `which librarian-puppet` ]
 then
-  librarian-puppet install --verbose
+  bundle exec librarian-puppet install --verbose
 else
   echo librarian-puppet not found
 fi

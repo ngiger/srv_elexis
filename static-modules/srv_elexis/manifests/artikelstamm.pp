@@ -48,7 +48,7 @@ class srv_elexis::artikelstamm(
     owner => 'jenkins',
     require => [File['/home/www'],
       User['jenkins'],
-      Group['jenkins'],
+#      Group['jenkins'],
     ],
   }
 

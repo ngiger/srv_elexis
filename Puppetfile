@@ -2,8 +2,8 @@ forge "https://forgeapi.puppetlabs.com"
 
 # Configuration for librarian-puppet. For example:
 #
-mod "garethr/docker" # , :git => 'https://github.com/garethr/garethr-docker.git'
-mod 'garystafford/docker_compose'
+mod "garethr/docker", :git => 'https://github.com/garethr/garethr-docker.git'
+# mod 'garystafford/docker_compose'
 mod 'maestrodev/ssh_keygen'
 #mod 'garethr/docker', :path => '/opt/src/garethr-docker'
 #mod "garethr/docker", :git => 'https://github.com/garethr/garethr-docker.git', :ref => 'new-docker-repos'

@@ -63,9 +63,11 @@ class srv_elexis (
   # as I have problems with docker-engine on srv.elexis.info (but not on my Virtual Box)
  # file {'/usr/bin/docker.io':   ensure => link,    target => '/usr/bin/docker',  }
  class { 'docker':
+      version => '1.9.1-0~jessie',
       docker_users => ['niklaus', 'www-data'],
       tcp_bind    => 'tcp://0.0.0.0:4243',
       socket_bind => 'unix:///var/run/docker.sock',
+      storage_driver => 'devicemapper', # previously we used aufs
     }
   package{ ['docker.io', 'docker-compose']:
     ensure => absent
@@ -97,7 +99,7 @@ class srv_elexis (
   }
 
   vcsrepo {$docker_files:
-    ensure   => present,
+    ensure   => latest,
     provider => git,
     source   => 'https://github.com/ngiger/elexis-dockerfiles.git',
     require => User['jenkins'],
@@ -107,5 +109,7 @@ class srv_elexis (
     ensure => directory,
     owner => 'www-data',
   }
+  # # sudo /opt/puppetlabs/bin/puppet resource cron puppet-apply ensure=present user=root minute=30 command='/opt/puppetlabs/bin/puppet apply $(puppet apply --configprint manifest)'
 
+  # $ sudo puppet resource cron puppet-apply ensure=present user=root minute=30 command='/usr/bin/puppet apply $(puppet apply --configprint manifest)'
 }

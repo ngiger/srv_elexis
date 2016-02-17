@@ -41,11 +41,12 @@ class srv_elexis::wiki(
 ) inherits srv_elexis {
 
   $wiki_root = '/home/docker-data-containers'
+  if false {
   exec { 'docker-compose-wiki':
     cwd => "$srv_elexis::docker_files/srv.elexis.info",
     command => "/usr/local/bin/docker-compose up -d",
     require => [ Vcsrepo[$srv_elexis::docker_files],
-      Class['docker_compose']
+#      Class['docker_compose']
       ],
     unless => "/usr/bin/docker ps | /bin/grep srvelexisinfo_wikidb_1",
   }
@@ -55,12 +56,28 @@ class srv_elexis::wiki(
     restart_service => true,
     privileged      => false,
     pull_on_start   => false,
-    before_stop     => 'echo "So Long, and Thanks for All the Fish"',
+    before_stop     => '/bin/echo "So Long, and Thanks for All the Fish"',
     # username => 'wiki',
     ports  => ['8080:8080', '50000:50000'],
     volumes => [
       "$wiki_root:/var/wiki_home",
     ],
+  }
+  } else {
+    $compose_file = "${srv_elexis::docker_files}/srv.elexis.info/docker-compose.yml"
+    exec{'download-mediawiki-assets':
+      require => Vcsrepo[$srv_elexis::docker_files],
+      cwd => "${srv_elexis::docker_files}/mediawiki",
+      command => "${srv_elexis::docker_files}/mediawiki/get_plugins.sh",
+      notify => Docker_compose[$compose_file],
+
+    }
+    docker_compose {$compose_file:
+      ensure  => present,
+    }
+    docker::run { 'srvelexisinfo_wikidb_1':
+      image => $compose_file,
+    }
   }
 
   # http://www.mediawiki.org/wiki/Extension:DeleteHistory
