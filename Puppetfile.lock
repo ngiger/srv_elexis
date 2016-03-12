@@ -8,6 +8,10 @@ FORGE
       saz-memcached (>= 2.0.0)
     camptocamp-archive (0.8.1)
     darin-zypprepo (1.0.2)
+    garethr-docker (5.1.0)
+      puppetlabs-apt (<= 3.0.0, >= 1.8.0)
+      puppetlabs-stdlib (>= 4.1.0)
+      stahnma-epel (>= 0.0.6)
     jbeard-nfs (0.2.1)
       jbeard-portmap (< 0.2.0, >= 0.1.11)
       puppetlabs-concat (< 2.0.0, >= 1.0.0)
@@ -50,16 +54,6 @@ FORGE
       puppetlabs-stdlib (>= 3.2.0)
     stahnma-epel (1.2.2)
       puppetlabs-stdlib (>= 3.0.0)
-
-GIT
-  remote: https://github.com/garethr/garethr-docker.git
-  ref: master
-  sha: 9a603f4ea63daef804159e383330aa9976ee7472
-  specs:
-    garethr-docker (5.0.0)
-      puppetlabs-apt (<= 3.0.0, >= 1.8.0)
-      puppetlabs-stdlib (>= 4.1.0)
-      stahnma-epel (>= 0.0.6)
 
 PATH
   remote: ./static-modules/srv_elexis
