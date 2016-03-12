@@ -123,9 +123,9 @@ server {
   index index.html index.htm index.php;
   root /srv/mediawiki;
 
-    ssl_certificate         /etc/letsencrypt/live/wiki.$::domain/fullchain.pem;
-    ssl_certificate_key     /etc/letsencrypt/live/wiki.$::domain/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/wiki.$::domain/fullchain.pem;
+    ssl_certificate         /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/artikelstamm.$::domain/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
 
     ssl on;
     ssl_session_cache  builtin:1000  shared:SSL:10m;

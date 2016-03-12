@@ -50,11 +50,12 @@ class srv_elexis::nginx inherits srv_elexis {
   }
 
   ensure_packages(['nginx'])
+  $letsencrypt_vcs = '/home/letsencrypt'
 
-  if $hostname =~ /elexis.info/ {
+  if $fqdn =~ /elexis.info/ {
     $renew_file = '/usr/local/bin/letsencrypt_renew'
-    notify{"rebuilding $renew_file on $hostname":}
-      file {$renew_file:
+    notify{"rebuilding $renew_file on $fqdn":}
+      file{"$renew_file":
     content => "#!/bin/bash
 # $::srv_elexis::config::managed_note
 # We want to get one certificate valid for all our sub-domains. Therefore we must put
@@ -65,16 +66,20 @@ class srv_elexis::nginx inherits srv_elexis {
 cd $letsencrypt_vcs
 git pull
 /etc/init.d/nginx stop
-./letsencrypt-auto --standalone certonly --renew-by-default  -d artikelstamm.$::domain -d srv.$::domain -d wiki.$::domain -d jenkins.$::domain
+./letsencrypt-auto --standalone certonly --renew-by-default  -d artikelstamm.$::domain -d srv.$::domain -d wiki.$::domain -d jenkins.$::domain -d download.$::domain
 /etc/init.d/nginx start
     ",  owner => root,
-        require =>  [  Package['nginx'], Vcsrepo[$letsencrypt_vcs]],
+        require =>  [  Package['nginx'], 
+		Vcsrepo[$letsencrypt_vcs]
+	],
         mode => '0755',
         group => root,
       }
       exec { $renew_file:
-        creates => '/etc/letsencrypt/live/jenkins.elexis.info/fullchain.pem',
-        require => [File[$renew_file], Vcsrepo[$letsencrypt_vcs]],
+        creates => '/etc/letsencrypt/live/artikelstamm.elexis.info/fullchain.pem',
+        require =>  [  Package['nginx'], 
+		Vcsrepo[$letsencrypt_vcs]
+	],
       }
 
       cron { $renew_file:
@@ -101,9 +106,9 @@ server {
     listen 443;
     server_name  jenkins.$::domain;
 
-    ssl_certificate         /etc/letsencrypt/live/jenkins.$::domain/fullchain.pem;
-    ssl_certificate_key     /etc/letsencrypt/live/jenkins.$::domain/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/jenkins.$::domain/fullchain.pem;
+    ssl_certificate         /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/artikelstamm.$::domain/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
 
     ssl on;
     ssl_session_cache  builtin:1000  shared:SSL:10m;
@@ -137,10 +142,8 @@ server {
   }
 
    } else {
-     notify{"Skip adding $renew_file on $hostname to crontab":}
+     notify{"Skip adding $renew_file on $fqdn to crontab":}
    }
-
-  $letsencrypt_vcs = '/home/letsencrypt'
 
   vcsrepo {$letsencrypt_vcs:
     ensure   => present,
@@ -178,9 +181,9 @@ server {
   server_name  srv.$::domain;
   allow all;
   ssl on;
-  ssl_certificate         /etc/letsencrypt/live/srv.$::domain/fullchain.pem;
-  ssl_certificate_key     /etc/letsencrypt/live/srv.$::domain/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/srv.$::domain/fullchain.pem;
+  ssl_certificate         /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
+  ssl_certificate_key     /etc/letsencrypt/live/artikelstamm.$::domain/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
 
   location /jenkins/ {
     proxy_pass              http://localhost:8080;
@@ -222,9 +225,9 @@ server {
   server_name  download.$::domain;
   allow all;
   ssl on;
-  ssl_certificate         /etc/letsencrypt/live/download.$::domain/fullchain.pem;
-  ssl_certificate_key     /etc/letsencrypt/live/download.$::domain/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/download.$::domain/fullchain.pem;
+  ssl_certificate         /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
+  ssl_certificate_key     /etc/letsencrypt/live/artikelstamm.$::domain/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/artikelstamm.$::domain/fullchain.pem;
 
   autoindex on;
   root /home/jenkins/downloads;

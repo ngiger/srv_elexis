@@ -59,6 +59,8 @@ class srv_elexis (
   package{'fish':
     require => Apt::Pin['backports_fish'],
   }
+  # need also a 4.x kernel
+  # apt-get install linux-image-4.3.0-0.bpo.1-amd64 linux-headers-4.3.0-0.bpo.1-amd64
   # Use docker.io from Debian
   # as I have problems with docker-engine on srv.elexis.info (but not on my Virtual Box)
  # file {'/usr/bin/docker.io':   ensure => link,    target => '/usr/bin/docker',  }
@@ -67,7 +69,7 @@ class srv_elexis (
       docker_users => ['niklaus', 'www-data'],
       tcp_bind    => 'tcp://0.0.0.0:4243',
       socket_bind => 'unix:///var/run/docker.sock',
-      storage_driver => 'devicemapper', # previously we used aufs
+      storage_driver => 'overlay', # previously we used aufs
     }
   package{ ['docker.io', 'docker-compose']:
     ensure => absent
